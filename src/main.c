@@ -11,10 +11,24 @@ void print_mat(int** mat){
     }
 }
 
-void canonize(){
-    mat[r][c] += (mat[pivot_row][c] / -mat[r][c])
-}
+void canonize(int** mat, int rows, int cols, int pivot_row, int pivot_col){
 
+    int k;
+    for(int r = 0; r < rows; ++r){
+        if(r == pivot_row){
+            k = mat[pivot_row][pivot_col];
+        } else {
+            k = (-mat[r][pivot_col]/mat[pivot_row][pivot_col]);
+        }
+        for(int c = 0; c < cols; ++c){
+            if(r == pivot_row){
+                mat[r][c] /= k;
+            } else {
+                mat[r][c] += (mat[pivot_row][pivot_col] * k);
+            }
+        }
+    }
+}
 int main(int argc, char* args[]){
     printf("Hello World!\n");
     
