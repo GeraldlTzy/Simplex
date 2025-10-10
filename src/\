@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define MAX_VAL 200
+#define MIN(a, b) ((a < b) ? a : b)
 
 #define SIZE_MAT 3
 int pivot_counter = 0;
@@ -33,7 +34,7 @@ void canonize(double** mat, int rows, int cols, int pivot_row, int pivot_col){
 
 
 void maximize(double** mat, int rows, int cols){
-  double min = MAX_VAL;
+  int min = MAX_VAL;
   int pivot_row = -1, pivot_col = -1;;
 
   for(int c = 1; c < cols-1; ++c){
@@ -46,12 +47,12 @@ void maximize(double** mat, int rows, int cols){
     return;
   }
   min =  MAX_VAL;
-  double fraction;
+  int fraction;
   for(int r = 1; r < rows; ++r){
     if(mat[r][pivot_col] > 0){
       fraction = mat[r][cols-1] / mat[r][pivot_col];
-      if(min > fraction){
-        min = fraction;
+      if(fraction < min){
+        min = mat[r][pivot_col];
         pivot_row = r;
       }
     }
@@ -59,11 +60,13 @@ void maximize(double** mat, int rows, int cols){
   if(pivot_row < 0)
     return;
   pivot_counter++;
-  printf("Pivoteo(%d)\n", pivot_counter);
+  printf("Pivoteo(%d)\n");
   canonize(mat, rows, cols, pivot_row, pivot_col);
 }
 
 int main(int argc, char* args[]){
+    printf("Hello World!\n");
+    
     double** mat = malloc(sizeof(double*)*SIZE_MAT);
 
     for(int i = 0; i < SIZE_MAT; i++)
