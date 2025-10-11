@@ -16,7 +16,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkWindow">
+  <object class="GtkWindow" id="second_window">
     <property name="can-focus">False</property>
     <child>
       <object class="GtkFixed">
@@ -35,13 +35,79 @@
               <object class="GtkEntry" id="txt_objective_func">
                 <property name="can-focus">False</property>
                 <property name="placeholder-text" translatable="yes">select an item</property>
-                <property name="show-emoji-icon">True</property>
               </object>
             </child>
           </object>
           <packing>
+            <property name="x">100</property>
+            <property name="y">75</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Objective function</property>
+          </object>
+          <packing>
             <property name="x">50</property>
-            <property name="y">100</property>
+            <property name="y">50</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="width-request">600</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkViewport" id="vp_objective_func">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">100</property>
+            <property name="y">125</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Subject to</property>
+          </object>
+          <packing>
+            <property name="x">50</property>
+            <property name="y">195</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="width-request">600</property>
+            <property name="height-request">200</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkViewport" id="vp_constraints">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">100</property>
+            <property name="y">225</property>
           </packing>
         </child>
       </object>
@@ -67,22 +133,22 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton">
-            <property name="label" translatable="yes">button</property>
+          <object class="GtkButton" id="btn_continue">
+            <property name="label" translatable="yes">Continue</property>
             <property name="width-request">100</property>
-            <property name="height-request">80</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <signal name="clicked" handler="on_btn_continue_clicked" object="gd_initial" swapped="no"/>
           </object>
           <packing>
-            <property name="x">660</property>
-            <property name="y">444</property>
+            <property name="x">400</property>
+            <property name="y">300</property>
           </packing>
         </child>
         <child>
           <!-- n-columns=2 n-rows=3 -->
-          <object class="GtkGrid">
+          <object class="GtkGrid" id="gd_initial">
             <property name="width-request">100</property>
             <property name="height-request">50</property>
             <property name="visible">True</property>
@@ -128,7 +194,7 @@
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Variables number</property>
+                <property name="label" translatable="yes">Number of variables</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>
@@ -153,7 +219,7 @@
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Constraints number</property>
+                <property name="label" translatable="yes">Number of constraints</property>
               </object>
               <packing>
                 <property name="left-attach">0</property>

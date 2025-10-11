@@ -619,7 +619,8 @@ build/main: src/main.c /usr/include/gtk-3.0/gtk/gtk.h \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvscale.h \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvscrollbar.h \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvseparator.h \
- /usr/include/gtk-3.0/gtk/gtk-autocleanups.h src/include/simplex.h
+ /usr/include/gtk-3.0/gtk/gtk-autocleanups.h src/include/simplex.h \
+ src/include/matrix.h
 /usr/include/gtk-3.0/gtk/gtk.h:
 /usr/include/gtk-3.0/gdk/gdk.h:
 /usr/include/gtk-3.0/gdk/gdkconfig.h:
@@ -1290,3 +1291,4 @@ build/main: src/main.c /usr/include/gtk-3.0/gtk/gtk.h \
 /usr/include/gtk-3.0/gtk/deprecated/gtkvseparator.h:
 /usr/include/gtk-3.0/gtk/gtk-autocleanups.h:
 src/include/simplex.h:
+src/include/matrix.h:
