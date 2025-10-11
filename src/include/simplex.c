@@ -1,0 +1,165 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "simplex.h"
+#define MAX_VAL 200
+
+#define SIZE_MAT 3
+int pivot_counter = 0;
+int rows;
+int cols;
+void print_mat(double** mat){
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            printf("%.3f ", mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void canonize(double** mat, int rows, int cols, int pivot_row, int pivot_col){
+    double k;
+    printf("piv_r: %d, piv_c: %d\n", pivot_row, pivot_col);
+    for(int r = 0; r < rows; ++r){
+        if(r == pivot_row){
+            k = mat[pivot_row][pivot_col];
+        } else {
+            k = ((-1*mat[r][pivot_col])/mat[pivot_row][pivot_col]);
+        }
+        for(int c = 0; c < cols; ++c){
+            if(r == pivot_row){
+                mat[r][c] /= k;
+            } else {
+              mat[r][c] += (mat[pivot_row][c] * k);
+            }
+        }
+    }
+}
+
+
+void maximize(double** mat, int rows, int cols){
+  while(1){
+    double min = MAX_VAL;
+    int pivot_row = -1, pivot_col = -1;;
+
+    for(int c = 1; c < cols-1; ++c){
+      if(min > mat[0][c]){
+        min = mat[0][c];
+        pivot_col = c;
+      }
+    }
+    if (min >= 0){
+      break;
+    }
+    min =  MAX_VAL;
+    double fraction;
+    for(int r = 1; r < rows; ++r){
+      if(mat[r][pivot_col] > 0){
+        fraction = mat[r][cols-1] / mat[r][pivot_col];
+        if(min > fraction){
+          min = fraction;
+          pivot_row = r;
+        }
+      }
+    }
+    if(pivot_row < 0)
+      break;
+    pivot_counter++;
+    printf("Pivoteo(%d)\n", pivot_counter);
+    canonize(mat, rows, cols, pivot_row, pivot_col);
+  }
+}
+
+char* read_text(FILE* file, char start, char end){
+  int str_size = 32, index = 0;
+  char *str = malloc(str_size);
+  char c;
+  while((c = fgetc(file)) != start);
+  while((c = fgetc(file)) != end && c != 10){
+    if (index >= str_size - 1) {
+      str_size *= 2;
+      char *tmp = realloc(str, str_size);
+      if (!tmp) { free(str); return NULL; }
+      str = tmp;
+    }
+    str[index++] = c;
+  }
+  str[index] = '\0';
+  return str;
+}
+char *problem_name;
+int count_variables;
+int count_constraints;
+char **variables_name;
+
+
+double** load_data(){
+    char *filename = "example.txt";
+    FILE *file;
+    file = fopen(filename, "r");
+    problem_name = read_text(file, '=', 10);
+    count_variables = atoi(read_text(file, '=', '\n'));
+    count_constraints = atoi(read_text(file, '=', '\n'));
+    variables_name = malloc(sizeof(char*) * count_variables);
+    for(int x = 0; x < count_variables; ++x){
+      variables_name[x] = read_text(file, '=', '^');
+      printf("%s\n", variables_name[x]);
+    }
+    int x_i;
+    
+    rows = 1+count_constraints;
+    cols = 2+count_variables+count_constraints;
+    double** mat = malloc(sizeof(double*)*rows);
+    for(int r = 0; r < rows; ++r){
+      mat[r] = calloc(sizeof(double), cols);
+    }
+    int index_diag = count_variables+1;
+    for(int r = 0; r < rows; ++r){
+      for(int c = 0; c < cols; ++c){
+        if(r == 0 && c < count_variables+1) {
+          if(c == 0){
+            mat[r][c] = 1;
+          } else
+            mat[r][c] = atoi(read_text(file, '=', '^')) * -1;
+        } else if(c > 0 && c < count_variables+1){
+          mat[r][c] = atoi(read_text(file, '=', '^'));
+          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+        } else if(r > 0 && c == cols-1) {
+          mat[r][c] = atoi(read_text(file, '<', '^'));
+        } else if(r > 0 && c == index_diag){
+          mat[r][index_diag] = 1.0f;
+          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+        }
+      }
+      if(r != 0) index_diag++;
+    }
+    return mat;
+    //free(filename);
+    //loaded = 1;
+    fclose(file);
+}
+
+int simplex(){
+    double** mat = load_data();
+    /*for(int i = 0; i < SIZE_MAT; i++)
+        mat[i] = calloc(sizeof(double), SIZE_MAT);
+    
+    mat[0][0] = 1;
+    mat[0][1] = -3;
+    //mat[]
+
+    mat[1][0] = 2;
+    mat[1][1] = 2;
+    mat[1][2] = 2;
+    mat[2][0] = 2;
+    mat[2][1] = 2;
+    mat[2][2] = 2;*/
+  
+    
+    print_mat(mat);
+    maximize(mat, rows, cols);
+    print_mat(mat);
+    for(int i = 0; i < rows; i++)
+        free(mat[i]);
+    free(mat);
+    return 0;
+}
