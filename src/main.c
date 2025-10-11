@@ -4,9 +4,11 @@
 
 #define SIZE_MAT 3
 int pivot_counter = 0;
+int rows;
+int cols;
 void print_mat(double** mat){
-    for (int i = 0; i < SIZE_MAT;i++){
-        for (int j = 0; j < SIZE_MAT; j++){
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
             printf("%.3f ", mat[i][j]);
         }
         printf("\n");
@@ -15,6 +17,7 @@ void print_mat(double** mat){
 
 void canonize(double** mat, int rows, int cols, int pivot_row, int pivot_col){
     double k;
+    printf("piv_r: %d, piv_c: %d\n", pivot_row, pivot_col);
     for(int r = 0; r < rows; ++r){
         if(r == pivot_row){
             k = mat[pivot_row][pivot_col];
@@ -25,7 +28,7 @@ void canonize(double** mat, int rows, int cols, int pivot_row, int pivot_col){
             if(r == pivot_row){
                 mat[r][c] /= k;
             } else {
-              mat[r][c] += (mat[pivot_row][pivot_col] * k);
+              mat[r][c] += (mat[pivot_row][c] * k);
             }
         }
     }
@@ -87,7 +90,8 @@ int count_variables;
 int count_constraints;
 char **variables_name;
 
-void load_data(){
+
+double** load_data(){
     char *filename = "example.txt";
     FILE *file;
     file = fopen(filename, "r");
@@ -99,15 +103,43 @@ void load_data(){
       variables_name[x] = read_text(file, '=', '^');
       printf("%s\n", variables_name[x]);
     }
+    int x_i;
+    
+    rows = 1+count_constraints;
+    cols = 2+count_variables+count_constraints;
+    double** mat = malloc(sizeof(double*)*rows);
+    for(int r = 0; r < rows; ++r){
+      mat[r] = calloc(sizeof(double), cols);
+    }
+    int index_diag = count_variables+1;
+    for(int r = 0; r < rows; ++r){
+      for(int c = 0; c < cols; ++c){
+        if(r == 0 && c < count_variables+1) {
+          if(c == 0){
+            mat[r][c] = 1;
+          } else
+            mat[r][c] = atoi(read_text(file, '=', '^')) * -1;
+        } else if(c > 0 && c < count_variables+1){
+          mat[r][c] = atoi(read_text(file, '=', '^'));
+          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+        } else if(r > 0 && c == cols-1) {
+          mat[r][c] = atoi(read_text(file, '<', '^'));
+        } else if(r > 0 && c == index_diag){
+          mat[r][index_diag] = 1.0f;
+          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+        }
+      }
+      if(r != 0) index_diag++;
+    }
+    return mat;
     //free(filename);
     //loaded = 1;
     fclose(file);
 }
 
 int main(int argc, char* args[]){
-    double** mat = malloc(sizeof(double*)*SIZE_MAT);
-    load_data();
-    for(int i = 0; i < SIZE_MAT; i++)
+    double** mat = load_data();
+    /*for(int i = 0; i < SIZE_MAT; i++)
         mat[i] = calloc(sizeof(double), SIZE_MAT);
     
     mat[0][0] = 1;
@@ -119,13 +151,13 @@ int main(int argc, char* args[]){
     mat[1][2] = 2;
     mat[2][0] = 2;
     mat[2][1] = 2;
-    mat[2][2] = 2;
+    mat[2][2] = 2;*/
   
     
     print_mat(mat);
-    maximize(mat, 3, 3);
+    maximize(mat, rows, cols);
     print_mat(mat);
-    for(int i = 0; i < SIZE_MAT; i++)
+    for(int i = 0; i < rows; i++)
         free(mat[i]);
     free(mat);
     return 0;
