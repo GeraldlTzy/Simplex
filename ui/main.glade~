@@ -57,7 +57,7 @@
         </child>
         <child>
           <object class="GtkScrolledWindow">
-            <property name="width-request">500</property>
+            <property name="width-request">600</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="shadow-type">in</property>
@@ -90,7 +90,7 @@
         </child>
         <child>
           <object class="GtkScrolledWindow">
-            <property name="width-request">500</property>
+            <property name="width-request">600</property>
             <property name="height-request">200</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
@@ -108,6 +108,19 @@
           <packing>
             <property name="x">100</property>
             <property name="y">225</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_finish">
+            <property name="label" translatable="yes">button</property>
+            <property name="width-request">100</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">738</property>
+            <property name="y">317</property>
           </packing>
         </child>
       </object>

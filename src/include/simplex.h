@@ -1,8 +1,7 @@
 #ifndef SIMPLEX_H
 #define SIMPLEX_H
+#include "matrix.h"
 
-
-int simplex();
-
+int simplex(Matrix mat);
 
 #endif

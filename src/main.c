@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "include/simplex.h"
 #include "include/matrix.h"
+#include "include/utils.h"
 #include <fontconfig/fontconfig.h>
 GtkWidget* main_window;
 GtkWidget* second_window;
@@ -12,14 +13,6 @@ GtkWidget* vp_objective_func;
 GtkWidget* vp_constraints;
 GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
-
-
-void request_objective(){
-  GtkGrid *grid;
-}
-
-
-
 
 void initialize(){
 	//////////////////////////////// Define the variables
@@ -68,7 +61,7 @@ gtk_grid_attach (
 char problem_name[50];
 int num_variables;
 int num_constraints;
-
+char **variables_name;
 
 void on_combo_constraint_changed(GtkComboBox *cmb, gpointer user_data){
   GtkTreeIter iter;
@@ -161,6 +154,87 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
   
   gtk_widget_show_all(second_window);
 }
+
+void on_btn_finish_clicked(){
+  int rows = 1 + num_constraints;
+  int cols = 2 + num_variables + num_constraints;
+  GtkWidget *entry;
+  simplex_table = new_matrix(rows, cols, FLOAT);
+  init_matrix_num(simplex_table, 0);
+
+  simplex_table.data.f[0][0]=1;
+  simplex_table.data.f[0][cols-1] = 0;
+  int canonic_i = num_variables + 1;
+  for(int r = 0; r < rows; ++r){
+    for(int c = 1; c < cols; ++c){
+      if(r == 0 && c <= num_variables){
+        entry = gtk_grid_get_child_at(gd_variables, (c-1)*2, r);      
+        simplex_table.data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
+      } else if(c <= num_variables){
+        entry = gtk_grid_get_child_at(gd_constraints, (c-1)*2, (r-1));
+        simplex_table.data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+      } else if(r > 0 && c == canonic_i){
+        simplex_table.data.f[r][c] = 1;
+      } else if(r > 0 && c == cols-1){
+
+        entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, (r-1));
+        simplex_table.data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+      }
+    }
+    if(r > 0){
+      canonic_i++;
+    }
+  }
+  print_matrix(simplex_table);
+  simplex(simplex_table);
+}
+
+Matrix load_data(){
+  char *filename = "example.txt";
+  FILE *file;
+  file = fopen(filename, "r");
+  strcpy(problem_name, read_text(file, '=', 10));
+  num_variables = atoi(read_text(file, '=', '\n'));
+  num_constraints = atoi(read_text(file, '=', '\n'));
+  variables_name = malloc(sizeof(char*) * num_variables);
+  for(int x = 0; x < num_variables; ++x){
+      variables_name[x] = read_text(file, '=', '^');
+      printf("%s\n", variables_name[x]);
+    }
+    int x_i;
+   
+
+    int rows = 1+num_constraints;
+    int cols = 2+num_variables+num_constraints;
+    Matrix mat = new_matrix(rows, cols, FLOAT);
+    
+    int index_diag = num_variables+1;
+    
+    for(int r = 0; r < rows; ++r){
+      for(int c = 0; c < cols; ++c){
+        if(r == 0 && c < num_variables+1) {
+          if(c == 0){
+            mat.data.f[r][c] = 1;
+          } else
+            mat.data.f[r][c] = atoi(read_text(file, '=', '^')) * -1;
+        } else if(c > 0 && c < num_variables+1){
+          mat.data.f[r][c] = atoi(read_text(file, '=', '^'));
+          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+        } else if(r > 0 && c == cols-1) {
+          mat.data.f[r][c] = atoi(read_text(file, '<', '^'));
+        } else if(r > 0 && c == index_diag){
+          mat.data.f[r][index_diag] = 1.0f;
+          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+        }
+      }
+      if(r != 0) index_diag++;
+    }
+    return mat;
+    //free(filename);
+    //loaded = 1;
+    fclose(file);
+}
+
 
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
   printf("text: %s\n", gtk_entry_get_text(e));
