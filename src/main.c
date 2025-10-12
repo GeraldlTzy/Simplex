@@ -187,6 +187,7 @@ void on_btn_finish_clicked(){
   }
   print_matrix(simplex_table);
   simplex(simplex_table);
+  free_matrix(simplex_table);
 }
 
 Matrix load_data(){

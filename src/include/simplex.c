@@ -62,8 +62,5 @@ int simplex(Matrix mat){
     print_matrix(mat);
     maximize(mat);
     print_matrix(mat);
-    for(int i = 0; i < mat.rows; i++)
-        free(mat.data.f[i]);
-    free(mat.data.f);
     return 0;
 }

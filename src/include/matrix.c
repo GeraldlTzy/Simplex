@@ -78,20 +78,28 @@ Matrix new_matrix(int rows, int cols, Type type){
 
 void free_matrix(Matrix mat){
     //TODO: other frees for other types
-	for(int i = 0; i < mat.rows; ++i){
-        for(int j = 0; j < mat.cols; ++j){
-            if (mat.type == KVPAIR){
-                if (mat.data.pair[i][j].second.pair)
-                    free(mat.data.pair[i][j].second.pair);
-            }
-        }
-        if (mat.type == KVPAIR) free(mat.data.pair[i]);
-        if (mat.type == OPTION) free(mat.data.option[i]) ;
+  for(int i = 0; i < mat.rows; ++i){
+    switch(mat.type){
+      case OPTION:
+        //TODO
+        break;
+      case KVPAIR:
+        //TODO
+        break;
+      case FLOAT:
+        free(mat.data.f[i]);
     }
-    if (mat.type == OPTION)
-        free(mat.data.option);
-    if (mat.type == KVPAIR)
-        free(mat.data.pair);
+  }
+  switch(mat.type){
+    case OPTION:
+      free(mat.data.option);
+      break;
+    case KVPAIR:
+      free(mat.data.pair);
+      break;
+    case FLOAT:
+      free(mat.data.f);
+  }
 }
 
 
