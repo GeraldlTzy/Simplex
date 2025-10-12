@@ -22,7 +22,8 @@ void initialize(){
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
 	vp_constraints = GTK_WIDGET(gtk_builder_get_object(builder, "vp_constraints"));
 	gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
-  g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
 	gtk_builder_connect_signals(builder, NULL);
 }
