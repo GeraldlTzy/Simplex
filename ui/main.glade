@@ -22,6 +22,10 @@
       <object class="GtkFixed">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="margin-start">20</property>
+        <property name="margin-end">20</property>
+        <property name="margin-top">20</property>
+        <property name="margin-bottom">20</property>
         <child>
           <object class="GtkComboBox" id="cmb_objective_func">
             <property name="width-request">100</property>
@@ -40,7 +44,7 @@
           </object>
           <packing>
             <property name="x">100</property>
-            <property name="y">75</property>
+            <property name="y">125</property>
           </packing>
         </child>
         <child>
@@ -52,7 +56,7 @@
           </object>
           <packing>
             <property name="x">50</property>
-            <property name="y">50</property>
+            <property name="y">100</property>
           </packing>
         </child>
         <child>
@@ -73,7 +77,7 @@
           </object>
           <packing>
             <property name="x">100</property>
-            <property name="y">125</property>
+            <property name="y">175</property>
           </packing>
         </child>
         <child>
@@ -85,7 +89,7 @@
           </object>
           <packing>
             <property name="x">50</property>
-            <property name="y">195</property>
+            <property name="y">245</property>
           </packing>
         </child>
         <child>
@@ -107,21 +111,36 @@
           </object>
           <packing>
             <property name="x">100</property>
-            <property name="y">225</property>
+            <property name="y">275</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="btn_finish">
-            <property name="label" translatable="yes">button</property>
+            <property name="label" translatable="yes">Solve</property>
             <property name="width-request">100</property>
+            <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <signal name="clicked" handler="on_btn_finish_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">738</property>
-            <property name="y">317</property>
+            <property name="x">720</property>
+            <property name="y">50</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="back_button">
+            <property name="label" translatable="yes">Back</property>
+            <property name="width-request">100</property>
+            <property name="height-request">50</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <signal name="clicked" handler="on_back_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="y">25</property>
           </packing>
         </child>
       </object>
@@ -133,42 +152,49 @@
       <object class="GtkFixed">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="margin-start">20</property>
+        <property name="margin-end">20</property>
+        <property name="margin-top">20</property>
+        <property name="margin-bottom">20</property>
         <child>
           <object class="GtkLabel">
-            <property name="width-request">100</property>
+            <property name="width-request">600</property>
             <property name="height-request">80</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Mensaje fachero de bienvenida</property>
+            <property name="label" translatable="yes">Simplex Calculator</property>
+            <attributes>
+              <attribute name="weight" value="ultraheavy"/>
+              <attribute name="size" value="28672"/>
+            </attributes>
           </object>
-          <packing>
-            <property name="x">416</property>
-            <property name="y">44</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="btn_continue">
             <property name="label" translatable="yes">Continue</property>
             <property name="width-request">100</property>
+            <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <signal name="clicked" handler="on_btn_continue_clicked" object="gd_initial" swapped="no"/>
           </object>
           <packing>
-            <property name="x">400</property>
-            <property name="y">300</property>
+            <property name="x">250</property>
+            <property name="y">250</property>
           </packing>
         </child>
         <child>
           <!-- n-columns=2 n-rows=3 -->
           <object class="GtkGrid" id="gd_initial">
-            <property name="width-request">100</property>
+            <property name="width-request">350</property>
             <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
               <object class="GtkEntry">
+                <property name="width-request">200</property>
+                <property name="height-request">50</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
               </object>
@@ -192,7 +218,7 @@
             </child>
             <child>
               <object class="GtkEntry">
-                <property name="width-request">100</property>
+                <property name="width-request">200</property>
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -217,7 +243,7 @@
             </child>
             <child>
               <object class="GtkEntry">
-                <property name="width-request">100</property>
+                <property name="width-request">200</property>
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
@@ -242,8 +268,8 @@
             </child>
           </object>
           <packing>
-            <property name="x">50</property>
-            <property name="y">100</property>
+            <property name="x">125</property>
+            <property name="y">80</property>
           </packing>
         </child>
       </object>

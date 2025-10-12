@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <fontconfig/fontconfig.h>
+#include <ctype.h>
 #include "include/simplex.h"
 #include "include/matrix.h"
 #include "include/utils.h"
-#include <fontconfig/fontconfig.h>
+
 GtkWidget* main_window;
 GtkWidget* second_window;
 GtkBuilder* builder;
@@ -78,14 +80,41 @@ void on_combo_constraint_changed(GtkComboBox *cmb, gpointer user_data){
   }
 }
 
+void validate_int(GtkEntry* entry, int max, int min){
+    const char* str = gtk_entry_get_text(GTK_ENTRY(entry));
+
+    int has_number = 0;
+    for (int i = 0; str[i] != '\0'; i++){
+	    if (!isdigit(str[i])) {
+	        gtk_entry_set_text(GTK_ENTRY(entry), "");
+	        return;
+	    }
+	    if (str[i] != '0') has_number = 1;
+    }
+
+    if (!has_number) {
+	    gtk_entry_set_text(GTK_ENTRY(entry), "");
+	    return;
+    }
+
+    if (atoi(str) > max || atoi(str) < min) {
+	    gtk_entry_set_text(GTK_ENTRY(entry), "");
+        return;
+    }
+}
 
 void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
-  gtk_widget_hide(main_window);
   
+  validate_int(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), 15, 2);
+  validate_int(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), 15, 2);
+
   strcpy(problem_name, gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0))));
   num_variables = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1))));
   num_constraints = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2))));
-
+  
+  if (problem_name[0] == '\0' || num_variables == 0 || num_constraints == 0) return;
+  
+  gtk_widget_hide(main_window);
 
   printf("%s\n%d\n%d\n", problem_name, num_variables, num_constraints);
 
@@ -240,4 +269,20 @@ Matrix load_data(){
 
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
   printf("text: %s\n", gtk_entry_get_text(e));
+}
+
+void on_back_button_clicked() {
+  GtkGrid* gd = GTK_GRID(gtk_builder_get_object(builder, "gd_initial"));
+
+  gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
+  gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
+  gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
+  
+  problem_name[0] = '\0';
+  num_variables = 0;
+  num_constraints = 0;
+
+  gtk_widget_hide(second_window);
+  gtk_widget_show_all(main_window);
+
 }
