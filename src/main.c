@@ -15,6 +15,7 @@ GtkWidget* vp_objective_func;
 GtkWidget* vp_constraints;
 GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
+int loaded = 0;
 
 void initialize(){
 	//////////////////////////////// Define the variables
@@ -220,8 +221,7 @@ void on_btn_finish_clicked(){
   free_matrix(simplex_table);
 }
 
-Matrix load_data(){
-  char *filename = "example.txt";
+Matrix load_data(char *filename){
   FILE *file;
   file = fopen(filename, "r");
   strcpy(problem_name, read_text(file, '=', 10));
@@ -230,14 +230,13 @@ Matrix load_data(){
   variables_name = malloc(sizeof(char*) * num_variables);
   for(int x = 0; x < num_variables; ++x){
       variables_name[x] = read_text(file, '=', '^');
-      printf("%s\n", variables_name[x]);
     }
     int x_i;
-   
 
     int rows = 1+num_constraints;
     int cols = 2+num_variables+num_constraints;
     Matrix mat = new_matrix(rows, cols, FLOAT);
+    init_matrix_num(mat, 0);
     
     int index_diag = num_variables+1;
     
@@ -249,21 +248,45 @@ Matrix load_data(){
           } else
             mat.data.f[r][c] = atoi(read_text(file, '=', '^')) * -1;
         } else if(c > 0 && c < num_variables+1){
-          mat.data.f[r][c] = atoi(read_text(file, '=', '^'));
-          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+          mat.data.f[r][c] = atof(read_text(file, '=', '^'));
+          printf("valor agregado: %.3f en [%d][%d]\n", mat.data.f[r][c], r, c);
         } else if(r > 0 && c == cols-1) {
-          mat.data.f[r][c] = atoi(read_text(file, '<', '^'));
+          mat.data.f[r][c] = atof(read_text(file, '<', '^'));
         } else if(r > 0 && c == index_diag){
           mat.data.f[r][index_diag] = 1.0f;
-          //printf("valor agregado: %.3f en [%d][%d]\n", mat[r][c], r, c);
+          printf("valor agregado: %.3f en [%d][%d]\n", mat.data.f[r][c], r, c);
         }
       }
       if(r != 0) index_diag++;
     }
-    return mat;
-    //free(filename);
-    //loaded = 1;
     fclose(file);
+    return mat;
+}
+
+
+void on_btn_load_clicked(){
+  char *filename;
+  GtkWidget *chooser_window;
+  GtkFileChooserAction open_window = GTK_FILE_CHOOSER_ACTION_SAVE;
+  int response;
+  chooser_window = gtk_file_chooser_dialog_new("Open File",
+                                                GTK_WINDOW(main_window),
+                                                open_window,
+                                                "_Cancel",
+                                                GTK_RESPONSE_CANCEL,
+                                                "_Open",
+                                                GTK_RESPONSE_ACCEPT,
+                                                NULL);
+  response = gtk_dialog_run(GTK_DIALOG(chooser_window));
+  if (response == GTK_RESPONSE_ACCEPT){
+    GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
+    filename = gtk_file_chooser_get_filename(chooser);
+    simplex_table = load_data(filename);
+  print_matrix(simplex_table);
+  simplex(simplex_table);
+  free_matrix(simplex_table);
+    loaded = 1;
+  }
 }
 
 

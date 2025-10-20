@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "simplex.h"
 #include "matrix.h"
+#include <glib.h>
 #define MAX_VAL 200
 int pivot_counter = 0;
 
@@ -25,10 +26,78 @@ void canonize(Matrix mat, int pivot_row, int pivot_col){
 }
 
 
+typedef struct{
+  Matrix *mat;
+  int pv_r;
+  int pv_c;
+} Node;
+
+GList *list = 0;
+
+int list_contain(Matrix mat){
+  Node *curr;
+  for (GList *l = list; l != NULL; l = l->next) {
+    curr = (Node *)l->data;
+
+    if(matrix_compare(mat, *(curr->mat))){ // si ya esta es que se enciclo, entonces nos cambiamos a la otra tabla posible
+      return 1;
+      /*list = g_list_remove(list, curr);
+      GList *last = g_list_last(list);
+      if(!last) return 1;
+
+      mat = (Matrix) last->data->mat;
+      pv_r = (int) last->data->pv_r;
+      pv_c = (int) last->data->pv_c;
+
+      list = g_list_delete_link(list, last);*/
+    }
+  }
+  return 0;
+}
+
+Node *get_last_state(){
+  Node *last = (Node *) (g_list_last(list))->data;
+  list = g_list_delete_link(list, g_list_last(list));
+  return last;
+}
+
+
+
+
 void maximize(Matrix mat){
+  Matrix *init = matrix_copy(&mat);
+  int ids = 0;
   while(1){
+    if(ids == 25) break;
+    
     double min = MAX_VAL;
     int pivot_row = -1, pivot_col = -1;;
+    
+    ids++;
+    printf("valid> %d iguales = %d\n", list_contain(mat));
+    
+    printf("#################################\n");
+    for (GList *l = list; l != NULL; l = l->next) {
+      Node * curr = (Node *)l->data;
+      print_matrix(*(curr->mat));
+    }
+    printf("#################################\n");
+
+    if(list_contain(mat) || (matrix_compare(mat, *init) && ids != 1)){
+
+      printf("DEBERIAAA ENTRAR\n");
+
+      Node *node = get_last_state();
+      if(!node){
+        printf("Loop\n");
+        break;
+      }
+      mat = *(node->mat);
+      pivot_row = node->pv_r;
+      pivot_col = node->pv_c;
+      print_matrix(mat);
+      printf("NUEVA CARGADA\n");
+    } else {
 
     for(int c = 1; c < mat.cols-1; ++c){
       if(min > mat.data.f[0][c]){
@@ -47,14 +116,36 @@ void maximize(Matrix mat){
         if(min > fraction){
           min = fraction;
           pivot_row = r;
+        } else if(min == fraction){
+          printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
+          Node *node = malloc(sizeof(Node));
+          node->mat = matrix_copy(&mat);
+          node->pv_r = r;
+          node->pv_c = pivot_col;
+          list = g_list_append(list, node);
         }
       }
     }
-    if(pivot_row < 0)
-      break;
+
+    if(pivot_row < 0){
+      printf("No acotado\n");
+      if(list){
+        Node *node = get_last_state();
+        if(!node){
+          printf("Loop\n");
+        }
+        mat = *(node->mat);
+        pivot_row = node->pv_r;
+        pivot_col = node->pv_c;
+      } else {
+        break;
+      }
+    }
+    }
     pivot_counter++;
     printf("Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
+    print_matrix(mat);
   }
 }
 

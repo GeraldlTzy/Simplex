@@ -57,5 +57,7 @@ Option option_new(Type t);
 Matrix new_matrix(int rows, int cols, Type type);
 void free_matrix(Matrix mat);
 void init_matrix_num(Matrix mat, int num);
+Matrix *matrix_copy(const Matrix *src);
+int matrix_compare(Matrix self, Matrix other);
 void print_matrix(Matrix mat);
 #endif

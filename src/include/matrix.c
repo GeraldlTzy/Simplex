@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "matrix.h"
-
+#include <math.h>
 void copy_option(Option *dest, Option *src) {
     dest->value = src->value;
     dest->is_some = src->is_some;
@@ -76,6 +76,31 @@ Matrix new_matrix(int rows, int cols, Type type){
 	return matrix;
 }
 
+Matrix *matrix_copy(const Matrix *src) {
+    Matrix *dest = malloc(sizeof(Matrix));
+    dest->rows = src->rows;
+    dest->cols = src->cols;
+    dest->type = src->type;
+
+    switch (src->type) {
+        case FLOAT:
+            dest->data.f = malloc(src->rows * sizeof(double *));
+            for (int i = 0; i < src->rows; i++) {
+                dest->data.f[i] = malloc(src->cols * sizeof(double));
+                for (int j = 0; j < src->cols; j++) {
+                    dest->data.f[i][j] = src->data.f[i][j];
+                }
+            }
+            break;
+
+        default:
+            free(dest);
+            return NULL;
+    }
+    return dest;
+}
+
+
 void free_matrix(Matrix mat){
     //TODO: other frees for other types
   for(int i = 0; i < mat.rows; ++i){
@@ -100,6 +125,17 @@ void free_matrix(Matrix mat){
     case FLOAT:
       free(mat.data.f);
   }
+}
+
+
+int matrix_compare(Matrix self, Matrix other){
+  double eps = 1e-5;
+  for(int r = 0; r < self.rows; ++r){
+    for(int c = 0; c < self.cols; ++c){
+      if(fabs(self.data.f[r][c] - other.data.f[r][c]) > eps){return 0;}
+    }
+  }
+  return 1;
 }
 
 

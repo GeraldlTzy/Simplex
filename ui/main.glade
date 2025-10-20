@@ -272,6 +272,21 @@
             <property name="y">80</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkButton" id="btn_load">
+            <property name="label" translatable="yes">button</property>
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <signal name="clicked" handler="on_btn_load_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">454</property>
+            <property name="y">269</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>
