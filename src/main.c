@@ -135,7 +135,7 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
 void on_btn_var_back_clicked() {
     for (int i = 0; i < num_variables; ++i) free(var_names[i]);
     free(var_names);
-    gtk_widget_destroy(gd_varnames);
+    gtk_widget_destroy(GTK_WIDGET(gd_varnames));
     gtk_widget_hide(varname_window);
     gtk_widget_show_all(main_window);
 }
@@ -253,9 +253,9 @@ Matrix *load_data(char *filename){
   }
   num_variables = atoi(read_text(file, '=', '\n'));
   num_constraints = atoi(read_text(file, '=', '\n'));
-  variables_name = malloc(sizeof(char*) * num_variables);
+  var_names = malloc(sizeof(char*) * num_variables);
   for(int x = 0; x < num_variables; ++x){
-      variables_name[x] = read_text(file, '=', '^');
+      var_names[x] = read_text(file, '=', '^');
     }
     int x_i;
 
@@ -330,7 +330,7 @@ void on_back_button_clicked() {
   
   for (int i = 0; i < num_variables; ++i) free(var_names[i]);
   free(var_names);
-  gtk_widget_destroy(gd_varnames);
+  gtk_widget_destroy(GTK_WIDGET(gd_varnames));
   
   problem_name[0] = '\0';
   num_variables = 0;
