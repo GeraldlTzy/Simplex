@@ -8,6 +8,7 @@ SRC_ALL      := $(SRC_MAIN) $(SRC_INCLUDE)
 # ==== BINARY FILES ====
 BIN_MAIN     := $(OUT_DIR)/main
 
+
 CFLAGS := $(shell pkg-config --cflags gtk+-3.0) -I src/include -MMD -MP
 LIBS   := $(shell pkg-config --libs gtk+-3.0) -rdynamic -lfontconfig -lm
 

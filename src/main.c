@@ -22,14 +22,14 @@ GtkGrid* gd_constraints;
 GtkGrid* gd_varnames;
 
 int loaded = 0;
-int minimize = 0;
+int do_minimize = 0;
 char **var_names;
 
 void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
 	main_window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
-    varname_window = GTK_WIDGET(gtk_builder_get_object(builder, "varname_window"));
+  varname_window = GTK_WIDGET(gtk_builder_get_object(builder, "varname_window"));
 	second_window = GTK_WIDGET(gtk_builder_get_object(builder, "second_window"));
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
 	vp_constraints = GTK_WIDGET(gtk_builder_get_object(builder, "vp_constraints"));
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-Matrix simplex_table;
+Matrix *simplex_table;
 /*GtkWidget*
 gtk_grid_get_child_at (
   GtkGrid* grid,
@@ -214,35 +214,33 @@ void on_btn_finish_clicked(){
   simplex_table = new_matrix(rows, cols, FLOAT);
   init_matrix_num(simplex_table, 0);
 
-  simplex_table.data.f[0][0]=1;
-  simplex_table.data.f[0][cols-1] = 0;
+  simplex_table->data.f[0][0]=1;
+  simplex_table->data.f[0][cols-1] = 0;
   int canonic_i = num_variables + 1;
   for(int r = 0; r < rows; ++r){
     for(int c = 1; c < cols; ++c){
       if(r == 0 && c <= num_variables){
         entry = gtk_grid_get_child_at(gd_variables, (c-1)*2, r);      
-        simplex_table.data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
+        simplex_table->data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
       } else if(c <= num_variables){
         entry = gtk_grid_get_child_at(gd_constraints, (c-1)*2, (r-1));
-        simplex_table.data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+        simplex_table->data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
       } else if(r > 0 && c == canonic_i){
-        simplex_table.data.f[r][c] = 1;
+        simplex_table->data.f[r][c] = 1;
       } else if(r > 0 && c == cols-1){
 
         entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, (r-1));
-        simplex_table.data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+        simplex_table->data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
       }
     }
     if(r > 0){
       canonic_i++;
     }
   }
-  print_matrix(simplex_table);
-  simplex(simplex_table, minimize);
-  free_matrix(simplex_table);
+  simplex(simplex_table, do_minimize);
 }
 
-Matrix load_data(char *filename){
+Matrix *load_data(char *filename){
   FILE *file;
   file = fopen(filename, "r");
   strcpy(problem_name, read_text(file, '=', 10));
@@ -256,7 +254,7 @@ Matrix load_data(char *filename){
 
     int rows = 1+num_constraints;
     int cols = 2+num_variables+num_constraints;
-    Matrix mat = new_matrix(rows, cols, FLOAT);
+    Matrix *mat = new_matrix(rows, cols, FLOAT);
     init_matrix_num(mat, 0);
     
     int index_diag = num_variables+1;
@@ -265,17 +263,15 @@ Matrix load_data(char *filename){
       for(int c = 0; c < cols; ++c){
         if(r == 0 && c < num_variables+1) {
           if(c == 0){
-            mat.data.f[r][c] = 1;
+            mat->data.f[r][c] = 1;
           } else
-            mat.data.f[r][c] = atoi(read_text(file, '=', '^')) * -1;
+            mat->data.f[r][c] = atoi(read_text(file, '=', '^')) * -1;
         } else if(c > 0 && c < num_variables+1){
-          mat.data.f[r][c] = atof(read_text(file, '=', '^'));
-          printf("valor agregado: %.3f en [%d][%d]\n", mat.data.f[r][c], r, c);
+          mat->data.f[r][c] = atof(read_text(file, '=', '^'));
         } else if(r > 0 && c == cols-1) {
-          mat.data.f[r][c] = atof(read_text(file, '<', '^'));
+          mat->data.f[r][c] = atof(read_text(file, '<', '^'));
         } else if(r > 0 && c == index_diag){
-          mat.data.f[r][index_diag] = 1.0f;
-          printf("valor agregado: %.3f en [%d][%d]\n", mat.data.f[r][c], r, c);
+          mat->data.f[r][index_diag] = 1.0f;
         }
       }
       if(r != 0) index_diag++;
@@ -303,9 +299,7 @@ void on_btn_load_clicked(){
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
-  print_matrix(simplex_table);
-  simplex(simplex_table, minimize);
-  free_matrix(simplex_table);
+    simplex(simplex_table, 0);
     loaded = 1;
   }
     
@@ -316,8 +310,8 @@ void on_btn_load_clicked(){
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
   const char* str = gtk_entry_get_text(e);
   printf("text: %s\n", str);
-  if (strcmp(str, "Maximize") == 0) minimize = 0;
-  else minimize = 1;
+  if (strcmp(str, "Maximize") == 0) do_minimize = 0;
+  else do_minimize = 1;
 }
 
 void on_back_button_clicked() {

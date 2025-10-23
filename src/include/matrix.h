@@ -54,10 +54,10 @@ KVPair pair_max(KVPair p1, KVPair p2);
 KVPair pair_new(Type t_f, Type t_s);
 Option option_new(Type t);
 
-Matrix new_matrix(int rows, int cols, Type type);
-void free_matrix(Matrix mat);
-void init_matrix_num(Matrix mat, int num);
+Matrix *new_matrix(int rows, int cols, Type type);
+void free_matrix(Matrix *mat);
+void init_matrix_num(Matrix *mat, int num);
 Matrix *matrix_copy(const Matrix *src);
-int matrix_compare(Matrix self, Matrix other);
-void print_matrix(Matrix mat);
+int matrix_compare(const Matrix *self, const Matrix *other);
+void print_matrix(Matrix *mat);
 #endif

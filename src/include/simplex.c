@@ -1,29 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <float.h>
 #include "simplex.h"
 #include "matrix.h"
 #include <glib.h>
+#define MAX_VAL 1.79769313486231571e+308
 int pivot_counter = 0;
 
-void canonize(Matrix mat, int pivot_row, int pivot_col){
+void canonize(Matrix *mat, int pivot_row, int pivot_col){
     double k;
-    printf("piv_r: %d, piv_c: %d\n", pivot_row, pivot_col);
-    for(int r = 0; r < mat.rows; ++r){
+    for(int r = 0; r < mat->rows; ++r){
         if(r == pivot_row){
-            k = mat.data.f[pivot_row][pivot_col];
+            k = mat->data.f[pivot_row][pivot_col];
         } else {
-            k = ((-1*mat.data.f[r][pivot_col])/mat.data.f[pivot_row][pivot_col]);
+            k = ((-1*mat->data.f[r][pivot_col])/mat->data.f[pivot_row][pivot_col]);
         }
-        for(int c = 0; c < mat.cols; ++c){
+        for(int c = 0; c < mat->cols; ++c){
             if(r == pivot_row){
-                mat.data.f[r][c] /= k;
+                mat->data.f[r][c] /= k;
             } else {
-              mat.data.f[r][c] += (mat.data.f[pivot_row][c] * k);
+              mat->data.f[r][c] += (mat->data.f[pivot_row][c] * k);
             }
         }
     }
 }
+
+struct node_t {
+  void * data;
+  struct node_t **childs;
+  int n_childs;
+  int s_childs;
+};
+
+typedef struct node_t node_t;
+
+typedef struct {
+  node_t *root;
+} tree_t;
+
 
 
 typedef struct{
@@ -34,22 +47,13 @@ typedef struct{
 
 GList *list = 0;
 
-int list_contain(Matrix mat){
+int list_contain(Matrix *mat){
   Node *curr;
   for (GList *l = list; l != NULL; l = l->next) {
     curr = (Node *)l->data;
 
-    if(matrix_compare(mat, *(curr->mat))){ // si ya esta es que se enciclo, entonces nos cambiamos a la otra tabla posible
+    if(matrix_compare(mat, curr->mat)){ // si ya esta es que se enciclo, entonces nos cambiamos a la otra tabla posible
       return 1;
-      /*list = g_list_remove(list, curr);
-      GList *last = g_list_last(list);
-      if(!last) return 1;
-
-      mat = (Matrix) last->data->mat;
-      pv_r = (int) last->data->pv_r;
-      pv_c = (int) last->data->pv_c;
-
-      list = g_list_delete_link(list, last);*/
     }
   }
   return 0;
@@ -61,87 +65,93 @@ Node *get_last_state(){
   return last;
 }
 
-void maximize_simplex(Matrix mat){
-  Matrix *init = matrix_copy(&mat);
+void  node_list_free(Node *node){
+  free_matrix(node->mat);
+  free(node);
+}
+
+void maximize(Matrix *mat, tree_t forks){
+  Matrix *init = matrix_copy(mat);
   int ids = 0;
   while(1){
-    if(ids == 25) break;
-    
-    double min = DBL_MAX;
-    int pivot_row = -1, pivot_col = -1;;
-    
     ids++;
-    printf("valid> %d iguales = %d\n", list_contain(mat));
+    double min = MAX_VAL;
+    int pivot_row = -1, pivot_col = -1;;
     
     printf("#################################\n");
     for (GList *l = list; l != NULL; l = l->next) {
       Node * curr = (Node *)l->data;
-      print_matrix(*(curr->mat));
+      print_matrix(curr->mat);
     }
     printf("#################################\n");
 
-    // no entiendo muy bien este if, es para validar los loops? Tal vez
-    if(list_contain(mat) || (matrix_compare(mat, *init) && ids != 1)){
-      printf("DEBERIAAA ENTRAR\n");
-
+    if(list_contain(mat) || (matrix_compare(mat, init) && ids != 1)){
+      printf("ENCICLADO CAMBIA DE MAT\n");
+      // Si entra al siguiente if es que se enciclo y no hay otras opciones
       Node *node = get_last_state();
       if(!node){
-        printf("Loop\n");
+        printf("NO HAY OPCIONES\n");
         break;
       }
-      mat = *(node->mat);
+      
+      if(mat && mat != node->mat){
+        free_matrix(mat);
+        mat = NULL;
+      }
+      mat = node->mat;
       pivot_row = node->pv_r;
       pivot_col = node->pv_c;
       print_matrix(mat);
-      printf("NUEVA CARGADA\n");
     } else {
-    
-    // elegir el mas negativo
-    for(int c = 1; c < mat.cols-1; ++c){
-      if(min > mat.data.f[0][c]){
-        min = mat.data.f[0][c];
-        pivot_col = c;
-      }
-    }
-    // ya no hay negativos
-    if (min >= 0){
-      break;
-    }
-    // reseta para usarlo en las fracciones
-    min =  DBL_MAX;
-    double fraction;
-    // fracciones opara ver cual elegirt
-    for(int r = 1; r < mat.rows; ++r){
-      if(mat.data.f[r][pivot_col] > 0){
-        fraction = mat.data.f[r][mat.cols-1] / mat.data.f[r][pivot_col];
-        if(min > fraction){
-          min = fraction;
-          pivot_row = r;
-        } else if(min == fraction){
-          printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
-          Node *node = malloc(sizeof(Node));
-          node->mat = matrix_copy(&mat);
-          node->pv_r = r;
-          node->pv_c = pivot_col;
-          list = g_list_append(list, node);
+
+      for(int c = 1; c < mat->cols-1; ++c){
+        if(min > mat->data.f[0][c]){
+          min = mat->data.f[0][c];
+          pivot_col = c;
         }
       }
-    }
-    // si nunca se setea el pivote
-    if(pivot_row < 0){
-      printf("No acotado\n");
-      if(list){
-        Node *node = get_last_state();
-        if(!node){
-          printf("Loop\n");
-        }
-        mat = *(node->mat);
-        pivot_row = node->pv_r;
-        pivot_col = node->pv_c;
-      } else {
+      if (min >= 0){
         break;
       }
-    }
+      min =  MAX_VAL;
+      double fraction;
+      for(int r = 1; r < mat->rows; ++r){
+        if(mat->data.f[r][pivot_col] > 0){
+          fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
+          if(min > fraction){
+            min = fraction;
+            pivot_row = r;
+          } else if(min == fraction){
+            printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
+            Node *node = malloc(sizeof(Node));
+            node->mat = matrix_copy(mat);
+            node->pv_r = r;
+            node->pv_c = pivot_col;
+            list = g_list_append(list, node);
+          }
+        }
+      }
+
+      // Si es no acotado y hay opciones cambia 
+      // Si no hay opciones termina
+      if(pivot_row < 0){
+        printf("No acotado\n");
+        print_matrix(mat);
+        if(list){
+          Node *node = get_last_state();
+          if(mat && mat != node->mat){
+            free_matrix(mat);
+            mat = NULL;
+          } 
+          mat = node->mat;
+          pivot_row = node->pv_r;
+          pivot_col = node->pv_c;
+        } else {
+
+          return;
+          break;
+        }
+      }
     }
     pivot_counter++;
     printf("Pivoteo(%d)\n", pivot_counter);
@@ -150,8 +160,8 @@ void maximize_simplex(Matrix mat){
   }
 }
 
-void minimize_simplex(Matrix mat){
-  Matrix *init = matrix_copy(&mat);
+void minimize(Matrix *mat){
+  Matrix *init = matrix_copy(mat);
   int ids = 0;
   while(1){
     if(ids == 25) break;
@@ -167,36 +177,36 @@ void minimize_simplex(Matrix mat){
     double min_max = -DBL_MAX;
     int pivot_row = -1, pivot_col = -1;;
     
-    ids++;
-    printf("valid> %d iguales = %d\n", list_contain(mat));
-    
     printf("#################################\n");
     for (GList *l = list; l != NULL; l = l->next) {
       Node * curr = (Node *)l->data;
-      print_matrix(*(curr->mat));
+      print_matrix(curr->mat);
     }
     printf("#################################\n");
 
-    if(list_contain(mat) || (matrix_compare(mat, *init) && ids != 1)){
-
-      printf("DEBERIAAA ENTRAR\n");
-
+    if(list_contain(mat) || (matrix_compare(mat, init) && ids != 1)){
+      printf("ENCICLADO CAMBIA DE MAT\n");
+      // Si entra al siguiente if es que se enciclo y no hay otras opciones
       Node *node = get_last_state();
       if(!node){
-        printf("Loop\n");
+        printf("NO HAY OPCIONES\n");
         break;
       }
-      mat = *(node->mat);
+      
+      if(mat && mat != node->mat){
+        free_matrix(mat);
+        mat = NULL;
+      }
+      mat = node->mat;
       pivot_row = node->pv_r;
       pivot_col = node->pv_c;
       print_matrix(mat);
-      printf("NUEVA CARGADA\n");
     } else {
 
     // elegir el mas positivo
-    for(int c = 1; c < mat.cols-1; ++c){
-      if(min_max < mat.data.f[0][c]){
-        min_max = mat.data.f[0][c];
+    for(int c = 1; c < mat->cols-1; ++c){
+      if(min_max < mat->data.f[0][c]){
+        min_max = mat->data.f[0][c];
         pivot_col = c;
       }
     }
@@ -205,18 +215,18 @@ void minimize_simplex(Matrix mat){
       break;
     }
     // esta vez se usa para elegir la fraccion minima, igual que antes
-    min_max =  DBL_MAX;
+    min_max =  -MAX_VAL;
     double fraction;
-    for(int r = 1; r < mat.rows; ++r){
-      if(mat.data.f[r][pivot_col] > 0){
-        fraction = mat.data.f[r][mat.cols-1] / mat.data.f[r][pivot_col];
+    for(int r = 1; r < mat->rows; ++r){
+      if(mat->data.f[r][pivot_col] > 0){
+        fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
         if(min_max > fraction){
           min_max = fraction;
           pivot_row = r;
         } else if(min_max == fraction){
           printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
           Node *node = malloc(sizeof(Node));
-          node->mat = matrix_copy(&mat);
+          node->mat = matrix_copy(mat);
           node->pv_r = r;
           node->pv_c = pivot_col;
           list = g_list_append(list, node);
@@ -231,11 +241,31 @@ void minimize_simplex(Matrix mat){
         if(!node){
           printf("Loop\n");
         }
-        mat = *(node->mat);
+        mat = node->mat;
         pivot_row = node->pv_r;
         pivot_col = node->pv_c;
       } else {
         break;
+      }
+      // Si es no acotado y hay opciones cambia 
+      // Si no hay opciones termina
+      if(pivot_row < 0){
+        printf("No acotado\n");
+        print_matrix(mat);
+        if(list){
+          Node *node = get_last_state();
+          if(mat && mat != node->mat){
+            free_matrix(mat);
+            mat = NULL;
+          } 
+          mat = node->mat;
+          pivot_row = node->pv_r;
+          pivot_col = node->pv_c;
+        } else {
+
+          return;
+          break;
+        }
       }
     }
     }
@@ -246,10 +276,17 @@ void minimize_simplex(Matrix mat){
   }
 }
 
-int simplex(Matrix mat, int do_minimize){
+int simplex(Matrix *mat, int do_minimize){
     print_matrix(mat);
-    if (do_minimize) minimize_simplex(mat);
-    else maximize_simplex(mat);
-    print_matrix(mat);
+    if (do_minimize) minimize(mat);
+    else {
+      print_matrix(mat);
+      node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
+      tree_t forks = {&initial};
+      maximize(mat, forks);
+    }
+
+    printf("#################RESULTADO OPTIMO######################\n");
+    //print_matrix(mat);
     return 0;
 }
