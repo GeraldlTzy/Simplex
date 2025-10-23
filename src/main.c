@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fontconfig/fontconfig.h>
 #include <ctype.h>
+#include <string.h>
 #include "include/simplex.h"
 #include "include/matrix.h"
 #include "include/utils.h"
@@ -10,12 +11,14 @@
 GtkWidget* main_window;
 GtkWidget* second_window;
 GtkBuilder* builder;
-GtkWidget* cmb_objective_func;
+//GtkWidget* cmb_objective_func;
 GtkWidget* vp_objective_func;
 GtkWidget* vp_constraints;
 GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
+
 int loaded = 0;
+int do_minimize = 0;
 
 void initialize(){
 	//////////////////////////////// Define the variables
@@ -24,10 +27,9 @@ void initialize(){
 	second_window = GTK_WIDGET(gtk_builder_get_object(builder, "second_window"));
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
 	vp_constraints = GTK_WIDGET(gtk_builder_get_object(builder, "vp_constraints"));
-	gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
+    gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
     g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
 	gtk_builder_connect_signals(builder, NULL);
 }
 
@@ -216,7 +218,7 @@ void on_btn_finish_clicked(){
       canonic_i++;
     }
   }
-  simplex(simplex_table);
+  simplex(simplex_table, do_minimize);
 }
 
 Matrix *load_data(char *filename){
@@ -278,14 +280,19 @@ void on_btn_load_clicked(){
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
-  simplex(simplex_table);
+    simplex(simplex_table, 0);
     loaded = 1;
   }
+    
+  gtk_widget_destroy(chooser_window);
 }
 
 
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
-  printf("text: %s\n", gtk_entry_get_text(e));
+  const char* str = gtk_entry_get_text(e);
+  printf("text: %s\n", str);
+  if (strcmp(str, "Maximize") == 0) do_minimize = 0;
+  else do_minimize = 1;
 }
 
 void on_back_button_clicked() {
@@ -298,6 +305,9 @@ void on_back_button_clicked() {
   problem_name[0] = '\0';
   num_variables = 0;
   num_constraints = 0;
+
+  gtk_widget_destroy(GTK_WIDGET(gd_variables));
+  gtk_widget_destroy(GTK_WIDGET(gd_constraints));
 
   gtk_widget_hide(second_window);
   gtk_widget_show_all(main_window);
