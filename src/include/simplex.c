@@ -163,6 +163,7 @@ void maximize(Matrix *mat, tree_t forks){
 void minimize(Matrix *mat){
   Matrix *init = matrix_copy(mat);
   int ids = 0;
+    printf("##############MINIMIZANDO###################\n");
   while(1){
     if(ids == 25) break;
    
@@ -174,7 +175,8 @@ void minimize(Matrix *mat){
      * entonces cuando se usaba DBL_MIN no servia por eso 
      * si se quiere el numero negativo mas negativo representable por float se usa -DBL_MAX
      * */
-    double min_max = -DBL_MAX;
+    ids++;
+    double min_max = -MAX_VAL;
     int pivot_row = -1, pivot_col = -1;;
     
     printf("#################################\n");
@@ -202,72 +204,70 @@ void minimize(Matrix *mat){
       pivot_col = node->pv_c;
       print_matrix(mat);
     } else {
-
-    // elegir el mas positivo
-    for(int c = 1; c < mat->cols-1; ++c){
-      if(min_max < mat->data.f[0][c]){
-        min_max = mat->data.f[0][c];
-        pivot_col = c;
-      }
-    }
-    // ya no hay positivos
-    if (min_max <= 0){
-      break;
-    }
-    // esta vez se usa para elegir la fraccion minima, igual que antes
-    min_max =  -MAX_VAL;
-    double fraction;
-    for(int r = 1; r < mat->rows; ++r){
-      if(mat->data.f[r][pivot_col] > 0){
-        fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
-        if(min_max > fraction){
-          min_max = fraction;
-          pivot_row = r;
-        } else if(min_max == fraction){
-          printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
-          Node *node = malloc(sizeof(Node));
-          node->mat = matrix_copy(mat);
-          node->pv_r = r;
-          node->pv_c = pivot_col;
-          list = g_list_append(list, node);
+      // elegir el mas positivo
+      for(int c = 1; c < mat->cols-1; ++c){
+        if(min_max < mat->data.f[0][c]){
+          min_max = mat->data.f[0][c];
+          pivot_col = c;
         }
       }
-    }
-    // si nunca se setea el pivote
-    if(pivot_row < 0){
-      printf("No acotado aaaaaaaaa\n");
-      if(list){
-        Node *node = get_last_state();
-        if(!node){
-          printf("Loop\n");
-        }
-        mat = node->mat;
-        pivot_row = node->pv_r;
-        pivot_col = node->pv_c;
-      } else {
+      // ya no hay positivos
+      if (min_max <= 0){
         break;
       }
-      // Si es no acotado y hay opciones cambia 
-      // Si no hay opciones termina
+      // esta vez se usa para elegir la fraccion minima, igual que antes
+      min_max =  MAX_VAL;
+      double fraction;
+      for(int r = 1; r < mat->rows; ++r){
+        if(mat->data.f[r][pivot_col] > 0){
+          fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
+          if(min_max > fraction){
+            min_max = fraction;
+            pivot_row = r;
+          } else if(min_max == fraction){
+            printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
+            Node *node = malloc(sizeof(Node));
+            node->mat = matrix_copy(mat);
+            node->pv_r = r;
+            node->pv_c = pivot_col;
+            list = g_list_append(list, node);
+          }
+        }
+      }
+      // si nunca se setea el pivote
       if(pivot_row < 0){
-        printf("No acotado\n");
-        print_matrix(mat);
+        printf("No acotado aaaaaaaaa\n");
         if(list){
           Node *node = get_last_state();
-          if(mat && mat != node->mat){
-            free_matrix(mat);
-            mat = NULL;
-          } 
+          if(!node){
+            printf("Loop\n");
+          }
           mat = node->mat;
           pivot_row = node->pv_r;
           pivot_col = node->pv_c;
         } else {
-
-          return;
           break;
         }
+        // Si es no acotado y hay opciones cambia 
+        // Si no hay opciones termina
+        if(pivot_row < 0){
+          printf("No acotado\n");
+          print_matrix(mat);
+          if(list){
+            Node *node = get_last_state();
+            if(mat && mat != node->mat){
+              free_matrix(mat);
+              mat = NULL;
+            } 
+            mat = node->mat;
+            pivot_row = node->pv_r;
+            pivot_col = node->pv_c;
+          } else {
+            return;
+            break;
+          }
+        }
       }
-    }
     }
     pivot_counter++;
     printf("Pivoteo(%d)\n", pivot_counter);
