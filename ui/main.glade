@@ -126,7 +126,7 @@
           </object>
           <packing>
             <property name="x">720</property>
-            <property name="y">50</property>
+            <property name="y">25</property>
           </packing>
         </child>
         <child>
@@ -141,6 +141,35 @@
           </object>
           <packing>
             <property name="y">25</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Save</property>
+            <property name="width-request">100</property>
+            <property name="height-request">50</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+          </object>
+          <packing>
+            <property name="x">105</property>
+            <property name="y">25</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="ckbtn_intermediate_tables">
+            <property name="label" translatable="yes">Show intermediate tables</property>
+            <property name="width-request">100</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="draw-indicator">True</property>
+          </object>
+          <packing>
+            <property name="x">720</property>
+            <property name="y">80</property>
           </packing>
         </child>
       </object>
@@ -180,7 +209,7 @@
             <signal name="clicked" handler="on_btn_continue_clicked" object="gd_initial" swapped="no"/>
           </object>
           <packing>
-            <property name="x">250</property>
+            <property name="x">195</property>
             <property name="y">250</property>
           </packing>
         </child>
@@ -274,17 +303,17 @@
         </child>
         <child>
           <object class="GtkButton" id="btn_load">
-            <property name="label" translatable="yes">button</property>
+            <property name="label" translatable="yes">Load</property>
             <property name="width-request">100</property>
-            <property name="height-request">80</property>
+            <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <signal name="clicked" handler="on_btn_load_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">454</property>
-            <property name="y">269</property>
+            <property name="x">305</property>
+            <property name="y">250</property>
           </packing>
         </child>
       </object>

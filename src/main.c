@@ -287,6 +287,8 @@ void on_btn_load_clicked(){
   free_matrix(simplex_table);
     loaded = 1;
   }
+    
+  gtk_widget_destroy(chooser_window);
 }
 
 
@@ -304,6 +306,9 @@ void on_back_button_clicked() {
   problem_name[0] = '\0';
   num_variables = 0;
   num_constraints = 0;
+
+  gtk_widget_destroy(GTK_WIDGET(gd_variables));
+  gtk_widget_destroy(GTK_WIDGET(gd_constraints));
 
   gtk_widget_hide(second_window);
   gtk_widget_show_all(main_window);
