@@ -325,6 +325,7 @@ void on_btn_load_clicked(){
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
+    print_matrix(simplex_table);
     simplex(simplex_table, do_minimize);
     loaded = 1;
   }

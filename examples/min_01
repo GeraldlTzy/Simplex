@@ -1,0 +1,9 @@
+name=mofongo
+objective=minimize
+count_variables=2
+count_constraints=2
+x_1=Feliz^x_2=Jueves
+x_1=2^x_2=-3
+1=1^2=1^<4
+1=1^2=-1^<6
+
