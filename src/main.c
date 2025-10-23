@@ -219,7 +219,7 @@ void on_btn_finish_clicked(){
     }
   }
   print_matrix(simplex_table);
-  simplex(simplex_table);
+  simplex(simplex_table, minimize);
   free_matrix(simplex_table);
 }
 
@@ -295,7 +295,7 @@ void on_btn_load_clicked(){
 
 
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
-  char* str = gtk_entry_get_text(e);
+  const char* str = gtk_entry_get_text(e);
   printf("text: %s\n", str);
   if (strcmp(str, "Maximize") == 0) minimize = 0;
   else minimize = 1;

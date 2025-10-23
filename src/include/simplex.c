@@ -61,7 +61,7 @@ Node *get_last_state(){
   return last;
 }
 
-void maximize(Matrix mat){
+void maximize_simplex(Matrix mat){
   Matrix *init = matrix_copy(&mat);
   int ids = 0;
   while(1){
@@ -150,13 +150,21 @@ void maximize(Matrix mat){
   }
 }
 
-void minimize(Matrix mat){
+void minimize_simplex(Matrix mat){
   Matrix *init = matrix_copy(&mat);
   int ids = 0;
   while(1){
     if(ids == 25) break;
-    
-    double min_max = DBL_MIN;
+   
+    /* 
+     * NOTA EXTRANA:
+     * parece que DBL_MIN no es el numero negativo mas pequeno representable por float 
+     * es el numero POSITIVO mas peque;o representable por float 
+     *
+     * entonces cuando se usaba DBL_MIN no servia por eso 
+     * si se quiere el numero negativo mas negativo representable por float se usa -DBL_MAX
+     * */
+    double min_max = -DBL_MAX;
     int pivot_row = -1, pivot_col = -1;;
     
     ids++;
@@ -187,13 +195,13 @@ void minimize(Matrix mat){
 
     // elegir el mas positivo
     for(int c = 1; c < mat.cols-1; ++c){
-      if(min < mat.data.f[0][c]){
-        min = mat.data.f[0][c];
+      if(min_max < mat.data.f[0][c]){
+        min_max = mat.data.f[0][c];
         pivot_col = c;
       }
     }
     // ya no hay positivos
-    if (min <= 0){
+    if (min_max <= 0){
       break;
     }
     // esta vez se usa para elegir la fraccion minima, igual que antes
@@ -202,10 +210,10 @@ void minimize(Matrix mat){
     for(int r = 1; r < mat.rows; ++r){
       if(mat.data.f[r][pivot_col] > 0){
         fraction = mat.data.f[r][mat.cols-1] / mat.data.f[r][pivot_col];
-        if(min > fraction){
-          min = fraction;
+        if(min_max > fraction){
+          min_max = fraction;
           pivot_row = r;
-        } else if(min == fraction){
+        } else if(min_max == fraction){
           printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
           Node *node = malloc(sizeof(Node));
           node->mat = matrix_copy(&mat);
@@ -217,7 +225,7 @@ void minimize(Matrix mat){
     }
     // si nunca se setea el pivote
     if(pivot_row < 0){
-      printf("No acotado\n");
+      printf("No acotado aaaaaaaaa\n");
       if(list){
         Node *node = get_last_state();
         if(!node){
@@ -240,8 +248,8 @@ void minimize(Matrix mat){
 
 int simplex(Matrix mat, int do_minimize){
     print_matrix(mat);
-    if (do_minimize) minimize(mat);
-    else maximize(mat);
+    if (do_minimize) minimize_simplex(mat);
+    else maximize_simplex(mat);
     print_matrix(mat);
     return 0;
 }
