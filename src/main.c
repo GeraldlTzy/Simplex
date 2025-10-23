@@ -260,7 +260,14 @@ void on_btn_finish_clicked(){
 Matrix *load_data(char *filename){
   FILE *file;
   file = fopen(filename, "r");
-  strcpy(problem_name, read_text(file, '=', 10));
+  char objective[9];
+  strcpy(problem_name, read_text(file, '=', '\n'));
+  strcpy(objective, read_text(file, '=', '\n'));
+  if(strcmp(objective, "maximize") == 0){
+    do_minimize = 0;
+  } else {
+    do_minimize = 1;
+  }
   num_variables = atoi(read_text(file, '=', '\n'));
   num_constraints = atoi(read_text(file, '=', '\n'));
   var_names = malloc(sizeof(char*) * num_variables);
@@ -316,7 +323,7 @@ void on_btn_load_clicked(){
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
-    simplex(simplex_table, 0);
+    simplex(simplex_table, do_minimize);
     loaded = 1;
   }
     
