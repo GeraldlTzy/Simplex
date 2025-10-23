@@ -17,6 +17,7 @@ GtkBuilder* builder;
 //GtkWidget* cmb_objective_func;
 GtkWidget* vp_objective_func;
 GtkWidget* vp_constraints;
+GtkWidget* vp_varnames;
 GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
 GtkGrid* gd_varnames;
@@ -29,10 +30,11 @@ void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
 	main_window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
-  varname_window = GTK_WIDGET(gtk_builder_get_object(builder, "varname_window"));
+    varname_window = GTK_WIDGET(gtk_builder_get_object(builder, "varname_window"));
 	second_window = GTK_WIDGET(gtk_builder_get_object(builder, "second_window"));
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
 	vp_constraints = GTK_WIDGET(gtk_builder_get_object(builder, "vp_constraints"));
+    vp_varnames = GTK_WIDGET(gtk_builder_get_object(builder, "vp_varnames"));
     gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
     g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -127,15 +129,31 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
   for (int i = 0; i < num_variables; ++i)
     var_names[i] = malloc(sizeof(char)*NAME_SIZE);
   gd_varnames = GTK_GRID(gtk_grid_new());
+  char buff[50];
+  /*for(int v = 0; v < num_variables; ++v){
+    entry = gtk_entry_new();
+    sprintf(buff, "x_{%d} %s", v+1, ((v < num_variables-1) ? "+ " : ""));
+    //label = gtk_label_new(buff);
+    gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+    gtk_widget_set_hexpand(entry, TRUE);
+
+    //gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
+    //gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
+  }*/
+ 
   
   gtk_widget_hide(main_window);
   gtk_widget_show_all(varname_window);
 }
 
 void on_btn_var_back_clicked() {
+    GtkGrid* gd = GTK_GRID(gtk_builder_get_object(builder, "gd_initial"));
+    gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
+    gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
+    gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
     for (int i = 0; i < num_variables; ++i) free(var_names[i]);
     free(var_names);
-    gtk_widget_destroy(gd_varnames);
+    gtk_widget_destroy(GTK_WIDGET(gd_varnames));
     gtk_widget_hide(varname_window);
     gtk_widget_show_all(main_window);
 }
@@ -155,7 +173,6 @@ void on_btn_var_continue_clicked(){
 
     gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
     gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
-
   }
  
   GtkWidget *cmb;
@@ -246,9 +263,9 @@ Matrix *load_data(char *filename){
   strcpy(problem_name, read_text(file, '=', 10));
   num_variables = atoi(read_text(file, '=', '\n'));
   num_constraints = atoi(read_text(file, '=', '\n'));
-  variables_name = malloc(sizeof(char*) * num_variables);
+  var_names = malloc(sizeof(char*) * num_variables);
   for(int x = 0; x < num_variables; ++x){
-      variables_name[x] = read_text(file, '=', '^');
+      var_names[x] = read_text(file, '=', '^');
     }
     int x_i;
 
@@ -316,14 +333,13 @@ void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
 
 void on_back_button_clicked() {
   GtkGrid* gd = GTK_GRID(gtk_builder_get_object(builder, "gd_initial"));
-
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
   
   for (int i = 0; i < num_variables; ++i) free(var_names[i]);
   free(var_names);
-  gtk_widget_destroy(gd_varnames);
+  gtk_widget_destroy(GTK_WIDGET(gd_varnames));
   
   problem_name[0] = '\0';
   num_variables = 0;
