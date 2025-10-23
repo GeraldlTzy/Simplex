@@ -2,6 +2,6 @@
 #define SIMPLEX_H
 #include "matrix.h"
 
-int simplex(Matrix mat);
+int simplex(Matrix *mat);
 
 #endif

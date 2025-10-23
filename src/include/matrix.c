@@ -44,32 +44,33 @@ Option option_new(Type t) {
   }
 }*/
 
-Matrix new_matrix(int rows, int cols, Type type){
-	Matrix matrix;
-  matrix.type = type;
-	matrix.rows = rows;
-	matrix.cols = cols;
+Matrix *new_matrix(int rows, int cols, Type type){
+	Matrix *matrix = malloc(sizeof(Matrix));
+  matrix->type = type;
+	matrix->rows = rows;
+	matrix->cols = cols;
+
   switch(type){
     case KVPAIR:
-      matrix.data.pair = malloc(sizeof(KVPair*) * rows);
+      matrix->data.pair = malloc(sizeof(KVPair*) * rows);
       break;
     case OPTION:
-      matrix.data.option = malloc(sizeof(Option*) * rows);
+      matrix->data.option = malloc(sizeof(Option*) * rows);
       break;
     case FLOAT:
-      matrix.data.f = malloc(sizeof(double*) * rows);
+      matrix->data.f = malloc(sizeof(double*) * rows);
   }
 
 	for (int i = 0; i < rows; i++){ 
 		switch(type){
       case KVPAIR:
-        matrix.data.pair[i] = malloc(sizeof(KVPair) * cols);
+        matrix->data.pair[i] = malloc(sizeof(KVPair) * cols);
         break;
       case OPTION:
-        matrix.data.option[i] = malloc(sizeof(Option) * cols);
+        matrix->data.option[i] = malloc(sizeof(Option) * cols);
         break;
       case FLOAT:
-        matrix.data.f[i] = malloc(sizeof(double) * cols);
+        matrix->data.f[i] = malloc(sizeof(double) * cols);
         break;
     }
 	}	
@@ -101,10 +102,10 @@ Matrix *matrix_copy(const Matrix *src) {
 }
 
 
-void free_matrix(Matrix mat){
+void free_matrix(Matrix *mat){
     //TODO: other frees for other types
-  for(int i = 0; i < mat.rows; ++i){
-    switch(mat.type){
+  for(int i = 0; i < mat->rows; ++i){
+    switch(mat->type){
       case OPTION:
         //TODO
         break;
@@ -112,27 +113,28 @@ void free_matrix(Matrix mat){
         //TODO
         break;
       case FLOAT:
-        free(mat.data.f[i]);
+        free(mat->data.f[i]);
     }
   }
-  switch(mat.type){
+  switch(mat->type){
     case OPTION:
-      free(mat.data.option);
+      free(mat->data.option);
       break;
     case KVPAIR:
-      free(mat.data.pair);
+      free(mat->data.pair);
       break;
     case FLOAT:
-      free(mat.data.f);
+      free(mat->data.f);
   }
+  free(mat);
 }
 
 
-int matrix_compare(Matrix self, Matrix other){
-  double eps = 1e-5;
-  for(int r = 0; r < self.rows; ++r){
-    for(int c = 0; c < self.cols; ++c){
-      if(fabs(self.data.f[r][c] - other.data.f[r][c]) > eps){return 0;}
+int matrix_compare(const Matrix *self, const Matrix *other){
+  double err = 1e-5;
+  for(int r = 0; r < self->rows; ++r){
+    for(int c = 0; c < self->cols; ++c){
+      if(fabs(self->data.f[r][c] - other->data.f[r][c]) > err){return 0;}
     }
   }
   return 1;
@@ -150,39 +152,39 @@ int matrix_compare(Matrix self, Matrix other){
 
     printf("---------------\n");
 }*/
-void init_matrix_num(Matrix mat, int num){
-    for (int i = 0;i < mat.rows; i++) {
-        for (int j = 0; j < mat.cols; j++){
-          switch (mat.type){
+void init_matrix_num(Matrix *mat, int num){
+    for (int i = 0;i < mat->rows; i++) {
+        for (int j = 0; j < mat->cols; j++){
+          switch (mat->type){
             case KVPAIR:
-              mat.data.pair[i][j].first.i = num;
-              mat.data.pair[i][j].second.i = num;
-              mat.data.pair[i][j].first.pair = NULL;
-              mat.data.pair[i][j].second.pair = NULL;
+              mat->data.pair[i][j].first.i = num;
+              mat->data.pair[i][j].second.i = num;
+              mat->data.pair[i][j].first.pair = NULL;
+              mat->data.pair[i][j].second.pair = NULL;
               break;
             case OPTION:
               Option opt = option_new(INTEGER);
               opt.is_some = 1;
               opt.value.i = num;
-              mat.data.option[i][j] = opt;
+              mat->data.option[i][j] = opt;
               break;
             case FLOAT:
-              mat.data.f[i][j] = 0.0f;
+              mat->data.f[i][j] = 0.0f;
           }
         }
     }
 }
 
-void print_matrix(Matrix mat){
-  for (int r = 0; r < mat.rows; ++r) {
-    for (int c = 0; c < mat.cols; ++c){
-      switch (mat.type){
+void print_matrix(Matrix *mat){
+  for (int r = 0; r < mat->rows; ++r) {
+    for (int c = 0; c < mat->cols; ++c){
+      switch (mat->type){
         case KVPAIR:
           break;
         case OPTION:
           break;
         case FLOAT:
-          printf("%.3f\t", mat.data.f[r][c]);
+          printf("%.3f\t", mat->data.f[r][c]);
           break;
       }
     }
