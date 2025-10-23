@@ -185,7 +185,6 @@ void on_btn_var_continue_clicked(){
   int col_i = 0;
   for(int v = 0; v < num_variables; ++v){
     entry = gtk_entry_new();
-    // TODO: en el texto x_i poner los nombres obtenidos
     sprintf(buff, "%s %s", var_names[v], ((v < num_variables-1) ? "+ " : ""));
     label = gtk_label_new(buff);
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
@@ -243,6 +242,76 @@ void on_btn_var_continue_clicked(){
   gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
 
   gtk_widget_hide(varname_window);
+  gtk_widget_show_all(second_window);
+}
+
+// TODO: completar esta kk
+void create_ui_from_table(){
+  gd_variables = GTK_GRID(gtk_grid_new());
+  GtkWidget *entry, *label;
+  char buff[256];
+  int col_i = 0;
+  for(int v = 0; v < num_variables; ++v){
+    entry = gtk_entry_new();
+    sprintf(buff, "%s %s", var_names[v], ((v < num_variables-1) ? "+ " : ""));
+    label = gtk_label_new(buff);
+    gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+    gtk_widget_set_hexpand(entry, TRUE);
+    sprintf(buff, "%.5lf", -1 * simplex_table->data.f[0][v+1]);
+    gtk_entry_set_text(GTK_ENTRY(entry), buff);
+
+    gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
+    gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
+  }
+ 
+  /*GtkWidget *cmb;
+  GtkListStore *inequalities = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
+  GtkTreeIter iter;
+  gtk_list_store_append(inequalities, &iter);
+  gtk_list_store_set(inequalities, &iter, 0, "<=", 1, TRUE, -1);
+  gtk_list_store_append(inequalities, &iter);
+  gtk_list_store_set(inequalities, &iter, 0, "==", 1, FALSE, -1);
+  gtk_list_store_append(inequalities, &iter);
+  gtk_list_store_set(inequalities, &iter, 0, ">=", 1, FALSE, -1);
+  gd_constraints = GTK_GRID(gtk_grid_new());
+
+
+  col_i = 0;
+  for(int c = 0; c < num_constraints; ++c){
+    for(int x = 0; x < num_variables; ++x){
+      entry = gtk_entry_new();
+      sprintf(buff, "%s %s", var_names[x], ((x < num_variables-1) ? "+ " : ""));
+      label = gtk_label_new(buff);
+      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+      gtk_widget_set_hexpand(entry, TRUE);
+      gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
+      gtk_grid_attach(gd_constraints, label, col_i++, c, 1, 1);
+    }
+
+    cmb = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(inequalities));
+    gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(cmb), 0);
+
+    g_signal_connect(cmb, "changed", G_CALLBACK(on_combo_constraint_changed), inequalities);
+
+    entry = gtk_bin_get_child(GTK_BIN(cmb));
+    gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+    gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+    gtk_widget_set_can_focus(entry, FALSE);
+    gtk_grid_attach(gd_constraints, cmb, col_i++, c, 1, 1);
+    entry = gtk_entry_new();
+    gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+    gtk_widget_set_hexpand(entry, TRUE);
+    gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
+    col_i=0;
+  }*/
+
+  gtk_grid_set_column_spacing(gd_variables, 5);
+  //gtk_grid_set_column_spacing(gd_constraints, 5);
+
+  gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
+  //gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
+
+  gtk_widget_hide(main_window);
   gtk_widget_show_all(second_window);
 }
 
@@ -346,6 +415,14 @@ void on_btn_load_clicked(){
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
     print_matrix(simplex_table);
+
+    /*TODO: en vez de directamente porner el simplex 
+     * se debe dirigir a la pantalla de seteo de variables 
+     * Esto por que el enunciado dice que se puede elegir.
+     * si generar todas las tablas o solo la inicial y final. 
+     * En teoria se puede sacar todo de simplex_table
+     * */ 
+    create_ui_from_table();
     simplex(simplex_table, do_minimize, num_variables);
     loaded = 1;
   }

@@ -2,7 +2,7 @@ name=mofongo
 objective=maximize
 count_variables=3
 count_constraints=4
-x_1=a^x_2=b^x_3=c
+x_1=abeja^x_2=babuino^x_3=coyote
 x_1=60^x_2=35^x_3=20
 1=8^2=6^3=1^<48
 1=4^2=2^3=1,5^<20
