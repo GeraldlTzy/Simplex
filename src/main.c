@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fontconfig/fontconfig.h>
 #include <ctype.h>
+#include <string.h>
 #include "include/simplex.h"
 #include "include/matrix.h"
 #include "include/utils.h"
@@ -10,12 +11,14 @@
 GtkWidget* main_window;
 GtkWidget* second_window;
 GtkBuilder* builder;
-GtkWidget* cmb_objective_func;
+//GtkWidget* cmb_objective_func;
 GtkWidget* vp_objective_func;
 GtkWidget* vp_constraints;
 GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
+
 int loaded = 0;
+int minimize = 0;
 
 void initialize(){
 	//////////////////////////////// Define the variables
@@ -24,10 +27,9 @@ void initialize(){
 	second_window = GTK_WIDGET(gtk_builder_get_object(builder, "second_window"));
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
 	vp_constraints = GTK_WIDGET(gtk_builder_get_object(builder, "vp_constraints"));
-	gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
+    gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
     g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
 	gtk_builder_connect_signals(builder, NULL);
 }
 
@@ -283,7 +285,7 @@ void on_btn_load_clicked(){
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
   print_matrix(simplex_table);
-  simplex(simplex_table);
+  simplex(simplex_table, minimize);
   free_matrix(simplex_table);
     loaded = 1;
   }
@@ -293,7 +295,10 @@ void on_btn_load_clicked(){
 
 
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
-  printf("text: %s\n", gtk_entry_get_text(e));
+  char* str = gtk_entry_get_text(e);
+  printf("text: %s\n", str);
+  if (strcmp(str, "Maximize") == 0) minimize = 0;
+  else minimize = 1;
 }
 
 void on_back_button_clicked() {

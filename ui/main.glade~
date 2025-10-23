@@ -158,7 +158,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton">
+          <object class="GtkCheckButton" id="ckbtn_intermediate_tables">
             <property name="label" translatable="yes">Show intermediate tables</property>
             <property name="width-request">100</property>
             <property name="height-request">80</property>
