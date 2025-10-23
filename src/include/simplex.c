@@ -276,6 +276,13 @@ void minimize(Matrix *mat){
   }
 }
 
+void print_solution(double *sol, int size) {
+    printf("Solution: ");
+    for (int i = 0; i < size; ++i) {
+        printf("%.3lf ", sol[i]);
+    }
+    printf("\n");
+}
 int is_basic_var(Matrix *mat, int col) {
     int one_ammount = 0;
     for (int r = 0; r < mat->rows; ++r) {
@@ -296,11 +303,15 @@ double *find_solution(Matrix *mat, int num_variables) {
     double *solution = malloc(sizeof(double)*num_variables);
     // el valor de z no entra en el vector solucion
     for (int c = 1; c < num_variables+1; ++c) {
-        if (!is_basic_var(mat, c)) solution[c-1] = 0.0; 
+        if (!is_basic_var(mat, c)) {
+            solution[c-1] = 0.0;
+            continue;
+        }
         // si es basica se busca el 1
         for (int r = 0; r < mat->rows; ++r){
             if (mat->data.f[r][c] != 1) continue;
-            solution[c] = mat->data.f[r][mat->cols-1];
+            solution[c-1] = mat->data.f[r][mat->cols-1];
+            break;
         }
     }
     return solution;
@@ -331,16 +342,10 @@ double *multiple_solutions(Matrix *mat, int num_variables){
             }
         }
     }
+    canonize(mat, pivot_row, pivot_col);
     return find_solution(mat, num_variables);
 }
 
-void print_solution(double *sol, int size) {
-    printf("Solution: ");
-    for (int i = 0; i < size; ++i) {
-        printf("%.3lf ", sol[i]);
-    }
-    printf("\n");
-}
 
 double *generate_solution(double *sol1, double *sol2, int num_variables, double factor) {
     double *sol3 = malloc(sizeof(double)*num_variables);
@@ -365,7 +370,7 @@ int simplex(Matrix *mat, int do_minimize, int num_variables){
     double *solution2 = multiple_solutions(mat, num_variables);
 
     if (solution2 != NULL) {
-        //print_solution(solution2, num_variables);
+        print_solution(solution2, num_variables);
         //double *solution3 = generate_solution(solution1, solution2, num_variables, 0.25);
         //print_solution(solution3, num_variables);
         //double *solution4 = generate_solution(solution1, solution2, num_variables, 0.5);
