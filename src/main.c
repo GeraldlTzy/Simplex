@@ -129,17 +129,19 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
   for (int i = 0; i < num_variables; ++i)
     var_names[i] = malloc(sizeof(char)*NAME_SIZE);
   gd_varnames = GTK_GRID(gtk_grid_new());
-  char buff[50];
-  /*for(int v = 0; v < num_variables; ++v){
-    entry = gtk_entry_new();
-    sprintf(buff, "x_{%d} %s", v+1, ((v < num_variables-1) ? "+ " : ""));
-    //label = gtk_label_new(buff);
+  char buff[20];
+  for(int v = 0; v < num_variables; ++v){
+    GtkWidget *entry = gtk_entry_new();
+    sprintf(buff, "x_{%d}", v+1);
+    GtkWidget *label = gtk_label_new(buff);
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
 
-    //gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
-    //gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
-  }*/
+    gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
+    gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
+  }
+  gtk_grid_set_column_spacing(gd_varnames, 5);
+  gtk_container_add(GTK_CONTAINER(vp_varnames), GTK_WIDGET(gd_varnames));
  
   
   gtk_widget_hide(main_window);
@@ -254,7 +256,7 @@ void on_btn_finish_clicked(){
       canonic_i++;
     }
   }
-  simplex(simplex_table, do_minimize);
+  simplex(simplex_table, do_minimize, num_variables);
 }
 
 Matrix *load_data(char *filename){
@@ -323,7 +325,8 @@ void on_btn_load_clicked(){
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
-    simplex(simplex_table, do_minimize);
+    print_matrix(simplex_table);
+    simplex(simplex_table, do_minimize, num_variables);
     loaded = 1;
   }
     
