@@ -277,21 +277,23 @@ void minimize(Matrix *mat){
 }
 
 void print_solution(double *sol, int size) {
-    printf("Solution: ");
+    printf("---- Solution: ");
     for (int i = 0; i < size; ++i) {
         printf("%.3lf ", sol[i]);
     }
-    printf("\n");
+    printf("---- \n");
 }
 int is_basic_var(Matrix *mat, int col) {
     int one_ammount = 0;
     for (int r = 0; r < mat->rows; ++r) {
         double value = mat->data.f[r][col];
-        if (value == 0) {
+        if (value == 0.0) {
             continue;
         } else if (value == 1.0) {
             ++one_ammount;
-            if (one_ammount > 1) return 0;
+            if (one_ammount > 1) {
+                return 0;
+            }
         } else {
             return 0;
         }
@@ -320,8 +322,8 @@ double *find_solution(Matrix *mat, int num_variables) {
 double *multiple_solutions(Matrix *mat, int num_variables){
     int pivot_col = -1;
     int pivot_row = -1;
-    for (int c = 0; c < mat->cols; ++c) {
-        if (!is_basic_var(mat, c)) continue;
+    for (int c = 1; c < mat->cols; ++c) {
+        if (is_basic_var(mat, c)) continue;
         // si una no basica tiene un 0
         if (mat->data.f[0][c] == 0) {
             pivot_col = c;
@@ -352,6 +354,7 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
     for (int i = 0; i < num_variables; ++i) {
         sol3[i] = factor*sol1[i] + (1-factor)*sol2[i];
     }
+    return sol3;
 }
 
 int simplex(Matrix *mat, int do_minimize, int num_variables){
@@ -366,21 +369,28 @@ int simplex(Matrix *mat, int do_minimize, int num_variables){
     printf("#################RESULTADO OPTIMO######################\n");
     print_matrix(mat);
     double *solution1 = find_solution(mat, num_variables);
+        printf("1: ");
     print_solution(solution1, num_variables);
     double *solution2 = multiple_solutions(mat, num_variables);
 
     if (solution2 != NULL) {
+        printf("################# OTRO RESULTADO OPTIMO######################\n");
+        print_matrix(mat);
+        printf("2: ");
         print_solution(solution2, num_variables);
-        //double *solution3 = generate_solution(solution1, solution2, num_variables, 0.25);
-        //print_solution(solution3, num_variables);
-        //double *solution4 = generate_solution(solution1, solution2, num_variables, 0.5);
-        //print_solution(solution4, num_variables);
-        //double *solution5 = generate_solution(solution1, solution2, num_variables, 0.75);
-        //print_solution(solution5, num_variables);
+        double *solution3 = generate_solution(solution1, solution2, num_variables, 0.25);
+        printf("3: ");
+        print_solution(solution3, num_variables);
+        double *solution4 = generate_solution(solution1, solution2, num_variables, 0.5);
+        printf("4: ");
+        print_solution(solution4, num_variables);
+        double *solution5 = generate_solution(solution1, solution2, num_variables, 0.75);
+        printf("5: ");
+        print_solution(solution5, num_variables);
         free(solution2);
-        //free(solution3);
-        //free(solution4);
-        //free(solution5);
+        free(solution3);
+        free(solution4);
+        free(solution5);
     }
     free(solution1);
 

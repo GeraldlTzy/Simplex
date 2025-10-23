@@ -41,7 +41,7 @@ typedef struct {
   union {
     KVPair **pair;
     int **i;
-    float **f;
+    double **f;
     char ***s;
     Option **option;
   } data;
