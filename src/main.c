@@ -8,7 +8,7 @@
 #include "include/matrix.h"
 #include "include/utils.h"
 
-#define NAME_SIZE 50
+#define NAME_SIZE 32
 
 GtkWidget* main_window;
 GtkWidget* second_window;
@@ -113,6 +113,24 @@ void validate_int(GtkEntry* entry, int max, int min){
     }
 }
 
+void on_entry_varname_clicked(GtkEntry *e, gpointer user_data) {
+    int index = GPOINTER_TO_INT(user_data);
+    const char *str = gtk_entry_get_text(e);
+
+    if (strlen(str) >= NAME_SIZE) {
+        sprintf(var_names[index], "x_{%d}", index);
+        gtk_entry_set_text(e, var_names[index]);
+        return;
+    }
+
+    if (strcmp(str, "") == 0) {
+        sprintf(var_names[index], "x_{%d}", index);
+        return; 
+    }
+
+    sprintf(var_names[index], str);
+}
+
 void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
   
   validate_int(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), 15, 2);
@@ -124,18 +142,18 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
   
   if (problem_name[0] == '\0' || num_variables == 0 || num_constraints == 0) return;
   
-  // TODO: algo que inicialice entries en la window
   var_names = malloc(sizeof(char *) * num_variables);
   for (int i = 0; i < num_variables; ++i)
     var_names[i] = malloc(sizeof(char)*NAME_SIZE);
   gd_varnames = GTK_GRID(gtk_grid_new());
-  char buff[20];
   for(int v = 0; v < num_variables; ++v){
     GtkWidget *entry = gtk_entry_new();
-    sprintf(buff, "x_{%d}", v+1);
-    GtkWidget *label = gtk_label_new(buff);
+    sprintf(var_names[v], "x_{%d}", v+1);
+    GtkWidget *label = gtk_label_new(var_names[v]);
+    gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
+    g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
 
     gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
     gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
@@ -168,7 +186,7 @@ void on_btn_var_continue_clicked(){
   for(int v = 0; v < num_variables; ++v){
     entry = gtk_entry_new();
     // TODO: en el texto x_i poner los nombres obtenidos
-    sprintf(buff, "x_{%d} %s", v+1, ((v < num_variables-1) ? "+ " : ""));
+    sprintf(buff, "%s %s", var_names[v], ((v < num_variables-1) ? "+ " : ""));
     label = gtk_label_new(buff);
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
@@ -193,7 +211,7 @@ void on_btn_var_continue_clicked(){
   for(int c = 0; c < num_constraints; ++c){
     for(int x = 0; x < num_variables; ++x){
       entry = gtk_entry_new();
-      sprintf(buff, "x_{%d} %s", x+1, ((x < num_variables-1) ? "+ " : ""));
+      sprintf(buff, "%s %s", var_names[x], ((x < num_variables-1) ? "+ " : ""));
       label = gtk_label_new(buff);
       gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
       gtk_widget_set_hexpand(entry, TRUE);
@@ -218,6 +236,8 @@ void on_btn_var_continue_clicked(){
     col_i=0;
   }
 
+  gtk_grid_set_column_spacing(gd_variables, 5);
+  gtk_grid_set_column_spacing(gd_constraints, 5);
 
   gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
   gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
