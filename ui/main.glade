@@ -220,6 +220,7 @@
             <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="column-spacing">11</property>
             <child>
               <object class="GtkEntry">
                 <property name="width-request">200</property>
@@ -314,6 +315,86 @@
           <packing>
             <property name="x">305</property>
             <property name="y">250</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="varname_window">
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="margin-left">20</property>
+        <property name="margin-right">20</property>
+        <property name="margin-start">20</property>
+        <property name="margin-end">20</property>
+        <property name="margin-top">20</property>
+        <property name="margin-bottom">20</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">500</property>
+            <property name="height-request">80</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Choose the names of your variables: </property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="size" value="19456"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="width-request">400</property>
+            <property name="height-request">200</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkViewport" id="vp_varnames">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="x">50</property>
+            <property name="y">80</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_var_continue">
+            <property name="label" translatable="yes">Continue</property>
+            <property name="width-request">100</property>
+            <property name="height-request">50</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <signal name="clicked" handler="on_btn_var_continue_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">255</property>
+            <property name="y">290</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_var_back">
+            <property name="label" translatable="yes">Back</property>
+            <property name="width-request">100</property>
+            <property name="height-request">50</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <signal name="clicked" handler="on_btn_var_back_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">145</property>
+            <property name="y">290</property>
           </packing>
         </child>
       </object>

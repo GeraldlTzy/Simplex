@@ -8,22 +8,28 @@
 #include "include/matrix.h"
 #include "include/utils.h"
 
+#define NAME_SIZE 50
+
 GtkWidget* main_window;
 GtkWidget* second_window;
+GtkWidget* varname_window;
 GtkBuilder* builder;
 //GtkWidget* cmb_objective_func;
 GtkWidget* vp_objective_func;
 GtkWidget* vp_constraints;
 GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
+GtkGrid* gd_varnames;
 
 int loaded = 0;
 int do_minimize = 0;
+char **var_names;
 
 void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
 	main_window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
+  varname_window = GTK_WIDGET(gtk_builder_get_object(builder, "varname_window"));
 	second_window = GTK_WIDGET(gtk_builder_get_object(builder, "second_window"));
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
 	vp_constraints = GTK_WIDGET(gtk_builder_get_object(builder, "vp_constraints"));
@@ -67,7 +73,6 @@ gtk_grid_attach (
 char problem_name[50];
 int num_variables;
 int num_constraints;
-char **variables_name;
 
 void on_combo_constraint_changed(GtkComboBox *cmb, gpointer user_data){
   GtkTreeIter iter;
@@ -117,16 +122,32 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
   
   if (problem_name[0] == '\0' || num_variables == 0 || num_constraints == 0) return;
   
+  // TODO: algo que inicialice entries en la window
+  var_names = malloc(sizeof(char *) * num_variables);
+  for (int i = 0; i < num_variables; ++i)
+    var_names[i] = malloc(sizeof(char)*NAME_SIZE);
+  gd_varnames = GTK_GRID(gtk_grid_new());
+  
   gtk_widget_hide(main_window);
+  gtk_widget_show_all(varname_window);
+}
 
-  printf("%s\n%d\n%d\n", problem_name, num_variables, num_constraints);
+void on_btn_var_back_clicked() {
+    for (int i = 0; i < num_variables; ++i) free(var_names[i]);
+    free(var_names);
+    gtk_widget_destroy(gd_varnames);
+    gtk_widget_hide(varname_window);
+    gtk_widget_show_all(main_window);
+}
 
+void on_btn_var_continue_clicked(){
   gd_variables = GTK_GRID(gtk_grid_new());
   GtkWidget *entry, *label;
   char buff[256];
   int col_i = 0;
   for(int v = 0; v < num_variables; ++v){
     entry = gtk_entry_new();
+    // TODO: en el texto x_i poner los nombres obtenidos
     sprintf(buff, "x_{%d} %s", v+1, ((v < num_variables-1) ? "+ " : ""));
     label = gtk_label_new(buff);
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
@@ -181,10 +202,8 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
 
   gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
   gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
-  
 
-  //simplex_table = new_matrix()
-  
+  gtk_widget_hide(varname_window);
   gtk_widget_show_all(second_window);
 }
 
@@ -308,6 +327,10 @@ void on_back_button_clicked() {
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
+  
+  for (int i = 0; i < num_variables; ++i) free(var_names[i]);
+  free(var_names);
+  gtk_widget_destroy(gd_varnames);
   
   problem_name[0] = '\0';
   num_variables = 0;
