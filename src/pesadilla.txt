@@ -1,4 +1,5 @@
 name=mofongo
+objective=maximize
 count_variables=4
 count_constraints=2
 x_1=hola^x_2=adios^x_3=mana^x_4=hoy
