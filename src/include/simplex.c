@@ -276,7 +276,80 @@ void minimize(Matrix *mat){
   }
 }
 
-int simplex(Matrix *mat, int do_minimize){
+int is_basic_var(Matrix *mat, int col) {
+    int one_ammount = 0;
+    for (int r = 0; r < mat->rows; ++r) {
+        double value = mat->data.f[r][col];
+        if (value == 0) {
+            continue;
+        } else if (value == 1.0) {
+            ++one_ammount;
+            if (one_ammount > 1) return 0;
+        } else {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+double *find_solution(Matrix *mat, int num_variables) {
+    double *solution = malloc(sizeof(double)*num_variables);
+    // el valor de z no entra en el vector solucion
+    for (int c = 1; c < num_variables+1; ++c) {
+        if (!is_basic_var(mat, c)) solution[c-1] = 0.0; 
+        // si es basica se busca el 1
+        for (int r = 0; r < mat->rows; ++r){
+            if (mat->data.f[r][c] != 1) continue;
+            solution[c] = mat->data.f[r][mat->cols-1];
+        }
+    }
+    return solution;
+}
+
+double *multiple_solutions(Matrix *mat, int num_variables){
+    int pivot_col = -1;
+    int pivot_row = -1;
+    for (int c = 0; c < mat->cols; ++c) {
+        if (!is_basic_var(mat, c)) continue;
+        // si una no basica tiene un 0
+        if (mat->data.f[0][c] == 0) {
+            pivot_col = c;
+            break;
+        }
+    }
+    // si no tiene, no hay nada que hacer
+    if (pivot_col == -1) return NULL;
+    // encontrar la fraccion 
+    double min =  MAX_VAL;
+    double fraction;
+    for(int r = 1; r < mat->rows; ++r){
+        if(mat->data.f[r][pivot_col] > 0){
+            fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
+            if(min > fraction){
+                min = fraction;
+                pivot_row = r;
+            }
+        }
+    }
+    return find_solution(mat, num_variables);
+}
+
+void print_solution(double *sol, int size) {
+    printf("Solution: ");
+    for (int i = 0; i < size; ++i) {
+        printf("%.3lf ", sol[i]);
+    }
+    printf("\n");
+}
+
+double *generate_solution(double *sol1, double *sol2, int num_variables, double factor) {
+    double *sol3 = malloc(sizeof(double)*num_variables);
+    for (int i = 0; i < num_variables; ++i) {
+        sol3[i] = factor*sol1[i] + (1-factor)*sol2[i];
+    }
+}
+
+int simplex(Matrix *mat, int do_minimize, int num_variables){
     print_matrix(mat);
     if (do_minimize) minimize(mat);
     else {
@@ -285,8 +358,26 @@ int simplex(Matrix *mat, int do_minimize){
       tree_t forks = {&initial};
       maximize(mat, forks);
     }
-
     printf("#################RESULTADO OPTIMO######################\n");
-    //print_matrix(mat);
+    print_matrix(mat);
+    double *solution1 = find_solution(mat, num_variables);
+    print_solution(solution1, num_variables);
+    double *solution2 = multiple_solutions(mat, num_variables);
+
+    if (solution2 != NULL) {
+        //print_solution(solution2, num_variables);
+        //double *solution3 = generate_solution(solution1, solution2, num_variables, 0.25);
+        //print_solution(solution3, num_variables);
+        //double *solution4 = generate_solution(solution1, solution2, num_variables, 0.5);
+        //print_solution(solution4, num_variables);
+        //double *solution5 = generate_solution(solution1, solution2, num_variables, 0.75);
+        //print_solution(solution5, num_variables);
+        free(solution2);
+        //free(solution3);
+        //free(solution4);
+        //free(solution5);
+    }
+    free(solution1);
+
     return 0;
 }

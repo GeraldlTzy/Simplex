@@ -256,7 +256,7 @@ void on_btn_finish_clicked(){
       canonic_i++;
     }
   }
-  simplex(simplex_table, do_minimize);
+  simplex(simplex_table, do_minimize, num_variables);
 }
 
 Matrix *load_data(char *filename){
@@ -326,7 +326,7 @@ void on_btn_load_clicked(){
     filename = gtk_file_chooser_get_filename(chooser);
     simplex_table = load_data(filename);
     print_matrix(simplex_table);
-    simplex(simplex_table, do_minimize);
+    simplex(simplex_table, do_minimize, num_variables);
     loaded = 1;
   }
     
