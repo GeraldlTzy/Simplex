@@ -1,0 +1,85 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[table]{xcolor}
+\usepackage{amsmath}
+\usepackage{adjustbox}
+\usepackage{makecell}
+\usepackage[a4paper, margin=2cm]{geometry}
+\definecolor{DarkPurpleMamado}{RGB}{128,0,128}
+\definecolor{PurpleNoMamado}{RGB}{128,70,128}
+\lstset{
+    language=C,
+    basicstyle=\footnotesize,
+    numbers=left,
+    stepnumber=1,
+    showstringspaces=false,
+    tabsize=1,
+    breaklines=true,
+    breakatwhitespace=false,
+}
+
+\def \unidad{Escuela de Ingeniería en Computación}
+\def \programa{Ingeniería en Computación}
+\def \curso{IC-6400 - Investigación de Operaciones}
+\def \titulo{Project 04}
+\def \subtitulo{Simplex Report}
+\def \autores{
+    Gerald Calderón Castro\\
+    gecalderon@estudiantec.cr\\
+    2023125197\\
+
+    \vspace{0.5cm}
+
+    Óscar Obando Umaña\\
+    osobando@estudiantec.cr\\
+    2023091684
+}
+\def \fecha{November 2025}
+\def \lugar{San José , Costa Rica}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+
+        % La imagen está en el mismo directorio que el .tex
+        \includegraphics[width=0.8\linewidth]{logo_tec.jpg}\\
+
+        \LARGE
+        \unidad\\
+        \programa\\
+        \curso
+
+        \vspace{1cm}
+
+        \Huge
+        \textbf{\titulo}
+
+        \vspace{0.5cm}
+        \LARGE
+        \subtitulo
+
+        \vspace{1.5cm}
+
+        \large
+        \autores
+
+        \vfill
+
+        \lugar\\
+        \fecha
+
+    \end{center}
+\end{titlepage}
+\tableofcontents
+
+\section{Description}
+The simplex algorithm is a very simple algorithm.
+\section{The initial simplex table}
+\end{document}

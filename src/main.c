@@ -7,6 +7,7 @@
 #include "include/simplex.h"
 #include "include/matrix.h"
 #include "include/utils.h"
+#include "include/latex_generator.h"
 
 #define NAME_SIZE 32
 
@@ -26,6 +27,8 @@ int loaded = 0;
 int do_minimize = 0;
 char **var_names;
 
+Latex_Generator *lg;
+
 void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
@@ -39,6 +42,9 @@ void initialize(){
     g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_builder_connect_signals(builder, NULL);
+    //////////////////////////////// latex generator 
+    Latex_Generator l;
+    lg = &l;
 }
 
 
@@ -189,7 +195,8 @@ void on_btn_var_continue_clicked(){
     label = gtk_label_new(buff);
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
-
+    gtk_entry_set_text(GTK_ENTRY(entry), "0");
+    // TODO: conectar a una signal que valide el numero
     gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
     gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
   }
@@ -214,12 +221,15 @@ void on_btn_var_continue_clicked(){
       label = gtk_label_new(buff);
       gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
       gtk_widget_set_hexpand(entry, TRUE);
+      gtk_entry_set_text(GTK_ENTRY(entry), "0");
+      // TODO: conectar a una signal que valide el numero
       gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
       gtk_grid_attach(gd_constraints, label, col_i++, c, 1, 1);
     }
 
     cmb = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(inequalities));
     gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(cmb), 0);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(cmb), 0);
 
     g_signal_connect(cmb, "changed", G_CALLBACK(on_combo_constraint_changed), inequalities);
 
@@ -231,6 +241,8 @@ void on_btn_var_continue_clicked(){
     entry = gtk_entry_new();
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
+    // TODO: conectar a una signal que valide el numero, debe ser mayor o igual a 0
+    gtk_entry_set_text(GTK_ENTRY(entry), "0");
     gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
     col_i=0;
   }
@@ -259,7 +271,7 @@ void create_ui_from_table(){
     gtk_widget_set_hexpand(entry, TRUE);
     sprintf(buff, "%.5lf", -1 * simplex_table->data.f[0][v+1]);
     gtk_entry_set_text(GTK_ENTRY(entry), buff);
-
+    // TODO: conectar a una signal que valide el numero
     gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
     gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
   }
@@ -284,6 +296,7 @@ void create_ui_from_table(){
       label = gtk_label_new(buff);
       gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
       gtk_widget_set_hexpand(entry, TRUE);
+      // TODO: conectar a una signal que valide el numero
       gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
       gtk_grid_attach(gd_constraints, label, col_i++, c, 1, 1);
     }
@@ -299,6 +312,7 @@ void create_ui_from_table(){
     gtk_widget_set_can_focus(entry, FALSE);
     gtk_grid_attach(gd_constraints, cmb, col_i++, c, 1, 1);
     entry = gtk_entry_new();
+    // TODO: conectar a una signal que valide el numero
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
     gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
@@ -345,7 +359,15 @@ void on_btn_finish_clicked(){
       canonic_i++;
     }
   }
-  simplex(simplex_table, do_minimize, num_variables);
+  if (!lg_open(lg, "LaTeX/Simplex_Report")) {
+    perror("Error al creaer el archivo de LaTeX");
+    return;
+  }
+  lg_init(lg);
+  simplex(simplex_table, do_minimize, num_variables, lg);
+  lg_simplex_references(lg);
+  lg_close(lg);
+  lg_generate(lg);
 }
 
 Matrix *load_data(char *filename){
@@ -423,7 +445,7 @@ void on_btn_load_clicked(){
      * En teoria se puede sacar todo de simplex_table
      * */ 
     create_ui_from_table();
-    simplex(simplex_table, do_minimize, num_variables);
+    simplex(simplex_table, do_minimize, num_variables, lg);
     loaded = 1;
   }
     
@@ -443,9 +465,10 @@ void on_back_button_clicked() {
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
-  
+ 
   for (int i = 0; i < num_variables; ++i) free(var_names[i]);
   free(var_names);
+  
   gtk_widget_destroy(GTK_WIDGET(gd_varnames));
   
   problem_name[0] = '\0';
@@ -454,7 +477,6 @@ void on_back_button_clicked() {
 
   gtk_widget_destroy(GTK_WIDGET(gd_variables));
   gtk_widget_destroy(GTK_WIDGET(gd_constraints));
-
   gtk_widget_hide(second_window);
   gtk_widget_show_all(main_window);
 

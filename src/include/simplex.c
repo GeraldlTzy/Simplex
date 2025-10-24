@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "simplex.h"
-#include "matrix.h"
 #include <glib.h>
+
+#include "simplex.h"
+#include "latex_generator.h"
+#include "matrix.h"
+
 #define MAX_VAL 1.79769313486231571e+308
 int pivot_counter = 0;
 
@@ -357,8 +360,11 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
     return sol3;
 }
 
-int simplex(Matrix *mat, int do_minimize, int num_variables){
+int simplex(Matrix *mat, int do_minimize, int num_variables, Latex_Generator *lg){
     print_matrix(mat);
+
+    lg_write(lg, "\\section{The initial simplex table}\n");
+
     if (do_minimize) minimize(mat);
     else {
       print_matrix(mat);
