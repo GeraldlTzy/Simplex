@@ -15,7 +15,7 @@ GtkWidget* main_window;
 GtkWidget* second_window;
 GtkWidget* varname_window;
 GtkBuilder* builder;
-//GtkWidget* cmb_objective_func;
+GtkWidget* cmb_objective_func;
 GtkWidget* vp_objective_func;
 GtkWidget* vp_constraints;
 GtkWidget* vp_varnames;
@@ -33,6 +33,8 @@ void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
 	main_window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
+    cmb_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "cmb_objective_func"));
+    gtk_combo_box_set_active(GTK_COMBO_BOX(cmb_objective_func), 0);
     varname_window = GTK_WIDGET(gtk_builder_get_object(builder, "varname_window"));
 	second_window = GTK_WIDGET(gtk_builder_get_object(builder, "second_window"));
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
@@ -455,7 +457,6 @@ void on_btn_load_clicked(){
 
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
   const char* str = gtk_entry_get_text(e);
-  printf("text: %s\n", str);
   if (strcmp(str, "Maximize") == 0) do_minimize = 0;
   else do_minimize = 1;
 }
