@@ -35,6 +35,7 @@
             <property name="active">0</property>
             <property name="has-entry">True</property>
             <property name="entry-text-column">0</property>
+            <property name="active-id">0</property>
             <signal name="changed" handler="on_cmb_objective_func_changed" object="txt_objective_func" swapped="no"/>
             <child internal-child="entry">
               <object class="GtkEntry" id="txt_objective_func">
