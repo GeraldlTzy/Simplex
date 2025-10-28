@@ -328,7 +328,36 @@ void create_ui_from_table(){
   gtk_widget_hide(main_window);
   gtk_widget_show_all(second_window);
 }
+void prepare_simplex_lg(){
+    // TODO: poner el nombre del problema
+    lg_write(lg, "\\section{Solving %s}\n", "Problem Name");
+    lg_write(lg, "\\subsection{Mathematical representation}\n");
+    char to_write[1024];
+    to_write[0] = '\0';
+    char buffer[256];
+    buffer[0] = '\0';
+    if (do_minimize)
+        lg_write(lg, "\\textbf{Minimize}\n", to_write);
+    else
+        lg_write(lg, "\\textbf{Maximize}\n", to_write);
 
+    strcpy(to_write, "z = ");
+    // nos saltamos z
+    for (int i = 1; i <= num_variables; i++){
+       sprintf(buffer, "%.5f%s", -1 * simplex_table->data.f[0][i], var_names[i-1]);
+       if (i != num_variables && simplex_table->data.f[0][i+1]>=0){
+           // Si no es el ultimo y si es positivo el siguiente
+            strcat(buffer, "+");
+           //Si el siguiente es negativo, ya trae el menos puesto
+       }
+
+       strcat(to_write, buffer);
+    }
+
+    lg_write(lg, "\\begin{dmath}\n");
+    lg_write(lg, "%s", to_write);
+    lg_write(lg, "\\end{dmath}\n");
+}
 void on_btn_finish_clicked(){
   int rows = 1 + num_constraints;
   int cols = 2 + num_variables + num_constraints;
@@ -364,6 +393,7 @@ void on_btn_finish_clicked(){
     return;
   }
   lg_init(lg);
+  prepare_simplex_lg();
   simplex(simplex_table, do_minimize, num_variables, lg);
   lg_simplex_references(lg);
   lg_close(lg);

@@ -57,7 +57,6 @@ void lg_simplex_references(Latex_Generator *lg){
                       "communication, Investigación de Operaciones, Instituto Tecnológico de "
                       "Costa Rica, San José, Costa Rica, Aug. 29, 2025.\n");
     fprintf(lg->file,"\\end{thebibliography}");*/
-
 }
 
 void lg_init(Latex_Generator *lg) {
@@ -74,6 +73,7 @@ fprintf(lg->file, "\\documentclass[12pt,a4paper]{report}\n");
     fprintf(lg->file, "\\usepackage[dvipsnames]{xcolor}\n");
     fprintf(lg->file, "\\usepackage[table]{xcolor}\n");
     fprintf(lg->file, "\\usepackage{amsmath}\n");
+    fprintf(lg->file, "\\usepackage{breqn}\n");
     fprintf(lg->file, "\\usepackage{adjustbox}\n");
     fprintf(lg->file, "\\usepackage{makecell}\n");
     fprintf(lg->file, "\\usepackage[a4paper, margin=2cm]{geometry}\n");

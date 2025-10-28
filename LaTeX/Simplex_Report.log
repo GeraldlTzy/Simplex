@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  23 OCT 2025 19:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  27 OCT 2025 18:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -330,6 +330,131 @@ LaTeX Info: Redefining \Relbar on input line 970.
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
 )
+(/usr/share/texmf-dist/tex/latex/breqn/breqn.sty
+(/usr/share/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2025-01-18 L3 programming layer (loader) 
+
+(/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count305
+\l__pdf_internal_box=\box60
+))
+Package: breqn 2021/10/28 v0.98l Breaking equations
+
+(/usr/share/texmf-dist/tex/latex/breqn/flexisym.sty
+Package: flexisym 2021/10/28 v0.98l Make math characters macros
+LaTeX Info: Redefining \textprime on input line 299.
+LaTeX Info: Redefining \not on input line 357.
+
+(/usr/share/texmf-dist/tex/latex/breqn/cmbase.sym
+File: cmbase.sym 2007/12/19 v0.92
+LaTeX Info: Redefining \hbar on input line 324.
+LaTeX Info: Redefining \surd on input line 326.
+LaTeX Info: Redefining \angle on input line 334.
+LaTeX Info: Redefining \neq on input line 335.
+LaTeX Info: Redefining \mapsto on input line 336.
+LaTeX Info: Redefining \cong on input line 337.
+LaTeX Info: Redefining \notin on input line 340.
+LaTeX Info: Redefining \rightleftharpoons on input line 341.
+LaTeX Info: Redefining \doteq on input line 342.
+LaTeX Info: Redefining \hookrightarrow on input line 343.
+LaTeX Info: Redefining \hookleftarrow on input line 344.
+LaTeX Info: Redefining \bowtie on input line 345.
+LaTeX Info: Redefining \models on input line 346.
+LaTeX Info: Redefining \Longrightarrow on input line 347.
+LaTeX Info: Redefining \longrightarrow on input line 348.
+LaTeX Info: Redefining \Longleftarrow on input line 349.
+LaTeX Info: Redefining \longleftarrow on input line 350.
+LaTeX Info: Redefining \longmapsto on input line 351.
+LaTeX Info: Redefining \longleftrightarrow on input line 352.
+LaTeX Info: Redefining \Longleftrightarrow on input line 353.
+LaTeX Info: Redefining \cdots on input line 357.
+LaTeX Info: Redefining \vdots on input line 360.
+LaTeX Info: Redefining \ddots on input line 365.
+)
+(/usr/share/texmf-dist/tex/latex/breqn/mathstyle.sty
+Package: mathstyle 2021/10/28 v0.98l Tracking mathstyle implicitly
+LaTeX Info: Redefining \displaystyle on input line 95.
+LaTeX Info: Redefining \textstyle on input line 97.
+LaTeX Info: Redefining \scriptstyle on input line 99.
+LaTeX Info: Redefining \scriptscriptstyle on input line 101.
+LaTeX Info: Redefining \genfrac on input line 149.
+))
+(/usr/share/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count306
+\calc@Bcount=\count307
+\calc@Adimen=\dimen163
+\calc@Bdimen=\dimen164
+\calc@Askip=\skip58
+\calc@Bskip=\skip59
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count308
+\calc@Cskip=\skip60
+)
+\inf@bad=\count309
+\maxint=\count310
+\listwidth=\dimen165
+\eqnumsep=\dimen166
+\eqmargin=\dimen167
+\eqlinespacing=\skip61
+\eqlineskip=\skip62
+\eqlineskiplimit=\dimen168
+\eqbinoffset=\muskip19
+\eqdelimoffset=\muskip20
+\eqindentstep=\dimen169
+\eqstyle=\toks28
+\eqbreakdepth=\count311
+\eqinterlinepenalty=\count312
+\intereqpenalty=\count313
+\intereqskip=\skip63
+\prerelpenalty=\count314
+\prebinoppenalty=\count315
+\Dmedmuskip=\muskip21
+\Dthickmuskip=\muskip22
+\eqleftskip=\skip64
+\eqrightskip=\skip65
+\eq@vspan=\skip66
+\eq@binoffset=\muskip23
+\EQ@box=\box61
+\EQ@copy=\box62
+\EQ@numbox=\box63
+\eq@wdNum=\dimen170
+\GRP@numbox=\box64
+\grp@wdNum=\dimen171
+\eq@lines=\count316
+\eq@curline=\count317
+\eq@badness=\count318
+\EQ@vims=\count319
+\eq@dp=\dimen172
+\eq@wdL=\dimen173
+\eq@wdT=\dimen174
+\eq@wdMin=\dimen175
+\grp@wdL=\dimen176
+\grp@wdR=\dimen177
+\grp@wdT=\dimen178
+\eq@wdRmax=\dimen179
+\eq@firstht=\dimen180
+\eq@wdCond=\dimen181
+\eq@indentstep=\dimen182
+\eq@linewidth=\dimen183
+\grp@linewidth=\dimen184
+\eq@hshift=\dimen185
+\eq@given@sidespace=\dimen186
+\mathindent=\dimen187
+\eq@final@linecount=\count320
+\eq@wdR=\dimen188
+\EQ@continue=\toks29
+\lr@level=\count321
+\GRP@queue=\toks30
+\GRP@box=\box65
+\GRP@wholebox=\box66
+\darraycolsep=\skip67
+\cur@row=\count322
+\cur@col=\count323
+\conditionsep=\skip68
+)
 (/usr/share/texmf-dist/tex/latex/adjustbox/adjustbox.sty
 Package: adjustbox 2025/02/26 v1.3c Adjusting TeX boxes (trim, clip, ...)
 
@@ -338,10 +463,10 @@ Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
 
 (/usr/share/texmf-dist/tex/generic/xkeyval/xkeyval.tex
 (/usr/share/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-\XKV@toks=\toks28
-\XKV@tempa@toks=\toks29
+\XKV@toks=\toks31
+\XKV@tempa@toks=\toks32
 )
-\XKV@depth=\count305
+\XKV@depth=\count324
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 ))
 (/usr/share/texmf-dist/tex/latex/adjustbox/adjcalc.sty
@@ -353,42 +478,42 @@ Package: trimclip 2025/02/21 v1.2a Trim and clip general TeX material
 
 (/usr/share/texmf-dist/tex/latex/collectbox/collectbox.sty
 Package: collectbox 2022/10/17 v0.4c Collect macro arguments as boxes
-\collectedbox=\box60
+\collectedbox=\box67
 )
-\tc@llx=\dimen163
-\tc@lly=\dimen164
-\tc@urx=\dimen165
-\tc@ury=\dimen166
+\tc@llx=\dimen189
+\tc@lly=\dimen190
+\tc@urx=\dimen191
+\tc@ury=\dimen192
 Package trimclip Info: Using driver 'tc-pdftex.def'.
 
 (/usr/share/texmf-dist/tex/latex/adjustbox/tc-pdftex.def
 File: tc-pdftex.def 2025/02/26 v2.3 Clipping driver for pdftex
 ))
-\adjbox@Width=\dimen167
-\adjbox@Height=\dimen168
-\adjbox@Depth=\dimen169
-\adjbox@Totalheight=\dimen170
-\adjbox@pwidth=\dimen171
-\adjbox@pheight=\dimen172
-\adjbox@pdepth=\dimen173
-\adjbox@ptotalheight=\dimen174
+\adjbox@Width=\dimen193
+\adjbox@Height=\dimen194
+\adjbox@Depth=\dimen195
+\adjbox@Totalheight=\dimen196
+\adjbox@pwidth=\dimen197
+\adjbox@pheight=\dimen198
+\adjbox@pdepth=\dimen199
+\adjbox@ptotalheight=\dimen256
 
 (/usr/share/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
 Package: ifoddpage 2022/10/18 v1.2 Conditionals for odd/even page detection
-\c@checkoddpage=\count306
+\c@checkoddpage=\count325
 )
 (/usr/share/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
-\@vwid@box=\box61
-\sift@deathcycles=\count307
-\@vwid@loff=\dimen175
-\@vwid@roff=\dimen176
+\@vwid@box=\box68
+\sift@deathcycles=\count326
+\@vwid@loff=\dimen257
+\@vwid@roff=\dimen258
 ))
 (/usr/share/texmf-dist/tex/latex/makecell/makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
-\rotheadsize=\dimen177
-\c@nlinenum=\count308
-\TeXr@lab=\toks30
+\rotheadsize=\dimen259
+\c@nlinenum=\count327
+\TeXr@lab=\toks33
 )
 (/usr/share/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
@@ -396,18 +521,18 @@ Package: geometry 2020/01/02 v5.9 Page Geometry
 (/usr/share/texmf-dist/tex/generic/iftex/ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
-\Gm@cnth=\count309
-\Gm@cntv=\count310
-\c@Gm@tempcnt=\count311
-\Gm@bindingoffset=\dimen178
-\Gm@wd@mp=\dimen179
-\Gm@odd@mp=\dimen180
-\Gm@even@mp=\dimen181
-\Gm@layoutwidth=\dimen182
-\Gm@layoutheight=\dimen183
-\Gm@layouthoffset=\dimen184
-\Gm@layoutvoffset=\dimen185
-\Gm@dimlist=\toks31
+\Gm@cnth=\count328
+\Gm@cntv=\count329
+\c@Gm@tempcnt=\count330
+\Gm@bindingoffset=\dimen260
+\Gm@wd@mp=\dimen261
+\Gm@odd@mp=\dimen262
+\Gm@even@mp=\dimen263
+\Gm@layoutwidth=\dimen264
+\Gm@layoutheight=\dimen265
+\Gm@layouthoffset=\dimen266
+\Gm@layoutvoffset=\dimen267
+\Gm@dimlist=\toks34
 )
 (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/09/23 1.10c listings language file
@@ -415,51 +540,46 @@ File: lstlang1.sty 2024/09/23 1.10c listings language file
 (/usr/share/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2024/09/23 1.10c (Carsten Heinz)
 )
-(/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count312
-\l__pdf_internal_box=\box62
-)
 (LaTeX/Simplex_Report.aux)
 \openout1 = `Simplex_Report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 45.
-LaTeX Font Info:    ... okay on input line 45.
-\c@lstlisting=\count313
-Package hyperref Info: Link coloring OFF on input line 45.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 46.
+LaTeX Font Info:    ... okay on input line 46.
+\c@lstlisting=\count331
+Package hyperref Info: Link coloring OFF on input line 46.
  (LaTeX/Simplex_Report.out) (LaTeX/Simplex_Report.out)
 \@outlinefile=\write3
 \openout3 = `Simplex_Report.out'.
 
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count314
-\scratchdimen=\dimen186
-\scratchbox=\box63
-\nofMPsegments=\count315
-\nofMParguments=\count316
-\everyMPshowfont=\toks32
-\MPscratchCnt=\count317
-\MPscratchDim=\dimen187
-\MPnumerator=\count318
-\makeMPintoPDFobject=\count319
-\everyMPtoPDFconversion=\toks33
+\scratchcounter=\count332
+\scratchdimen=\dimen268
+\scratchbox=\box69
+\nofMPsegments=\count333
+\nofMParguments=\count334
+\everyMPshowfont=\toks35
+\MPscratchCnt=\count335
+\MPscratchDim=\dimen269
+\MPnumerator=\count336
+\makeMPintoPDFobject=\count337
+\everyMPtoPDFconversion=\toks36
 ) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -503,10 +623,10 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logo_tec.jpg, id=12, 1445.4pt x 336.25626pt>
+<logo_tec.jpg, id=20, 1445.4pt x 336.25626pt>
 File: logo_tec.jpg Graphic file (type jpg)
 <use logo_tec.jpg>
-Package pdftex.def Info: logo_tec.jpg  used on input line 52.
+Package pdftex.def Info: logo_tec.jpg  used on input line 53.
 (pdftex.def)             Requested size: 386.95897pt x 90.02077pt.
 
 
@@ -517,39 +637,34 @@ Package pdftex.def Info: logo_tec.jpg  used on input line 52.
 \tf@toc=\write4
 \openout4 = `Simplex_Report.toc'.
 
+)
+Runaway argument?
+{3q+0,00000e+0,00000t\end {dmath} \section {The initial simplex table\ETC.
+! File ended while scanning use of _.
+<inserted text> 
+                \par 
+<*> LaTeX/Simplex_Report.tex
+                            
+? ^^[[A
+Type <return> to proceed, S to scroll future error messages,
+R to run without stopping, Q to run quietly,
+I to insert something, 
+H for help, X to quit.
+? 
+! Emergency stop.
+<inserted text> 
+                \par 
+<*> LaTeX/Simplex_Report.tex
+                            
+End of file on the terminal!
 
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
-been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.85 \end{document}
-                    [1
-
-] (LaTeX/Simplex_Report.aux)
- ***********
-LaTeX2e <2024-11-01> patch level 2
-L3 programming layer <2025-01-18>
- ***********
-Package rerunfilecheck Info: File `Simplex_Report.out' has not changed.
-(rerunfilecheck)             Checksum: 0D5CA3DFD8C40311F0347438675A9856;279.
- ) 
+ 
 Here is how much of TeX's memory you used:
- 13114 strings out of 475109
- 200371 string characters out of 5765325
- 795880 words of memory out of 5000000
- 35943 multiletter control sequences out of 15000+600000
- 564056 words of font info for 54 fonts, out of 8000000 for 9000
+ 13957 strings out of 475109
+ 211936 string characters out of 5765325
+ 813431 words of memory out of 5000000
+ 36769 multiletter control sequences out of 15000+600000
+ 564670 words of font info for 56 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 75i,5n,80p,267b,453s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/font
-s/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on LaTeX/Simplex_Report.pdf (2 pages, 154125 bytes).
-PDF statistics:
- 44 PDF objects out of 1000 (max. 8388607)
- 32 compressed objects within 1 object stream
- 5 named destinations out of 1000 (max. 500000)
- 22 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 75i,5n,86p,267b,456s stack positions out of 10000i,1000n,20000p,200000b,200000s
+!  ==> Fatal error occurred, no output PDF file produced!
