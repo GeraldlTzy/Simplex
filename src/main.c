@@ -80,7 +80,7 @@ gtk_grid_attach (
   gint height
 )
 */
-char problem_name[50];
+char problem_name[256];
 int num_variables;
 int num_constraints;
 
@@ -147,6 +147,7 @@ void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
   strcpy(problem_name, gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0))));
   num_variables = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1))));
   num_constraints = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2))));
+
   
   if (problem_name[0] == '\0' || num_variables == 0 || num_constraints == 0) return;
   
@@ -331,34 +332,66 @@ void create_ui_from_table(){
   gtk_widget_show_all(second_window);
 }
 void prepare_simplex_lg(){
-    // TODO: poner el nombre del problema
-    lg_write(lg, "\\section{Solving %s}\n", "Problem Name");
-    lg_write(lg, "\\subsection{Mathematical representation}\n");
+    lg_write(lg, "\\chapter{Solving %s}\n", problem_name);
+    lg_write(lg, "\\section{Mathematical representation}\n");
     char to_write[1024];
     to_write[0] = '\0';
     char buffer[256];
     buffer[0] = '\0';
     if (do_minimize)
-        lg_write(lg, "\\textbf{Minimize}\n", to_write);
+        lg_write(lg, "\\textbf{Minimize:}\n", to_write);
     else
-        lg_write(lg, "\\textbf{Maximize}\n", to_write);
+        lg_write(lg, "\\textbf{Maximize:}\n", to_write);
 
     strcpy(to_write, "z = ");
-    // nos saltamos z
-    for (int i = 1; i <= num_variables; i++){
-       sprintf(buffer, "%.5f%s", -1 * simplex_table->data.f[0][i], var_names[i-1]);
-       if (i != num_variables){
-           // Si no es el ultimo y si es positivo el siguiente
-            strcat(buffer, "+");
-           //Si el siguiente es negativo, ya trae el menos puesto
-       }
-
-       strcat(to_write, buffer);
+    GtkWidget *entry, *label, *cmb;
+    int col_i = 0;
+    const char *str;
+    // Funcion Objetivo
+    for(int v = 0; v < num_variables; ++v){
+        entry = gtk_grid_get_child_at(gd_variables, col_i++, 0);
+        label = gtk_grid_get_child_at(gd_variables, col_i++, 0);
+        str = gtk_entry_get_text(GTK_ENTRY(entry));
+        strcat(to_write, str);
+        str = gtk_label_get_text(GTK_LABEL(label));
+        strcat(to_write, str);
     }
-
     lg_write(lg, "\\begin{dmath}\n");
-    lg_write(lg, "%s", to_write);
+    lg_write(lg, "%s\n", to_write);
     lg_write(lg, "\\end{dmath}\n");
+
+    //Contraints
+    lg_write(lg, "\\textbf{Subject To:}\n", to_write);
+    for (int i = 0; i < num_constraints; ++i){
+        col_i = 0;
+        strcpy(to_write, "");
+        for (int j = 0; j < num_variables; ++j){
+            entry = gtk_grid_get_child_at(gd_constraints, col_i++, i);
+            label = gtk_grid_get_child_at(gd_constraints, col_i++, i);
+            str = gtk_entry_get_text(GTK_ENTRY(entry));
+            strcat(to_write, str);
+            str = gtk_label_get_text(GTK_LABEL(label));
+            strcat(to_write, str);
+        }
+        cmb = gtk_grid_get_child_at(gd_constraints, col_i++, i);
+        entry = gtk_bin_get_child(GTK_BIN(cmb));
+        str = gtk_entry_get_text(GTK_ENTRY(entry));
+        if (strcmp(str, "<=") == 0) {
+            strcat(to_write, "\\leq");
+        } else if (strcmp(str, ">=") == 0){
+            strcat(to_write, "\\geq");
+        } else {
+            strcat(to_write, "=");
+        }
+
+        entry = gtk_grid_get_child_at(gd_constraints, col_i++, i);
+        str = gtk_entry_get_text(GTK_ENTRY(entry));
+        strcat(to_write, str);
+
+        lg_write(lg, "\\begin{dmath}\n");
+        lg_write(lg, "%s\n", to_write);
+        lg_write(lg, "\\end{dmath}\n");
+    }
 }
 void on_btn_finish_clicked(){
   int rows = 1 + num_constraints;

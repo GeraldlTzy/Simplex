@@ -46,7 +46,7 @@ void lg_define_colors(Latex_Generator *lg){
 }
 
 void lg_write_simplex_info(Latex_Generator *lg) {
-    fprintf(lg->file, "\\section{Description}\n");
+    fprintf(lg->file, "\\chapter{Simplex Description}\n");
     fprintf(lg->file, "The simplex algorithm is a very simple algorithm.\n");
 }
 

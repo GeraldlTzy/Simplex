@@ -365,34 +365,38 @@ int simplex(Matrix *mat, int do_minimize, int num_variables, Latex_Generator *lg
 
     lg_write(lg, "\\section{The initial simplex table}\n");
 
-    if (do_minimize) minimize(mat);
-    else {
-      print_matrix(mat);
+    if (do_minimize) {
+      minimize(mat);
+      node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
+      tree_t forks = {&initial};
+    } else {
+      //print_matrix(mat);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
       maximize(mat, forks);
     }
-    printf("#################RESULTADO OPTIMO######################\n");
-    print_matrix(mat);
+    lg_write(lg, "\\section{The initial simplex table}\n");
+    //printf("#################RESULTADO OPTIMO######################\n");
+    //print_matrix(mat);
     double *solution1 = find_solution(mat, num_variables);
-        printf("1: ");
-    print_solution(solution1, num_variables);
+    //printf("1: ");
+    //print_solution(solution1, num_variables);
     double *solution2 = multiple_solutions(mat, num_variables);
 
     if (solution2 != NULL) {
-        printf("################# OTRO RESULTADO OPTIMO######################\n");
-        print_matrix(mat);
-        printf("2: ");
-        print_solution(solution2, num_variables);
+        //printf("################# OTRO RESULTADO OPTIMO######################\n");
+        //print_matrix(mat);
+        //printf("2: ");
+        //print_solution(solution2, num_variables);
         double *solution3 = generate_solution(solution1, solution2, num_variables, 0.25);
-        printf("3: ");
-        print_solution(solution3, num_variables);
+        //printf("3: ");
+        //print_solution(solution3, num_variables);
         double *solution4 = generate_solution(solution1, solution2, num_variables, 0.5);
-        printf("4: ");
-        print_solution(solution4, num_variables);
+        //printf("4: ");
+        //print_solution(solution4, num_variables);
         double *solution5 = generate_solution(solution1, solution2, num_variables, 0.75);
-        printf("5: ");
-        print_solution(solution5, num_variables);
+        //printf("5: ");
+        //print_solution(solution5, num_variables);
         free(solution2);
         free(solution3);
         free(solution4);
