@@ -347,7 +347,7 @@ void prepare_simplex_lg(){
     // nos saltamos z
     for (int i = 1; i <= num_variables; i++){
        sprintf(buffer, "%.5f%s", -1 * simplex_table->data.f[0][i], var_names[i-1]);
-       if (i != num_variables && simplex_table->data.f[0][i+1]>=0){
+       if (i != num_variables){
            // Si no es el ultimo y si es positivo el siguiente
             strcat(buffer, "+");
            //Si el siguiente es negativo, ya trae el menos puesto
