@@ -102,8 +102,8 @@ void on_combo_constraint_changed(GtkComboBox *cmb, gpointer user_data){
     gboolean active;
     gtk_tree_model_get(model, &iter, 1, &active, -1);//Modelo, indice, devuelvalo aca pa, termina pa
     if(!active){
-      gtk_combo_box_set_active(cmb, -1);
-      gtk_entry_set_text(GTK_ENTRY(entry), "");
+      gtk_combo_box_set_active(cmb, 0);
+      //gtk_entry_set_text(GTK_ENTRY(entry), "");
     }
   }
 }
@@ -269,7 +269,7 @@ void create_ui_from_table(){
   GtkWidget *entry, *label, *cmb;
   char buf[256];
  
-    for(int r = 0; r <= num_constraints; ++r){
+  for(int r = 0; r <= num_constraints; ++r){
     for(int c = 1; c <= num_variables; ++c){
       entry = gtk_entry_new();
       gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
