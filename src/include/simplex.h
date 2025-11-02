@@ -4,6 +4,18 @@
 #include "matrix.h"
 #include "latex_generator.h"
 
-int simplex(Matrix *mat, char **headers, int minimize, int num_variables, Latex_Generator *lg);
+typedef struct {
+  Matrix *table;
+  int rows;
+  int cols;
+  int variables;
+  int slacks;
+  int excess;
+  int artificials;
+  int minimize;
+  char **headers;
+} SimplexData;
+
+int simplex(SimplexData *data, Latex_Generator *lg);
 
 #endif

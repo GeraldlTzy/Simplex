@@ -27,14 +27,6 @@ int loaded = 0;
 int do_minimize = 0;
 char **var_names;
 char **headers;
-typedef struct {
-  Matrix *table;
-  int rows;
-  int cols;
-  int slacks;
-  int surplus;
-  int artificials;
-} SimplexData;
 SimplexData *simplex_data;
 
 Latex_Generator *lg;
@@ -331,21 +323,57 @@ void simplex_data_put_inequalities(SimplexData *simplex_data){
     strcpy(ineq_arr[i], ineq);
     if (strcmp(ineq, "<=") == 0) {simplex_data->slacks++;}
     else if (strcmp(ineq, "=") == 0) {simplex_data->slacks++;}
-    else if (strcmp(ineq, ">=") == 0) {simplex_data->artificials++; simplex_data->surplus++;}
+    else if (strcmp(ineq, ">=") == 0) {simplex_data->artificials++; simplex_data->excess++;}
     printf("Rest: %d, %s\n", i, ineq_arr[i]);
   }
   simplex_data->rows = 1 + num_constraints;
   simplex_data->cols = ((2 + num_variables) + (simplex_data->slacks +
-                        simplex_data->artificials + simplex_data->surplus));
+                        simplex_data->artificials + simplex_data->excess));
+}
+char **simplex_data_put_headers(SimplexData *data){
+  char **headers = malloc(sizeof(char *) * data->cols);
+  int i, acc = 0;
+  
+  headers[acc] = malloc(2);
+  strcpy(headers[acc++], "Z");
+  
+  for (i = 0; i < data->variables; i++){
+    headers[acc] = malloc(NAME_SIZE);
+    strcpy(headers[acc++], var_names[i]);
+  }
+  for (i = 0; i < data->slacks; i++){
+    headers[acc] = malloc(8);
+    sprintf(headers[acc++], "s_{%d}", i+1);
+  }
+  for (i = 0; i < data->excess; i++){
+    headers[acc] = malloc(8);
+    sprintf(headers[acc++], "e_{%d}", i+1);
+  }
+  for (i = 0; i < data->artificials; i++){
+    headers[acc] = malloc(8);
+    sprintf(headers[acc++], "a_{%d}", i+1);
+  }
+  printf("termina\n");
+  headers[acc] = malloc(2);
+  strcpy(headers[acc], "B");
+  for(i = 0; i < data->cols; ++i)
+    printf("%s \t", headers[i]);
+  printf("\n");
+  data->headers = headers;
 }
 void on_btn_finish_clicked(){
   simplex_data = malloc(sizeof(SimplexData));
   simplex_data->slacks = 0;
   simplex_data->artificials = 0;
-  simplex_data->surplus = 0;
+  simplex_data->excess = 0;
   simplex_data->rows = 0;
   simplex_data->cols = 0;
+  simplex_data->variables = num_variables;
+  simplex_data->minimize = do_minimize;
   simplex_data_put_inequalities(simplex_data);
+  simplex_data_put_headers(simplex_data);
+
+
   int rows = simplex_data->rows;
   int cols = simplex_data->cols;
   simplex_data->table = new_matrix(rows, cols, FLOAT);
@@ -385,7 +413,7 @@ void on_btn_finish_clicked(){
   }
   lg_init(lg);
   prepare_simplex_lg();
-  simplex(simplex_data->table, headers, do_minimize, num_variables, lg);
+  simplex(simplex_data, lg);
   lg_simplex_references(lg);
   lg_close(lg);
   lg_generate(lg);
@@ -492,30 +520,6 @@ void load_data(char *filename){
 
 int simplex_table_cols;
 
-void get_simplex_table_headers(){
-  char **headers;
-  char ineq[3];
-  char buf[32];
-  strcpy(headers[0], "Z");
-  int index_a_1 = num_variables + 1;
-
-  for(int i = 1; i <= (num_variables + num_constraints); ++i){
-    if(i <= num_variables){
-      strcpy(headers[i], var_names[i-1]);
-    } else {
-      strcpy(ineq, ineq_arr[i - num_variables - 1]); //Primera restriccion
-      if (strcmp(ineq, "<=") == 0) {
-        sprintf(headers[i], "s_{%d}", i - num_variables);
-        //strcpy(headers[i], "s_{%d}")
-      }
-      else if (strcmp(ineq, "=") == 0){
-        sprintf(headers[i], "a_{%d}", i - num_variables);
-        sprintf(headers[simplex_table_cols - i], "e_{%d}", i - num_variables + 1);
-      }
-      else if (strcmp(ineq, ">=") == 0){}
-    }
-  }
-}
 void on_btn_load_clicked(){
   char *filename;
   GtkWidget *chooser_window;
@@ -534,9 +538,6 @@ void on_btn_load_clicked(){
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
     filename = gtk_file_chooser_get_filename(chooser);
     load_data(filename);
-    //create_ui_from_table();
-    //simplex_table_headers();
-    //simplex(simplex_table, headers, do_minimize, num_variables, lg);
   }
   gtk_widget_destroy(chooser_window);
 }

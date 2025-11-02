@@ -8,7 +8,6 @@
 
 #define MAX_VAL 1.79769313486231571e+308
 int pivot_counter = 0;
-Latex_Generator *lg_simplex;
 
 void canonize(Matrix *mat, int pivot_row, int pivot_col){
     double k;
@@ -80,7 +79,7 @@ void  node_list_free(Node *node){
 /*###########################################################################*/
 
 /*###########################################################################*/
-void maximize(Matrix *mat, char **headers){
+void maximize(Matrix *mat, char **headers, Latex_Generator *lg){
   Matrix *init = matrix_copy(mat);
   int ids = 0;
   while(1){
@@ -163,7 +162,7 @@ void maximize(Matrix *mat, char **headers){
         }
       }
     }
-    tex_table_draw(lg_simplex, mat->rows, mat->cols, headers, mat->data.f);
+    tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
     pivot_counter++;
     printf("Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
@@ -172,10 +171,13 @@ void maximize(Matrix *mat, char **headers){
 }
 
 
-void minimize(Matrix *mat, char **headers){
+void minimize(Matrix *mat, char **headers, Latex_Generator *lg){
   Matrix *init = matrix_copy(mat);
 
-  printf("##############MINIMIZANDO###################\n");
+  printf("##############MINIMIZANDO MATRIZ INICIAL ###################\n");
+  tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+  printf("############################################################\n");
+
   while(1){
     double min_max = -MAX_VAL;
     int pivot_row = -1, pivot_col = -1;;
@@ -270,11 +272,14 @@ void minimize(Matrix *mat, char **headers){
         }
       }
     }
-    //tex_table_draw(lg_simplex, mat->rows, mat->cols, headers, mat->data.f);
+    for(int i = 0; i < mat->cols; ++i)
+    printf("%s \t", headers[i]);
+    printf("\n");
+  
     pivot_counter++;
-    printf("Pivoteo(%d)\n", pivot_counter);
+    lg_write(lg, "Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
-    print_matrix(mat);
+    tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
   }
 }
 
@@ -359,42 +364,42 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
     return sol3;
 }
 
-int simplex(Matrix *mat, char **headers, 
-            int do_minimize, int num_variables, Latex_Generator *lg){
+int simplex(SimplexData *data, Latex_Generator *lg){
+    Matrix *mat = data->table;
+
     print_matrix(mat);
-    lg_simplex = lg;
     lg_write(lg, "\\section{The initial simplex table}\n");
 
-    if (do_minimize) {
-      minimize(mat, headers);
+    if (data->minimize) {
+      minimize(mat, data->headers, lg);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
     } else {
       //print_matrix(mat);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
-      maximize(mat, headers);
+      maximize(mat, data->headers, lg);
     }
     lg_write(lg, "\\section{The initial simplex table}\n");
     //printf("#################RESULTADO OPTIMO######################\n");
     //print_matrix(mat);
-    double *solution1 = find_solution(mat, num_variables);
+    double *solution1 = find_solution(mat, data->variables);
     //printf("1: ");
     //print_solution(solution1, num_variables);
-    double *solution2 = multiple_solutions(mat, num_variables);
+    double *solution2 = multiple_solutions(mat, data->variables);
 
     if (solution2 != NULL) {
         //printf("################# OTRO RESULTADO OPTIMO######################\n");
         //print_matrix(mat);
         //printf("2: ");
         //print_solution(solution2, num_variables);
-        double *solution3 = generate_solution(solution1, solution2, num_variables, 0.25);
+        double *solution3 = generate_solution(solution1, solution2, data->variables, 0.25);
         //printf("3: ");
         //print_solution(solution3, num_variables);
-        double *solution4 = generate_solution(solution1, solution2, num_variables, 0.5);
+        double *solution4 = generate_solution(solution1, solution2, data->variables, 0.5);
         //printf("4: ");
         //print_solution(solution4, num_variables);
-        double *solution5 = generate_solution(solution1, solution2, num_variables, 0.75);
+        double *solution5 = generate_solution(solution1, solution2, data->variables, 0.75);
         //printf("5: ");
         //print_solution(solution5, num_variables);
         free(solution2);
