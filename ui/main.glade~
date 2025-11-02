@@ -32,7 +32,6 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="model">liststore1</property>
-            <property name="active">0</property>
             <property name="has-entry">True</property>
             <property name="entry-text-column">0</property>
             <property name="active-id">0</property>
@@ -169,6 +168,7 @@
             <property name="can-focus">True</property>
             <property name="receives-default">False</property>
             <property name="draw-indicator">True</property>
+            <signal name="toggled" handler="on_ckbtn_intermediate_tables_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="x">720</property>

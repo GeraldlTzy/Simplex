@@ -22,6 +22,7 @@ GtkWidget* vp_varnames;
 GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
 GtkGrid* gd_varnames;
+GtkToggleButton* intermediate_toggle;
 
 int loaded = 0;
 int do_minimize = 0;
@@ -44,7 +45,7 @@ void initialize(){
 	vp_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "vp_objective_func"));
 	vp_constraints = GTK_WIDGET(gtk_builder_get_object(builder, "vp_constraints"));
   vp_varnames = GTK_WIDGET(gtk_builder_get_object(builder, "vp_varnames"));
-  
+  intermediate_toggle = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "ckbtn_intermediate_tables"));
   inequalities = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
   GtkTreeIter iter;
   gtk_list_store_append(inequalities, &iter);
@@ -369,6 +370,7 @@ void on_btn_finish_clicked(){
   simplex_data->cols = 0;
   simplex_data->variables = num_variables;
   simplex_data->minimize = do_minimize;
+  simplex_data->show_intermediates = gtk_toggle_button_get_active(intermediate_toggle);
   simplex_data_put_inequalities(simplex_data);
   simplex_data_put_headers(simplex_data);
 
@@ -554,6 +556,7 @@ void on_back_button_clicked() {
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
   gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
+  gtk_toggle_button_set_active(intermediate_toggle, 0);
  
   for (int i = 0; i < num_variables; ++i) free(var_names[i]);
   free(var_names);

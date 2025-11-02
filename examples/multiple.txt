@@ -1,4 +1,4 @@
-name=mofongo
+name=Multiple
 objective=maximize
 count_variables=3
 count_constraints=4

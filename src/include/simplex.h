@@ -13,6 +13,7 @@ typedef struct {
   int excess;
   int artificials;
   int minimize;
+  int show_intermediates;
   char **headers;
 } SimplexData;
 

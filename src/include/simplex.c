@@ -79,7 +79,7 @@ void  node_list_free(Node *node){
 /*###########################################################################*/
 
 /*###########################################################################*/
-void maximize(Matrix *mat, char **headers, Latex_Generator *lg){
+void maximize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator *lg){
   Matrix *init = matrix_copy(mat);
   int ids = 0;
   while(1){
@@ -165,15 +165,17 @@ void maximize(Matrix *mat, char **headers, Latex_Generator *lg){
     pivot_counter++;
     //printf("Pivoteo(%d)\n", pivot_counter);
     // TODO: solo poner si se activó la opción de chucnhe
-    lg_write(lg, "Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
-    tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+    if (do_intermediates) {
+      lg_write(lg, "Pivoting(%d)\n", pivot_counter);
+      tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+    }
     //print_matrix(mat);
   }
 }
 
 
-void minimize(Matrix *mat, char **headers, Latex_Generator *lg){
+void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator *lg){
   Matrix *init = matrix_copy(mat);
   tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
 
@@ -277,9 +279,11 @@ void minimize(Matrix *mat, char **headers, Latex_Generator *lg){
  
     // TODO: solo poner si se activó la opción de chucnhe
     pivot_counter++;
-    lg_write(lg, "Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
-    tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+    if (do_intermediates){
+      lg_write(lg, "Pivoting(%d)\n", pivot_counter);
+      tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+    }
   }
 }
 
@@ -289,6 +293,13 @@ void print_solution(double *sol, int size) {
         printf("%.3lf ", sol[i]);
     }
     printf("---- \n");
+}
+void write_solution(double *sol, int size, char** headers, Latex_Generator* lg) {
+    for (int i = 0; i < size; ++i) {
+        lg_write(lg, "%s: %.5lf", headers[i+1], sol[i]);
+        if (i != size-1) lg_write(lg, ", ");
+    }
+    lg_write(lg, "\\\\\n");
 }
 int is_basic_var(Matrix *mat, int col) {
     int one_ammount = 0;
@@ -366,41 +377,63 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
 
 int simplex(SimplexData *data, Latex_Generator *lg){
     Matrix *mat = data->table;
+    pivot_counter = 0;
 
     print_matrix(mat);
     lg_write(lg, "\\section{The initial simplex table}\n");
+    tex_table_draw(lg, mat->rows, mat->cols, data->headers, mat->data.f);
+
+    if (data->show_intermediates){
+      lg_write(lg, "\\section{The intermediates simplex tables}\n");
+    }
 
     if (data->minimize) {
-      minimize(mat, data->headers, lg);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
+      minimize(mat, data->headers, data->show_intermediates, lg);
     } else {
       //print_matrix(mat);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
-      maximize(mat, data->headers, lg);
+      maximize(mat, data->headers, data->show_intermediates, lg);
     }
+    
+    lg_write(lg, "\\section{The final simplex table}\n");
+    tex_table_draw(lg, mat->rows, mat->cols, data->headers, mat->data.f);
     //printf("#################RESULTADO OPTIMO######################\n");
     //print_matrix(mat);
+    lg_write(lg, "\\section{Solution}\n");
     double *solution1 = find_solution(mat, data->variables);
+    lg_write(lg, "\\textbf{Solution 1:}\\\\\n");
+    write_solution(solution1, data->variables, data->headers, lg);
     //printf("1: ");
     //print_solution(solution1, num_variables);
     double *solution2 = multiple_solutions(mat, data->variables);
 
-    if (solution2 != NULL) {
-        //printf("################# OTRO RESULTADO OPTIMO######################\n");
-        //print_matrix(mat);
+
+
+    if (solution2 != NULL) {  
+        lg_write(lg, "\\\\Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty.\\\\\\\\\n"); 
+        lg_write(lg, "\\textbf{Solution 2:}\\\\\n");
+        write_solution(solution2, data->variables, data->headers, lg);
         //printf("2: ");
         //print_solution(solution2, num_variables);
+        lg_write(lg, "\\\\By using the following formula, infinite optimal solutions can be found:\\\\\n"); 
+        lg_write(lg, "\\begin{dmath}\n");
+        lg_write(lg, "\\alpha*solution1 + (1-\\alpha)*solution2\\\\\n");
+        lg_write(lg, "\\end{dmath}\n");
+        lg_write(lg, "$$\n");
+        lg_write(lg, "0 \\leq \\alpha \\leq 1\n");
+        lg_write(lg, "$$\n");
         double *solution3 = generate_solution(solution1, solution2, data->variables, 0.25);
-        //printf("3: ");
-        //print_solution(solution3, num_variables);
+        lg_write(lg, "\\textbf{Solution 3:}\\\\\n");
+        write_solution(solution3, data->variables, data->headers, lg);
         double *solution4 = generate_solution(solution1, solution2, data->variables, 0.5);
-        //printf("4: ");
-        //print_solution(solution4, num_variables);
+        lg_write(lg, "\\textbf{Solution 4:}\\\\\n");
+        write_solution(solution4, data->variables, data->headers, lg);
         double *solution5 = generate_solution(solution1, solution2, data->variables, 0.75);
-        //printf("5: ");
-        //print_solution(solution5, num_variables);
+        lg_write(lg, "\\textbf{Solution 5:}\\\\\n");
+        write_solution(solution5, data->variables, data->headers, lg);
         free(solution2);
         free(solution3);
         free(solution4);

@@ -82,7 +82,7 @@
 
 \chapter{Simplex Description}
 The simplex algorithm is a very simple algorithm.
-\chapter{Solving mofongo}
+\chapter{Solving Multiple}
 \section{Mathematical representation}
 \textbf{Maximize:}
 \begin{dmath}
@@ -102,27 +102,26 @@ z = 60,00000abeja + 35,00000babuino + 20,00000coyote
 0,00000abeja + 1,00000babuino + 0,00000coyote \leq5,00000
 \end{dmath}
 \section{The initial simplex table}
-Pivoteo(1)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
  \hline 
 $Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
  \hline 
-1,00000 & 0,00000 & 10,00000 & -5,00000 & 0,00000 & 0,00000 & 30,00000 & 0,00000 & 240,00000\\ 
+1,00000 & -60,00000 & -35,00000 & -20,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0,00000 & 0,00000 & 0,00000 & -1,00000 & 1,00000 & 0,00000 & -4,00000 & 0,00000 & 16,00000\\ 
+0,00000 & 8,00000 & 6,00000 & 1,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 48,00000\\ 
  \hline 
-0,00000 & 0,00000 & -1,00000 & 0,50000 & 0,00000 & 1,00000 & -2,00000 & 0,00000 & 4,00000\\ 
+0,00000 & 4,00000 & 2,00000 & 1,50000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 20,00000\\ 
  \hline 
-0,00000 & 1,00000 & 0,75000 & 0,25000 & 0,00000 & 0,00000 & 0,50000 & 0,00000 & 4,00000\\ 
+0,00000 & 2,00000 & 1,50000 & 0,50000 & 0,00000 & 0,00000 & 1,00000 & 0,00000 & 8,00000\\ 
  \hline 
 0,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-Pivoteo(2)
+\section{The final simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
@@ -142,4 +141,23 @@ $Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\section{Solution}
+\textbf{Solution 1:}\\
+abeja: 2,00000, babuino: 0,00000, coyote: 8,00000\\
+\\Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty.\\\\
+\textbf{Solution 2:}\\
+abeja: 0,00000, babuino: 1,60000, coyote: 11,20000\\
+\\By using the following formula, infinite optimal solutions can be found:\\
+\begin{dmath}
+\alpha*solution1 + (1-\alpha)*solution2\\
+\end{dmath}
+$$
+0 \leq \alpha \leq 1
+$$
+\textbf{Solution 3:}\\
+abeja: 0,50000, babuino: 1,20000, coyote: 10,40000\\
+\textbf{Solution 4:}\\
+abeja: 1,00000, babuino: 0,80000, coyote: 9,60000\\
+\textbf{Solution 5:}\\
+abeja: 1,50000, babuino: 0,40000, coyote: 8,80000\\
 \end{document}
