@@ -84,48 +84,62 @@
 The simplex algorithm is a very simple algorithm.
 \chapter{Solving mofongo}
 \section{Mathematical representation}
-\textbf{Minimize:}
+\textbf{Maximize:}
 \begin{dmath}
-z = 2.00000Feliz + -3.00000Jueves 
+z = 60,00000abeja + 35,00000babuino + 20,00000coyote 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
-1.00000Feliz + 1.00000Jueves \leq4.00000
+8,00000abeja + 6,00000babuino + 1,00000coyote \leq48,00000
 \end{dmath}
 \begin{dmath}
-1.00000Feliz + -1.00000Jueves \leq6.00000
+4,00000abeja + 2,00000babuino + 1,50000coyote \leq20,00000
+\end{dmath}
+\begin{dmath}
+2,00000abeja + 1,50000babuino + 0,50000coyote \leq8,00000
+\end{dmath}
+\begin{dmath}
+0,00000abeja + 1,00000babuino + 0,00000coyote \leq5,00000
 \end{dmath}
 \section{The initial simplex table}
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $Feliz$ & $Jueves$ & $s_{1}$ & $s_{2}$ & $B$\\ 
- \hline 
-1.00000 & -2.00000 & 3.00000 & 0.00000 & 0.00000 & 0.00000\\ 
- \hline 
-0.00000 & 1.00000 & 1.00000 & 1.00000 & 0.00000 & 4.00000\\ 
- \hline 
-0.00000 & 1.00000 & -1.00000 & 0.00000 & 1.00000 & 6.00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
 Pivoteo(1)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $Feliz$ & $Jueves$ & $s_{1}$ & $s_{2}$ & $B$\\ 
+$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
  \hline 
-1.00000 & -5.00000 & 0.00000 & -3.00000 & 0.00000 & -12.00000\\ 
+1,00000 & 0,00000 & 10,00000 & -5,00000 & 0,00000 & 0,00000 & 30,00000 & 0,00000 & 240,00000\\ 
  \hline 
-0.00000 & 1.00000 & 1.00000 & 1.00000 & 0.00000 & 4.00000\\ 
+0,00000 & 0,00000 & 0,00000 & -1,00000 & 1,00000 & 0,00000 & -4,00000 & 0,00000 & 16,00000\\ 
  \hline 
-0.00000 & 2.00000 & 0.00000 & 1.00000 & 1.00000 & 10.00000\\ 
+0,00000 & 0,00000 & -1,00000 & 0,50000 & 0,00000 & 1,00000 & -2,00000 & 0,00000 & 4,00000\\ 
+ \hline 
+0,00000 & 1,00000 & 0,75000 & 0,25000 & 0,00000 & 0,00000 & 0,50000 & 0,00000 & 4,00000\\ 
+ \hline 
+0,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{The initial simplex table}
+Pivoteo(2)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
+ \hline 
+1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 10,00000 & 10,00000 & 0,00000 & 280,00000\\ 
+ \hline 
+0,00000 & 0,00000 & -2,00000 & 0,00000 & 1,00000 & 2,00000 & -8,00000 & 0,00000 & 24,00000\\ 
+ \hline 
+0,00000 & 0,00000 & -2,00000 & 1,00000 & 0,00000 & 2,00000 & -4,00000 & 0,00000 & 8,00000\\ 
+ \hline 
+0,00000 & 1,00000 & 1,25000 & 0,00000 & 0,00000 & -0,50000 & 1,50000 & 0,00000 & 2,00000\\ 
+ \hline 
+0,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
 \end{document}

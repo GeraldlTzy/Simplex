@@ -162,11 +162,13 @@ void maximize(Matrix *mat, char **headers, Latex_Generator *lg){
         }
       }
     }
-    tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
     pivot_counter++;
-    printf("Pivoteo(%d)\n", pivot_counter);
+    //printf("Pivoteo(%d)\n", pivot_counter);
+    // TODO: solo poner si se activó la opción de chucnhe
+    lg_write(lg, "Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
-    print_matrix(mat);
+    tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+    //print_matrix(mat);
   }
 }
 
@@ -269,10 +271,11 @@ void minimize(Matrix *mat, char **headers, Latex_Generator *lg){
         }
       }
     }
-    for(int i = 0; i < mat->cols; ++i)
-    printf("%s \t", headers[i]);
-    printf("\n");
-  
+    //for(int i = 0; i < mat->cols; ++i)
+    //printf("%s \t", headers[i]);
+    //printf("\n");
+ 
+    // TODO: solo poner si se activó la opción de chucnhe
     pivot_counter++;
     lg_write(lg, "Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
@@ -377,7 +380,6 @@ int simplex(SimplexData *data, Latex_Generator *lg){
       tree_t forks = {&initial};
       maximize(mat, data->headers, lg);
     }
-    lg_write(lg, "\\section{The initial simplex table}\n");
     //printf("#################RESULTADO OPTIMO######################\n");
     //print_matrix(mat);
     double *solution1 = find_solution(mat, data->variables);

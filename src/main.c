@@ -29,7 +29,8 @@ char **var_names;
 char **headers;
 SimplexData *simplex_data;
 
-Latex_Generator *lg;
+Latex_Generator l;
+Latex_Generator *lg = &l;
 GtkListStore *inequalities;
 char **ineq_arr;
 void initialize(){
@@ -58,8 +59,6 @@ void initialize(){
   g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_builder_connect_signals(builder, NULL);
     //////////////////////////////// latex generator 
-    Latex_Generator l;
-    lg = &l;
 }
 
 

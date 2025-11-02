@@ -2,4 +2,3 @@
 \contentsline {chapter}{\numberline {2}Solving mofongo}{3}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Mathematical representation}{3}{section.2.1}%
 \contentsline {section}{\numberline {2.2}The initial simplex table}{3}{section.2.2}%
-\contentsline {section}{\numberline {2.3}The initial simplex table}{3}{section.2.3}%
