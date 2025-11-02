@@ -1,8 +1,62 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
-
+#include <string.h>
 #include "latex_generator.h"
+
+char tex_buf[256];
+char tex_buf2[4096];
+
+void tex_table_init(Latex_Generator *lg, int cols){
+  tex_buf2[0] = '\0';
+  for (int c = 0; c < cols; ++c){
+    strcat(tex_buf2, "|c");
+  }
+  strcat(tex_buf2, "|");
+  lg_write(lg, "\\begin{center}\n");
+  lg_write(lg, "\\begin{adjustbox}{max width=1\\textwidth,keepaspectratio}\n");
+  lg_write(lg, "\\begin{tabular}{%s} \n \\hline \n", tex_buf2);
+  tex_buf2[0] = '\0';
+}
+
+void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **content){
+  tex_buf2[0] = '\0';
+  for(int r = 0; r < rows; ++r){
+    for(int c = 0; c < cols; ++c){
+      sprintf(tex_buf2, "%d%s", content[r][c],
+              ((c < cols-1) ? (" & ") : ("\n \\hline \n")));
+    }
+  }
+  tex_buf2[0] = '\0';
+  lg_write(lg, tex_buf2);
+}
+
+void tex_table_headers(Latex_Generator *lg, int cols, char** headers){
+  tex_buf2[0] = '\0';
+  for(int h = 0; h < cols; ++h){
+    strcat(tex_buf2, headers[h]);
+    if(h < cols-1)
+      strcat(tex_buf2, " & ");
+    else
+      strcat(tex_buf2, " \n \\hline \n");
+  }
+  lg_write(lg, tex_buf2);
+  tex_buf2[0] = '\0';
+}
+
+void tex_table_end(Latex_Generator *lg){
+  lg_write(lg, "\\end{tabular} \n");
+  lg_write(lg, "\\end{adjustbox}\n");
+  lg_write(lg, "\\end{center}\n");
+}
+
+void tex_table_draw(Latex_Generator *lg, int rows, int cols, char **headers, double **content){
+  tex_table_init(lg, cols);
+  tex_table_headers(lg, cols, headers);
+  tex_table_content(lg, rows, cols, content);
+  tex_table_end(lg);
+}
+
 
 int lg_open(Latex_Generator *lg, char *name) {
     lg->filename[0] = '\0';

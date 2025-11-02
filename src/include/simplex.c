@@ -8,6 +8,7 @@
 
 #define MAX_VAL 1.79769313486231571e+308
 int pivot_counter = 0;
+Latex_Generator *lg_simplex;
 
 void canonize(Matrix *mat, int pivot_row, int pivot_col){
     double k;
@@ -73,7 +74,13 @@ void  node_list_free(Node *node){
   free(node);
 }
 
-void maximize(Matrix *mat, tree_t forks){
+//char tex_buf1[256];
+//char tex_buf2[4096];
+
+/*###########################################################################*/
+
+/*###########################################################################*/
+void maximize(Matrix *mat, char **headers){
   Matrix *init = matrix_copy(mat);
   int ids = 0;
   while(1){
@@ -156,6 +163,7 @@ void maximize(Matrix *mat, tree_t forks){
         }
       }
     }
+    tex_table_draw(lg_simplex, mat->rows, mat->cols, headers, mat->data.f);
     pivot_counter++;
     printf("Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
@@ -163,22 +171,12 @@ void maximize(Matrix *mat, tree_t forks){
   }
 }
 
-void minimize(Matrix *mat){
+
+void minimize(Matrix *mat, char **headers){
   Matrix *init = matrix_copy(mat);
-  int ids = 0;
-    printf("##############MINIMIZANDO###################\n");
+
+  printf("##############MINIMIZANDO###################\n");
   while(1){
-    if(ids == 25) break;
-   
-    /* 
-     * NOTA EXTRANA:
-     * parece que DBL_MIN no es el numero negativo mas pequeno representable por float 
-     * es el numero POSITIVO mas peque;o representable por float 
-     *
-     * entonces cuando se usaba DBL_MIN no servia por eso 
-     * si se quiere el numero negativo mas negativo representable por float se usa -DBL_MAX
-     * */
-    ids++;
     double min_max = -MAX_VAL;
     int pivot_row = -1, pivot_col = -1;;
     
@@ -189,7 +187,7 @@ void minimize(Matrix *mat){
     }
     printf("#################################\n");
 
-    if(list_contain(mat) || (matrix_compare(mat, init) && ids != 1)){
+    if(list_contain(mat) || (matrix_compare(mat, init) && pivot_counter != 0)){
       printf("ENCICLADO CAMBIA DE MAT\n");
       // Si entra al siguiente if es que se enciclo y no hay otras opciones
       Node *node = get_last_state();
@@ -272,6 +270,7 @@ void minimize(Matrix *mat){
         }
       }
     }
+    //tex_table_draw(lg_simplex, mat->rows, mat->cols, headers, mat->data.f);
     pivot_counter++;
     printf("Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
@@ -360,20 +359,21 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
     return sol3;
 }
 
-int simplex(Matrix *mat, int do_minimize, int num_variables, Latex_Generator *lg){
+int simplex(Matrix *mat, char **headers, 
+            int do_minimize, int num_variables, Latex_Generator *lg){
     print_matrix(mat);
-
+    lg_simplex = lg;
     lg_write(lg, "\\section{The initial simplex table}\n");
 
     if (do_minimize) {
-      minimize(mat);
+      minimize(mat, headers);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
     } else {
       //print_matrix(mat);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
-      maximize(mat, forks);
+      maximize(mat, headers);
     }
     lg_write(lg, "\\section{The initial simplex table}\n");
     //printf("#################RESULTADO OPTIMO######################\n");

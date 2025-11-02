@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  30 OCT 2025 10:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.10.30)  1 NOV 2025 19:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -665,25 +665,25 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `Simplex_Report.out' has not changed.
-(rerunfilecheck)             Checksum: A4D8B542EC1CC7463FE3105D65630E86;800.
+(rerunfilecheck)             Checksum: 07C47560C8CFD7FAAF3A668D9E27B9C7;830.
  ) 
 Here is how much of TeX's memory you used:
- 13965 strings out of 475109
- 212012 string characters out of 5765325
- 813431 words of memory out of 5000000
- 36771 multiletter control sequences out of 15000+600000
+ 13965 strings out of 475171
+ 212012 string characters out of 5767094
+ 813291 words of memory out of 5000000
+ 36763 multiletter control sequences out of 15000+600000
  564363 words of font info for 55 fonts, out of 8000000 for 9000
- 40 hyphenation exceptions out of 8191
+ 14 hyphenation exceptions out of 8191
  75i,5n,86p,267b,456s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on LaTeX/Simplex_Report.pdf (4 pages, 182012 bytes).
+sy10.pfb>
+Output written on LaTeX/Simplex_Report.pdf (4 pages, 176913 bytes).
 PDF statistics:
- 84 PDF objects out of 1000 (max. 8388607)
- 64 compressed objects within 1 object stream
+ 79 PDF objects out of 1000 (max. 8388607)
+ 61 compressed objects within 1 object stream
  10 named destinations out of 1000 (max. 500000)
  46 words of extra memory for PDF output out of 10000 (max. 10000000)
 

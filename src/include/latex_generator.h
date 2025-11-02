@@ -20,4 +20,5 @@ void lg_write_simplex_info(Latex_Generator *lg);
 void lg_simplex_references(Latex_Generator *lg);
 void lg_init(Latex_Generator *lg);
 
+void tex_table_draw(Latex_Generator *lg, int rows, int cols, char **headers, double **content);
 #endif // LATEX_GENERATOR_H

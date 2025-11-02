@@ -26,9 +26,20 @@ GtkGrid* gd_varnames;
 int loaded = 0;
 int do_minimize = 0;
 char **var_names;
+char **headers;
+typedef struct {
+  Matrix *table;
+  int rows;
+  int cols;
+  int slacks;
+  int surplus;
+  int artificials;
+} SimplexData;
+SimplexData *simplex_data;
 
 Latex_Generator *lg;
 GtkListStore *inequalities;
+char **ineq_arr;
 void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
@@ -73,23 +84,6 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-Matrix *simplex_table;
-/*GtkWidget*
-gtk_grid_get_child_at (
-  GtkGrid* grid,
-  gint left,
-  gint top
-)*/
-/*void
-gtk_grid_attach (
-  GtkGrid* grid,
-  GtkWidget* child,
-  gint left,
-  gint top,
-  gint width,
-  gint height
-)
-*/
 char problem_name[256];
 int num_variables;
 int num_constraints;
@@ -262,73 +256,6 @@ void on_btn_var_continue_clicked(){
   gtk_widget_show_all(second_window);
 }
 
-// TODO: signal para validar numeros
-void create_ui_from_table(){
-  gd_variables = GTK_GRID(gtk_grid_new());
-  gd_constraints = GTK_GRID(gtk_grid_new());
-  GtkWidget *entry, *label, *cmb;
-  char buf[256];
- 
-  for(int r = 0; r <= num_constraints; ++r){
-    for(int c = 1; c <= num_variables; ++c){
-      entry = gtk_entry_new();
-      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
-      gtk_widget_set_hexpand(entry, TRUE);
-      if(r == 0){
-        sprintf(buf, "%.5lf", -1 * simplex_table->data.f[r][c]);
-        gtk_entry_set_text(GTK_ENTRY(entry), buf);
-
-        sprintf(buf, "%s %s", var_names[c-1], ((c < num_variables-1) ? "+ " : ""));
-        label = gtk_label_new(buf);
-
-        gtk_grid_attach(gd_variables, entry, (c-1)*2, r, 1, 1);
-        gtk_grid_attach(gd_variables, label, (c-1)*2+1, r, 1, 1);
-      } else {
-        sprintf(buf, "%.5lf", simplex_table->data.f[r][c]);
-        gtk_entry_set_text(GTK_ENTRY(entry), buf);
-
-        sprintf(buf, "%s %s", var_names[c-1], ((c < num_variables-1) ? "+ " : ""));
-        label = gtk_label_new(buf);
-
-        gtk_grid_attach(gd_constraints, entry, (c-1)*2, r, 1, 1);
-        gtk_grid_attach(gd_constraints, label, (c-1)*2+1, r, 1, 1);
-
-        entry = gtk_grid_get_child_at(gd_constraints, (c-1)*2, (r-1));
-      } 
-    }
-    if(r != 0){
-      
-      cmb = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(inequalities));
-      gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(cmb), 0);
-      gtk_combo_box_set_active(GTK_COMBO_BOX(cmb), 0);
-      g_signal_connect(cmb, "changed", G_CALLBACK(on_combo_constraint_changed), inequalities);
-
-      entry = gtk_bin_get_child(GTK_BIN(cmb));
-      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
-      gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-      gtk_widget_set_can_focus(entry, FALSE);
-      
-      entry = gtk_entry_new();
-      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
-      gtk_widget_set_hexpand(entry, TRUE);
-      
-      sprintf(buf, "%.5lf", simplex_table->data.f[r][simplex_table->cols-1]);
-      gtk_entry_set_text(GTK_ENTRY(entry), buf);
-
-      gtk_grid_attach(gd_constraints, cmb, num_variables+2, r, 1, 1);
-      gtk_grid_attach(gd_constraints, entry, num_variables+3, r, 1, 1);
-    }
-  }
-
-  gtk_grid_set_column_spacing(gd_variables, 5);
-  gtk_grid_set_column_spacing(gd_constraints, 5);
-
-  gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
-  gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
-
-  gtk_widget_hide(main_window);
-  gtk_widget_show_all(second_window);
-}
 void prepare_simplex_lg(){
     lg_write(lg, "\\chapter{Solving %s}\n", problem_name);
     lg_write(lg, "\\section{Mathematical representation}\n");
@@ -391,32 +318,63 @@ void prepare_simplex_lg(){
         lg_write(lg, "\\end{dmath}\n");
     }
 }
+void simplex_data_put_inequalities(SimplexData *simplex_data){
+  ineq_arr = malloc(sizeof(char *) * num_constraints);
+  GtkWidget *cmb; 
+  GtkEntry *entry;
+  
+  for (int i = 0; i < num_constraints; ++i){
+    ineq_arr[i] = malloc(3);
+    cmb = gtk_grid_get_child_at(gd_constraints, num_variables*2, i);
+    entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cmb)));
+    const gchar *ineq = gtk_entry_get_text(entry);
+    strcpy(ineq_arr[i], ineq);
+    if (strcmp(ineq, "<=") == 0) {simplex_data->slacks++;}
+    else if (strcmp(ineq, "=") == 0) {simplex_data->slacks++;}
+    else if (strcmp(ineq, ">=") == 0) {simplex_data->artificials++; simplex_data->surplus++;}
+    printf("Rest: %d, %s\n", i, ineq_arr[i]);
+  }
+  simplex_data->rows = 1 + num_constraints;
+  simplex_data->cols = ((2 + num_variables) + (simplex_data->slacks +
+                        simplex_data->artificials + simplex_data->surplus));
+}
 void on_btn_finish_clicked(){
-  int rows = 1 + num_constraints;
-  int cols = 2 + num_variables + num_constraints;
-  GtkWidget *entry;
-  simplex_table = new_matrix(rows, cols, FLOAT);
-  init_matrix_num(simplex_table, 0);
+  simplex_data = malloc(sizeof(SimplexData));
+  simplex_data->slacks = 0;
+  simplex_data->artificials = 0;
+  simplex_data->surplus = 0;
+  simplex_data->rows = 0;
+  simplex_data->cols = 0;
+  simplex_data_put_inequalities(simplex_data);
+  int rows = simplex_data->rows;
+  int cols = simplex_data->cols;
+  simplex_data->table = new_matrix(rows, cols, FLOAT);
+  init_matrix_num(simplex_data->table, 0);
 
-  simplex_table->data.f[0][0]=1;
-  simplex_table->data.f[0][cols-1] = 0;
+  double **table = simplex_data->table->data.f;
+  table[0][0] = 1;
+  table[0][cols-1] = 0;
+      print_matrix(simplex_data->table);
+  
   int canonic_i = num_variables + 1;
+  GtkWidget *entry;
+  
   for(int r = 0; r < rows; ++r){
     for(int c = 1; c < cols; ++c){
       if(r == 0 && c <= num_variables){
         entry = gtk_grid_get_child_at(gd_variables, (c-1)*2, r);      
-        simplex_table->data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
+        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
       } else if(c <= num_variables){
         entry = gtk_grid_get_child_at(gd_constraints, (c-1)*2, (r-1));
-        simplex_table->data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
       } else if(r > 0 && c == canonic_i){
-        simplex_table->data.f[r][c] = 1;
+        table[r][c] = 1;
       } else if(r > 0 && c == cols-1){
-
         entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, (r-1));
-        simplex_table->data.f[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
       }
     }
+      print_matrix(simplex_data->table);
     if(r > 0){
       canonic_i++;
     }
@@ -427,13 +385,16 @@ void on_btn_finish_clicked(){
   }
   lg_init(lg);
   prepare_simplex_lg();
-  simplex(simplex_table, do_minimize, num_variables, lg);
+  simplex(simplex_data->table, headers, do_minimize, num_variables, lg);
   lg_simplex_references(lg);
   lg_close(lg);
   lg_generate(lg);
 }
 
-Matrix *load_data(char *filename){
+
+
+// TODO: signal para validar numeros
+void load_data(char *filename){
   FILE *file;
   file = fopen(filename, "r");
   char objective[9];
@@ -447,40 +408,114 @@ Matrix *load_data(char *filename){
   num_variables = atoi(read_text(file, '=', '\n'));
   num_constraints = atoi(read_text(file, '=', '\n'));
   var_names = malloc(sizeof(char*) * num_variables);
-  for(int x = 0; x < num_variables; ++x){
-      var_names[x] = read_text(file, '=', '^');
-    }
-    int x_i;
 
-    int rows = 1+num_constraints;
-    int cols = 2+num_variables+num_constraints;
-    Matrix *mat = new_matrix(rows, cols, FLOAT);
-    init_matrix_num(mat, 0);
-    
-    int index_diag = num_variables+1;
-    
-    for(int r = 0; r < rows; ++r){
-      for(int c = 0; c < cols; ++c){
-        if(r == 0 && c < num_variables+1) {
-          if(c == 0){
-            mat->data.f[r][c] = 1;
-          } else
-            mat->data.f[r][c] = atoi(read_text(file, '=', '^')) * -1;
-        } else if(c > 0 && c < num_variables+1){
-          mat->data.f[r][c] = atof(read_text(file, '=', '^'));
-        } else if(r > 0 && c == cols-1) {
-          mat->data.f[r][c] = atof(read_text(file, '<', '^'));
-        } else if(r > 0 && c == index_diag){
-          mat->data.f[r][index_diag] = 1.0f;
-        }
-      }
-      if(r != 0) index_diag++;
+  gd_variables = GTK_GRID(gtk_grid_new());
+  gd_constraints = GTK_GRID(gtk_grid_new());
+  GtkWidget *label, *cmb; 
+  GtkEntry *entry;
+  char buf[256];
+
+  for(int x = 0; x < num_variables; ++x){
+    var_names[x] = read_text(file, '=', '^');
+  }
+  int gd_left = 0;
+  int gd_top = 0;
+
+  for(int x = 0; x < num_variables; ++x){
+    //Cargar los valores de las variables al grid
+    entry = GTK_ENTRY(gtk_entry_new());
+    gtk_entry_set_width_chars(entry, 5);
+    gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
+    sprintf(buf, "%.5lf", atof(read_text(file, '=', '^')));
+    gtk_entry_set_text(entry, buf);
+    gtk_grid_attach(gd_variables, GTK_WIDGET(entry), gd_left++, 0, 1, 1);
+    //Cargar los nombres de las variables al grid 
+    sprintf(buf, "%s %s", var_names[x], ((x < num_variables-1) ? ("+ ") : ("")));
+    label = gtk_label_new(buf);
+    gtk_grid_attach(gd_variables, label, gd_left, 0, 1, 1);
+    //Carga los nombres tambien al grid de restricciones
+    for (int y = 0; y < num_constraints; ++y){
+      label = gtk_label_new(buf);
+      gtk_grid_attach(gd_constraints, label, gd_left, gd_top++, 1, 1);
     }
-    fclose(file);
-    return mat;
+    gd_left++;
+    gd_top = 0;
+  }
+  // reiniciar indices de los grid
+  gd_top = 0; gd_left = 0;
+
+  // agregar las restricciones
+  for(int i = 0; i < num_constraints; ++i){
+    for(int j = 0; j < num_variables; ++j){
+      //Cargar los valores de las variables al grid
+      entry = GTK_ENTRY(gtk_entry_new());
+      gtk_entry_set_width_chars(entry, 5);
+      gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
+      sprintf(buf, "%.5lf", atof(read_text(file, '=', '^')));
+      gtk_entry_set_text(entry, buf);
+      gtk_grid_attach(gd_constraints, GTK_WIDGET(entry), gd_left, gd_top, 1, 1);
+      gd_left += 2;
+    }
+    // Configurar combo box de la desigualdad
+    cmb = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(inequalities));
+    gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(cmb), 0);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(cmb), 0);
+    g_signal_connect(cmb, "changed", G_CALLBACK(on_combo_constraint_changed), inequalities);
+
+    entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cmb)));
+    gtk_entry_set_width_chars(entry, 5);
+    gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+    gtk_widget_set_can_focus(GTK_WIDGET(entry), FALSE);
+
+    // Agregar la entry del valor de la variable
+    entry = GTK_ENTRY(gtk_entry_new());
+    gtk_entry_set_width_chars(entry, 5);
+    gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
+
+    sprintf(buf, "%.5lf", atof(read_text(file, '<', '^')));
+    gtk_entry_set_text(entry, buf);
+
+    gtk_grid_attach(gd_constraints, cmb, gd_left++, gd_top, 1, 1);
+    gtk_grid_attach(gd_constraints, GTK_WIDGET(entry), gd_left++, gd_top++, 1, 1);
+    gd_left = 0;
+  }
+  fclose(file);
+  gtk_grid_set_column_spacing(gd_variables, 5);
+  gtk_grid_set_column_spacing(gd_constraints, 5);
+
+  gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
+  gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
+
+  gtk_widget_hide(main_window);
+  gtk_widget_show_all(second_window);
 }
 
+int simplex_table_cols;
 
+void get_simplex_table_headers(){
+  char **headers;
+  char ineq[3];
+  char buf[32];
+  strcpy(headers[0], "Z");
+  int index_a_1 = num_variables + 1;
+
+  for(int i = 1; i <= (num_variables + num_constraints); ++i){
+    if(i <= num_variables){
+      strcpy(headers[i], var_names[i-1]);
+    } else {
+      strcpy(ineq, ineq_arr[i - num_variables - 1]); //Primera restriccion
+      if (strcmp(ineq, "<=") == 0) {
+        sprintf(headers[i], "s_{%d}", i - num_variables);
+        //strcpy(headers[i], "s_{%d}")
+      }
+      else if (strcmp(ineq, "=") == 0){
+        sprintf(headers[i], "a_{%d}", i - num_variables);
+        sprintf(headers[simplex_table_cols - i], "e_{%d}", i - num_variables + 1);
+      }
+      else if (strcmp(ineq, ">=") == 0){}
+    }
+  }
+}
 void on_btn_load_clicked(){
   char *filename;
   GtkWidget *chooser_window;
@@ -498,9 +533,10 @@ void on_btn_load_clicked(){
   if (response == GTK_RESPONSE_ACCEPT){
     GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
     filename = gtk_file_chooser_get_filename(chooser);
-    simplex_table = load_data(filename);
-    create_ui_from_table();
-    simplex(simplex_table, do_minimize, num_variables, lg);
+    load_data(filename);
+    //create_ui_from_table();
+    //simplex_table_headers();
+    //simplex(simplex_table, headers, do_minimize, num_variables, lg);
   }
   gtk_widget_destroy(chooser_window);
 }
