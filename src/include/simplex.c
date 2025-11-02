@@ -173,10 +173,7 @@ void maximize(Matrix *mat, char **headers, Latex_Generator *lg){
 
 void minimize(Matrix *mat, char **headers, Latex_Generator *lg){
   Matrix *init = matrix_copy(mat);
-
-  printf("##############MINIMIZANDO MATRIZ INICIAL ###################\n");
   tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
-  printf("############################################################\n");
 
   while(1){
     double min_max = -MAX_VAL;
@@ -410,4 +407,13 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     free(solution1);
 
     return 0;
+}
+
+
+void simplex_data_free(SimplexData *data){
+  for (int i = 0; i < data->cols; ++i){
+    free(data->headers[i]);
+  }
+  free(data->headers);
+  free_matrix(data->table);
 }

@@ -22,7 +22,6 @@ void tex_table_init(Latex_Generator *lg, int cols){
 void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **content){
   tex_buf2[0] = '\0';
   for(int r = 0; r < rows; ++r){
-    printf("fila %d\n", r);
     for(int c = 0; c < cols; ++c){
       sprintf(tex_buf2, "%.5lf%s", content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
@@ -53,11 +52,8 @@ void tex_table_end(Latex_Generator *lg){
 
 void tex_table_draw(Latex_Generator *lg, int rows, int cols, char **headers, double **content){
   tex_table_init(lg, cols);
-  printf("inicializa\n");
   tex_table_headers(lg, cols, headers);
-  printf("coloca headers\n");
   tex_table_content(lg, rows, cols, content);
-  printf("coloca contenido\n");
   tex_table_end(lg);
 }
 

@@ -414,6 +414,7 @@ void on_btn_finish_clicked(){
   lg_init(lg);
   prepare_simplex_lg();
   simplex(simplex_data, lg);
+  simplex_data_free(simplex_data);
   lg_simplex_references(lg);
   lg_close(lg);
   lg_generate(lg);

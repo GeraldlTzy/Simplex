@@ -17,5 +17,5 @@ typedef struct {
 } SimplexData;
 
 int simplex(SimplexData *data, Latex_Generator *lg);
-
+void simplex_data_free(SimplexData *data);
 #endif
