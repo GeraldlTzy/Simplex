@@ -9,6 +9,8 @@
 
 #define MAX_VAL 1.79769313486231571e+308
 int pivot_counter = 0;
+int unbound = 0;
+int degenerate = 0;
 
 void canonize(Matrix *mat, int pivot_row, int pivot_col){
     double k;
@@ -125,7 +127,8 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           if(min > fraction){
             min = fraction;
             pivot_row = r;
-          } else if(min == fraction){
+          } else if(min == fraction){ // Degenerado
+            degenerate = 1;
             Node *node = malloc(sizeof(Node));  // Se guarda la matriz y el pivote para volver en caso
             node->mat = matrix_copy(mat);       // de enciclarse o encontrarse con problema no acotado
             node->pv_r = r;
@@ -149,6 +152,7 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
         } else {
           free_matrix(mat);
           *have_solution = 0;
+          unbound = 1;
           return init;
         }
       }
@@ -214,7 +218,8 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           if(min_max > fraction){
             min_max = fraction;
             pivot_row = r;
-          } else if(min_max == fraction){
+          } else if(min_max == fraction){ // Degenerado 
+            degenerate = 1;
             Node *node = malloc(sizeof(Node));
             node->mat = matrix_copy(mat);
             node->pv_r = r;
@@ -238,6 +243,7 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
         } else {
           free_matrix(mat);
           *have_solution = 0;
+          unbound = 1;
           return init;
         }
       }
@@ -341,6 +347,7 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
 
 int simplex(SimplexData *data, Latex_Generator *lg){
     pivot_counter = 0;
+
     lg_write(lg, "\\section{The initial simplex table}\n");
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
 
@@ -348,7 +355,9 @@ int simplex(SimplexData *data, Latex_Generator *lg){
       lg_write(lg, "\\section{The intermediates simplex tables}\n");
     }
     int have_solution = 0;
-    
+    unbound = 0;
+    degenerate = 0;
+
     if (data->minimize) {
       data->table = minimize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
     } else {
@@ -356,7 +365,17 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     }
     printf("ENDDDDDDDDDD\n");
     print_matrix(data->table);
-    if (!have_solution){
+
+    if (degenerate) {
+        lg_write(lg, "\\section{Degenerate Problem Found}\n");
+        lg_write(lg, "A draw when choosing a pivot ocurred during the Simplex execution.\n");
+    }
+
+    if (unbound){
+        lg_write(lg, "\\section{Solution}\n");
+        lg_write(lg, "The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value\n");
+        return 1;
+    } else if (!have_solution){
         //TODO: en el otro proyecto manejar esto mejor
         lg_write(lg, "\\section{No solution found}\n");
         return 1;
