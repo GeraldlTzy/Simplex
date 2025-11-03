@@ -90,14 +90,14 @@ Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calcula
 \section{Mathematical representation}
 \textbf{Maximize:}
 \begin{dmath}
-z = 2.00000hola + 3.00000adios + -1.00000mana + -12.00000hoy 
+z = 2,00000hola + 3,00000adios + -1,00000mana + -12,00000hoy 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
--2.00000hola + -9.00000adios + 1.00000mana + 9.00000hoy \leq0.00000
+-2,00000hola + -9,00000adios + 1,00000mana + 9,00000hoy \leq0,00000
 \end{dmath}
 \begin{dmath}
-0.00000hola + 1.00000adios + -0.00000mana + -2.00000hoy \leq0.00000
+0,33333hola + 1,00000adios + -0,33333mana + -2,00000hoy \leq0,00000
 \end{dmath}
 \section{The initial simplex table}
 \begin{center}
@@ -106,16 +106,34 @@ z = 2.00000hola + 3.00000adios + -1.00000mana + -12.00000hoy
  \hline 
 $Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1.00000 & -2.00000 & -3.00000 & 1.00000 & 12.00000 & 0.00000 & 0.00000 & 0.00000\\ 
+1,00000 & -2,00000 & -3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0.00000 & -2.00000 & -9.00000 & 1.00000 & 9.00000 & 1.00000 & 0.00000 & 0.00000\\ 
+0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0.00000 & 0.00000 & 1.00000 & -0.00000 & -2.00000 & 0.00000 & 1.00000 & 0.00000\\ 
+0,00000 & 0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{No solution found}
+\section{The final simplex table}
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
+ \hline 
+1,00000 & -2,00000 & -3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+0,00000 & 0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{Solution}
+\textbf{Solution 1:}\\
+hola: 0,00000, adios: 0,00000, mana: 0,00000, hoy: 0,00000\\
 \begin{thebibliography}{9}
 \bibitem{torres2025}
 F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.

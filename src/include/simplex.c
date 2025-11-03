@@ -9,7 +9,6 @@
 
 #define MAX_VAL 1.79769313486231571e+308
 int pivot_counter = 0;
-Matrix *init;
 
 void canonize(Matrix *mat, int pivot_row, int pivot_col){
     double k;
@@ -50,9 +49,8 @@ typedef struct{
   int pv_c;
 } Node;
 
-GList *list = 0;
 
-int list_contain(Matrix *mat){
+int list_contain(GList *list, Matrix *mat){
   Node *curr;
   for (GList *l = list; l != NULL; l = l->next) {
     curr = (Node *)l->data;
@@ -64,10 +62,10 @@ int list_contain(Matrix *mat){
   return 0;
 }
 
-Node *get_last_state(){
-  Node *last = (Node *) (g_list_last(list))->data;
-  list = g_list_delete_link(list, g_list_last(list));
-  return last;
+void get_last_state(GList **list, Node **last_out){
+  GList *last_link = g_list_last(*list);
+  *last_out = (Node *) last_link->data;
+  *list = g_list_delete_link(*list, last_link);
 }
 
 void  node_list_free(Node *node){
@@ -81,51 +79,67 @@ void  node_list_free(Node *node){
 /*###########################################################################*/
 
 /*###########################################################################*/
-int maximize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator *lg){
-  init = matrix_copy(mat);
+Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
+  GList *list = 0;
+  Matrix *init = matrix_copy(mat);
+  pivot_counter = 0;
+  /*printf("###############COPIA#######################\n");
+  print_matrix(mat);
+  printf("###############INICIAL#######################\n");
+  print_matrix(init);
+  printf("###############FIN#######################\n");*/
+  double min, fraction;
+  int pivot_row, pivot_col;
   while(1){
-    double min = MAX_VAL;
-    int pivot_row = -1, pivot_col = -1;;
+    min = MAX_VAL; pivot_row = -1; pivot_col = -1;
     
     // Aca se imprimen en donde hubo empates, son bifurcaciones
     /*printf("#################################\n");
     for (GList *l = list; l != NULL; l = l->next) {
       Node * curr = (Node *)l->data;
       print_matrix(curr->mat);
-    }
-    printf("#################################\n");*/
-
-    if(list_contain(mat) || (matrix_compare(mat, init) && pivot_counter != 0)){
-      //printf("ENCICLADO CAMBIA DE MAT\n");
-      // Si entra al siguiente if es que se enciclo y no hay otras opciones
-      Node *node = get_last_state();
-      if(!node){
-        //printf("NO HAY OPCIONES\n");
-        return 1;
+    }*/
+      if(pivot_counter == 9){
+          printf("####################SIN OPCIONES##############\n");     
+          printf("contiene %d\n", list_contain(list, mat));
       }
-      // Asigna la ultima bifurcacion guardada (parecido a backtracking)
-      if(mat && mat != node->mat){
+    // Cambia de matrix si es que se enciclo
+    if(list_contain(list, mat) || (matrix_compare(mat, init) && pivot_counter != 0)){ 
+      if(pivot_counter == 9)
+          printf("####################SIN OPCIONES##############\n");     
+      
+      Node *node;
+      get_last_state(&list, &node);
+      
+      if(!node){                                // Retorna si no hay mas opciones
+        *have_solution = 0;
+        return init;
+      }
+      
+      if(mat && mat != node->mat){              // Asigna la ultima bifurcacion
         free_matrix(mat);
         mat = NULL;
       }
+      
       mat = node->mat;
       pivot_row = node->pv_r;
       pivot_col = node->pv_c;
-      print_matrix(mat);
-    } else {
-      // Busca el pivote
+    
+    } else {                                    // Busca la columna del pivote
+      if(pivot_counter == 9)
+          printf("####################SIN OPCIONES##############\n");     
       for(int c = 1; c < mat->cols-1; ++c){
         if(min > mat->data.f[0][c]){
           min = mat->data.f[0][c];
           pivot_col = c;
         }
       }
-      // termina si no encuentra nuevo valor
-      if (min >= 0){
-        return 0;
+      if (min >= 0) {
+        *have_solution = 1;
+        return mat;                  // termina si no encuentra nuevo valor
       }
       min =  MAX_VAL;
-      double fraction;
+      
       for(int r = 1; r < mat->rows; ++r){
         if(mat->data.f[r][pivot_col] > 0){
           fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
@@ -133,24 +147,19 @@ int maximize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator 
             min = fraction;
             pivot_row = r;
           } else if(min == fraction){
-            //printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
-            // Se guarda la matriz y el pivote para volver en caso
-            // de enciclarse o encontrarse con problema no acotado
-            Node *node = malloc(sizeof(Node));
-            node->mat = matrix_copy(mat);
+            Node *node = malloc(sizeof(Node));  // Se guarda la matriz y el pivote para volver en caso
+            node->mat = matrix_copy(mat);       // de enciclarse o encontrarse con problema no acotado
             node->pv_r = r;
             node->pv_c = pivot_col;
             list = g_list_append(list, node);
           }
         }
       }
-      // Si es no acotado y hay opciones cambia 
       // Si no hay opciones termina
-      if(pivot_row < 0){
-        //printf("No acotado\n");
-        //print_matrix(mat);
+      if(pivot_row < 0){                        // Si es no acotado y hay opciones cambia 
         if(list){
-          Node *node = get_last_state();
+          Node *node;
+          get_last_state(&list, &node);
           if(mat && mat != node->mat){
             free_matrix(mat);
             mat = NULL;
@@ -160,27 +169,30 @@ int maximize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator 
           pivot_col = node->pv_c;
         } else {
           printf("####################SIN OPCIONES##############\n");     
-          //printf("Algo1\n");
-          //print_matrix(mat);
-          // Sin solucion
-          return 1;
+          free_matrix(mat);
+          *have_solution = 1;
+          return init;
         }
       }
     }
     pivot_counter++;
-    //printf("Pivoteo(%d)\n", pivot_counter);
+    printf("Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
     if (do_intermediates) {
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
       tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
     }
-    //print_matrix(mat);
+    print_matrix(mat);
   }
+  printf("ESTO NO DEBE SALIR");
 }
 
 
-void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator *lg){
+Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
+  GList *list = 0;
   Matrix *init = matrix_copy(mat);
+
+
   tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
 
   while(1){
@@ -194,13 +206,15 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
     }
     printf("#################################\n");
 
-    if(list_contain(mat) || (matrix_compare(mat, init) && pivot_counter != 0)){
+    if(list_contain(list, mat) || (matrix_compare(mat, init) && pivot_counter != 0)){
       printf("ENCICLADO CAMBIA DE MAT\n");
       // Si entra al siguiente if es que se enciclo y no hay otras opciones
-      Node *node = get_last_state();
+      Node *node;
+      get_last_state(&list, &node);
       if(!node){
-        printf("NO HAY OPCIONES\n");
-        break;
+        free_matrix(mat);
+        *have_solution = 0;
+        return init;
       }
       
       if(mat && mat != node->mat){
@@ -221,7 +235,8 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
       }
       // ya no hay positivos
       if (min_max <= 0){
-        break;
+        *have_solution = 1;
+        return mat;
       }
       // esta vez se usa para elegir la fraccion minima, igual que antes
       min_max =  MAX_VAL;
@@ -246,7 +261,8 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
       if(pivot_row < 0){
         printf("No acotado aaaaaaaaa\n");
         if(list){
-          Node *node = get_last_state();
+          Node *node;
+          get_last_state(&list, &node);
           if(!node){
             printf("Loop\n");
           }
@@ -254,7 +270,9 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
           pivot_row = node->pv_r;
           pivot_col = node->pv_c;
         } else {
-          break;
+          free_matrix(mat);
+          *have_solution = 0;
+          return init;
         }
         // Si es no acotado y hay opciones cambia 
         // Si no hay opciones termina
@@ -262,7 +280,8 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
           printf("No acotado\n");
           print_matrix(mat);
           if(list){
-            Node *node = get_last_state();
+            Node *node;
+            get_last_state(&list, &node);
             if(mat && mat != node->mat){
               free_matrix(mat);
               mat = NULL;
@@ -271,15 +290,13 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
             pivot_row = node->pv_r;
             pivot_col = node->pv_c;
           } else {
-            return;
+            free_matrix(mat);
+            *have_solution = 0;
+            return init;
           }
         }
       }
     }
-    //for(int i = 0; i < mat->cols; ++i)
-    //printf("%s \t", headers[i]);
-    //printf("\n");
- 
     pivot_counter++;
     canonize(mat, pivot_row, pivot_col);
     if (do_intermediates){
@@ -378,59 +395,35 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
 }
 
 int simplex(SimplexData *data, Latex_Generator *lg){
-    Matrix *mat = data->table;
     pivot_counter = 0;
-
-    print_matrix(mat);
     lg_write(lg, "\\section{The initial simplex table}\n");
-    tex_table_draw(lg, mat->rows, mat->cols, data->headers, mat->data.f);
+    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
 
     if (data->show_intermediates){
       lg_write(lg, "\\section{The intermediates simplex tables}\n");
     }
-    int no_solution = 0;
+    int have_solution = 0;
     
     if (data->minimize) {
-      node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
-      tree_t forks = {&initial};
-      minimize(mat, data->headers, data->show_intermediates, lg);
+      data->table = minimize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
     } else {
-      node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
-      tree_t forks = {&initial};
-      no_solution = maximize(mat, data->headers, data->show_intermediates, lg);
+      data->table = maximize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
     }
-
-    printf("EXIT \n");
-
-    if (no_solution){
+    printf("ENDDDDDDDDDD\n");
+    print_matrix(data->table);
+    if (!have_solution){
         //TODO: en el otro proyecto manejar esto mejor
         lg_write(lg, "\\section{No solution found}\n");
         return 1;
     }
 
-    //Se cae al acceder data.f pero justo antes del return de la funcion si lo deja acceder
-    printf("%d\n", mat->data.f[0]); 
-    printf("EXIT \n");
-
-    print_matrix(mat);
-    for(int r = 0; r < mat->rows; ++r){
-      for (int c = 0; c < mat->cols; ++c){
-      printf("%.5lf \t", mat->data.f[r][c]);
-    }
-    printf("\n");
-    }
-    
-   
-
     lg_write(lg, "\\section{The final simplex table}\n");
-    tex_table_draw(lg, mat->rows, mat->cols, data->headers, mat->data.f);
+    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
     lg_write(lg, "\\section{Solution}\n");
-    double *solution1 = find_solution(mat, data->variables);
+    double *solution1 = find_solution(data->table, data->variables);
     lg_write(lg, "\\textbf{Solution 1:}\\\\\n");
     write_solution(solution1, data->variables, data->headers, lg);
-    double *solution2 = multiple_solutions(mat, data->variables);
-
-
+    double *solution2 = multiple_solutions(data->table, data->variables);
 
     if (solution2 != NULL) {  
         lg_write(lg, "\\\\Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty.\\\\\\\\\n"); 
@@ -458,10 +451,8 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         free(solution5);
     }
     free(solution1);
-
     return 0;
 }
-
 
 void simplex_data_free(SimplexData *data){
   for (int i = 0; i < data->cols; ++i){
