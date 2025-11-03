@@ -82,32 +82,13 @@ void  node_list_free(Node *node){
 Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
-  pivot_counter = 0;
-  /*printf("###############COPIA#######################\n");
-  print_matrix(mat);
-  printf("###############INICIAL#######################\n");
-  print_matrix(init);
-  printf("###############FIN#######################\n");*/
   double min, fraction;
-  int pivot_row, pivot_col;
+  int pivot_counter = 0; pivot_row, pivot_col;
+  
   while(1){
     min = MAX_VAL; pivot_row = -1; pivot_col = -1;
-    
-    // Aca se imprimen en donde hubo empates, son bifurcaciones
-    /*printf("#################################\n");
-    for (GList *l = list; l != NULL; l = l->next) {
-      Node * curr = (Node *)l->data;
-      print_matrix(curr->mat);
-    }*/
-      if(pivot_counter == 9){
-          printf("####################SIN OPCIONES##############\n");     
-          printf("contiene %d\n", list_contain(list, mat));
-      }
     // Cambia de matrix si es que se enciclo
     if(list_contain(list, mat) || (matrix_compare(mat, init) && pivot_counter != 0)){ 
-      if(pivot_counter == 9)
-          printf("####################SIN OPCIONES##############\n");     
-      
       Node *node;
       get_last_state(&list, &node);
       
@@ -126,8 +107,6 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       pivot_col = node->pv_c;
     
     } else {                                    // Busca la columna del pivote
-      if(pivot_counter == 9)
-          printf("####################SIN OPCIONES##############\n");     
       for(int c = 1; c < mat->cols-1; ++c){
         if(min > mat->data.f[0][c]){
           min = mat->data.f[0][c];
@@ -168,49 +147,37 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           pivot_row = node->pv_r;
           pivot_col = node->pv_c;
         } else {
-          printf("####################SIN OPCIONES##############\n");     
           free_matrix(mat);
-          *have_solution = 1;
+          *have_solution = 0;
           return init;
         }
       }
     }
     pivot_counter++;
-    printf("Pivoteo(%d)\n", pivot_counter);
     canonize(mat, pivot_row, pivot_col);
     if (do_intermediates) {
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
       tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
     }
-    print_matrix(mat);
   }
-  printf("ESTO NO DEBE SALIR");
 }
 
 
 Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
-
-
   tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+  double fraction, min_max;
+  int pivot_row, pivot_col, pivot_counter = 0;
 
   while(1){
-    double min_max = -MAX_VAL;
-    int pivot_row = -1, pivot_col = -1;;
-    
-    printf("#################################\n");
-    for (GList *l = list; l != NULL; l = l->next) {
-      Node * curr = (Node *)l->data;
-      print_matrix(curr->mat);
-    }
-    printf("#################################\n");
+    min_max = -MAX_VAL; pivot_row = -1; pivot_col = -1;
 
     if(list_contain(list, mat) || (matrix_compare(mat, init) && pivot_counter != 0)){
-      printf("ENCICLADO CAMBIA DE MAT\n");
       // Si entra al siguiente if es que se enciclo y no hay otras opciones
       Node *node;
       get_last_state(&list, &node);
+      
       if(!node){
         free_matrix(mat);
         *have_solution = 0;
@@ -221,10 +188,11 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
         free_matrix(mat);
         mat = NULL;
       }
+    
       mat = node->mat;
       pivot_row = node->pv_r;
       pivot_col = node->pv_c;
-      print_matrix(mat);
+    
     } else {
       // elegir el mas positivo
       for(int c = 1; c < mat->cols-1; ++c){
@@ -240,7 +208,6 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       }
       // esta vez se usa para elegir la fraccion minima, igual que antes
       min_max =  MAX_VAL;
-      double fraction;
       for(int r = 1; r < mat->rows; ++r){
         if(mat->data.f[r][pivot_col] > 0){
           fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
@@ -248,7 +215,6 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
             min_max = fraction;
             pivot_row = r;
           } else if(min_max == fraction){
-            printf("Degenerado: Empate  %d, %d\n", r, pivot_col);
             Node *node = malloc(sizeof(Node));
             node->mat = matrix_copy(mat);
             node->pv_r = r;
@@ -257,14 +223,14 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           }
         }
       }
-      // si nunca se setea el pivote
+      // Si no hay opciones termina
       if(pivot_row < 0){
-        printf("No acotado aaaaaaaaa\n");
         if(list){
           Node *node;
           get_last_state(&list, &node);
-          if(!node){
-            printf("Loop\n");
+          if(mat && mat != node->mat){
+            free_matrix(mat);
+            mat = NULL;
           }
           mat = node->mat;
           pivot_row = node->pv_r;
@@ -273,27 +239,6 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           free_matrix(mat);
           *have_solution = 0;
           return init;
-        }
-        // Si es no acotado y hay opciones cambia 
-        // Si no hay opciones termina
-        if(pivot_row < 0){
-          printf("No acotado\n");
-          print_matrix(mat);
-          if(list){
-            Node *node;
-            get_last_state(&list, &node);
-            if(mat && mat != node->mat){
-              free_matrix(mat);
-              mat = NULL;
-            } 
-            mat = node->mat;
-            pivot_row = node->pv_r;
-            pivot_col = node->pv_c;
-          } else {
-            free_matrix(mat);
-            *have_solution = 0;
-            return init;
-          }
         }
       }
     }
