@@ -158,6 +158,7 @@ void maximize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
           pivot_row = node->pv_r;
           pivot_col = node->pv_c;
         } else {
+          printf("####################SIN OPCIONES##############\n");
           printf("Algo1\n");
           print_matrix(mat);
           return;
