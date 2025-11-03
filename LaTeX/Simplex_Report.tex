@@ -117,6 +117,23 @@ $Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\
 \end{center}
 \section{Degenerate Problem Found}
 A draw when choosing a pivot ocurred during the Simplex execution.
+To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.
+\section{The final simplex table}
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
+ \hline 
+1,00000 & 0,00000 & 3,00006 & -1,00000 & -0,00012 & 0,00000 & 6,00006 & 0,00000\\ 
+ \hline 
+0,00000 & 0,00000 & -2,99994 & -1,00000 & -3,00012 & 1,00000 & 6,00006 & 0,00000\\ 
+ \hline 
+0,00000 & 1,00000 & 3,00003 & -1,00000 & -6,00006 & 0,00000 & 3,00003 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
 \section{Solution}
 The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value
 \begin{thebibliography}{9}

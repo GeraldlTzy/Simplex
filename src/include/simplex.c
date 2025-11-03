@@ -150,10 +150,11 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           pivot_row = node->pv_r;
           pivot_col = node->pv_c;
         } else {
-          free_matrix(mat);
+          //free_matrix(mat);
+          //TODO: esto es una solucion no acotada, no que no tiene solucion
           *have_solution = 0;
           unbound = 1;
-          return init;
+          return mat;
         }
       }
     }
@@ -241,10 +242,11 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           pivot_row = node->pv_r;
           pivot_col = node->pv_c;
         } else {
-          free_matrix(mat);
+          //free_matrix(mat);
+          //TODO: esto es una solucion no acotada, no que no tiene solucion
           *have_solution = 0;
           unbound = 1;
-          return init;
+          return mat;
         }
       }
     }
@@ -366,10 +368,15 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     printf("ENDDDDDDDDDD\n");
     print_matrix(data->table);
 
+    //TODO: me gustaria mover esto a la funcion para que el chunche muestre la tabla que genera el empoate
     if (degenerate) {
         lg_write(lg, "\\section{Degenerate Problem Found}\n");
         lg_write(lg, "A draw when choosing a pivot ocurred during the Simplex execution.\n");
+        lg_write(lg, "To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\n");
     }
+
+    lg_write(lg, "\\section{The final simplex table}\n");
+    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
 
     if (unbound){
         lg_write(lg, "\\section{Solution}\n");
@@ -381,8 +388,6 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         return 1;
     }
 
-    lg_write(lg, "\\section{The final simplex table}\n");
-    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
     lg_write(lg, "\\section{Solution}\n");
     double *solution1 = find_solution(data->table, data->variables);
     lg_write(lg, "\\textbf{Solution 1:}\\\\\n");
