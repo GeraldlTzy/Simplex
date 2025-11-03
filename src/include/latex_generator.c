@@ -101,16 +101,51 @@ void lg_define_colors(Latex_Generator *lg){
 
 void lg_write_simplex_info(Latex_Generator *lg) {
     fprintf(lg->file, "\\chapter{Simplex Description}\n");
-    fprintf(lg->file, "The simplex algorithm is a very simple algorithm.\n");
+    fprintf(lg->file, "\\section{History}\n");
+    fprintf(lg->file,
+            "The Simplex algorithm is an algorithm discovered by George Dantzig. "
+            "This algorithm is used find the optimal solution for a linear programming problem\\cite{torres2025}."
+            "Dantzig was an American mathmatician and Operations Research and Computer Science profesor at the Stanford University."
+            "He is called the father of Linear Programming thanks to the revolutionary Simplex algorithm."
+            "Before Dantzig it was known that the optimal solution to a linear programming problem could be found in a vertex of the feasible region,"
+            "this made it posible to check every single vertex to find the solution but it was too slow to be used in practice."
+            "Then George Dantzig proved the feasible region is a convex shape, and after that he easily proposed a greedy algorithm that find the optimal solution to the problem."
+            "The property of being convex, allowed for the algorithm to be greedy and still be able to find the best solution."
+    );
+    fprintf(lg->file, "\\section{Description}\n");
+    fprintf(lg->file,
+            "The Simplex algorithm uses matrix operations to find the optimal solution to a linear programming problem, or to find out if it does not have a feasible solution \\cite{torres2025}."
+            "A linear programming problem has desition variables and restrictions under them, so you would think that you could solve the problem simply by using a normal method to find the value of the variables."
+            "Sadly, in these types of problems thre are usually far more varaibles than equations, to this aproach is not good enough."
+            "Using the equations you can find the feasible region of the problem, where all the posible solutions are."
+            "Simplex starts from a vertex of the feasible region and jumps to adjacent vertices that give a better value for the objective function."
+            "Once you can not find a vertex that upgrades the objective value, that is the optimal solution.\\\\\n"
+            "The simplex algorithm has a set of variables that are called basic, these variables can be found in canonical columns \\cite{torres2025}."
+            "The first step is to level out any inecuations with slack or excess variables depending on what you need,"
+            "when one of the restrictions is equals or greater than you will also need to add artificial variables, because these forms of restrictions do not give enough basic variables."
+            "After leveling out the restrictions, you need to clear out the z variable from the objective function, this will give you an extra equation to work with.\\\\\n"
+            "Once you have made that you can build the simplex table, giving each variable a column and each equation a row."
+            "To maximize the objective value you will find the smallest negative number in the first row (or the biggest positive number if you are minimizing)."
+            "If you did not find any numbers that meet the criteria, congratulations, you found the optimal solution."
+            "However if you did, then you need to divide all the numbers in that column by the numbers of the final column (ignore negative numbers and 0's) and choose the smallest fraction to meet all the restrictions, the number on the column and row is called the pivot."
+            "Once you have a pivot you need to canonize the column, keep in mid that in this process you want the pivot to be the one of the canonical column, this process is called pivoting."
+            "Once you have canonized the column, repeat the process until you have ended \\cite{torres2025}.\\\\\n"
+            "Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction."
+            "If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found."
+            "If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting."
+            "However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop."
+            "But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution."
+    );
+
 }
 
 void lg_simplex_references(Latex_Generator *lg){
-    /*fprintf(lg->file, "\\begin{thebibliography}{9}\n");
+    fprintf(lg->file, "\\begin{thebibliography}{9}\n");
     fprintf(lg->file, "\\bibitem{torres2025}\n"
-                      "F. Torres-Rojas, 'class about the equipment replacement', personal "
+                      "F. Torres-Rojas, 'class about the simplex algorithm', personal "
                       "communication, Investigación de Operaciones, Instituto Tecnológico de "
-                      "Costa Rica, San José, Costa Rica, Aug. 29, 2025.\n");
-    fprintf(lg->file,"\\end{thebibliography}");*/
+                      "Costa Rica, San José, Costa Rica, Sep. 10, 2025.\n");
+    fprintf(lg->file,"\\end{thebibliography}");
 }
 
 void lg_init(Latex_Generator *lg) {

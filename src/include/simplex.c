@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <glib.h>
+#include <assert.h>
 
 #include "simplex.h"
 #include "latex_generator.h"
@@ -8,6 +9,7 @@
 
 #define MAX_VAL 1.79769313486231571e+308
 int pivot_counter = 0;
+Matrix *init;
 
 void canonize(Matrix *mat, int pivot_row, int pivot_col){
     double k;
@@ -80,7 +82,7 @@ void  node_list_free(Node *node){
 
 /*###########################################################################*/
 void maximize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator *lg){
-  Matrix *init = matrix_copy(mat);
+  init = matrix_copy(mat);
   int ids = 0;
   while(1){
     ids++;
@@ -156,15 +158,14 @@ void maximize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
           pivot_row = node->pv_r;
           pivot_col = node->pv_c;
         } else {
-
+          printf("Algo1\n");
+          print_matrix(mat);
           return;
-          break;
         }
       }
     }
     pivot_counter++;
     //printf("Pivoteo(%d)\n", pivot_counter);
-    // TODO: solo poner si se activó la opción de chucnhe
     canonize(mat, pivot_row, pivot_col);
     if (do_intermediates) {
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
@@ -268,7 +269,6 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
             pivot_col = node->pv_c;
           } else {
             return;
-            break;
           }
         }
       }
@@ -277,7 +277,6 @@ void minimize(Matrix *mat, char **headers, int do_intermediates, Latex_Generator
     //printf("%s \t", headers[i]);
     //printf("\n");
  
-    // TODO: solo poner si se activó la opción de chucnhe
     pivot_counter++;
     canonize(mat, pivot_row, pivot_col);
     if (do_intermediates){
@@ -392,22 +391,32 @@ int simplex(SimplexData *data, Latex_Generator *lg){
       tree_t forks = {&initial};
       minimize(mat, data->headers, data->show_intermediates, lg);
     } else {
-      //print_matrix(mat);
       node_t initial = {NULL, malloc(sizeof(node_t *) * 5), 0, 5};
       tree_t forks = {&initial};
       maximize(mat, data->headers, data->show_intermediates, lg);
     }
-    
+
+    printf("EXIT \n");
+
+    if (mat == NULL){
+        //TODO: en el otro proyecto manejar esto mejor
+        lg_write(lg, "\\section{No solution found}\n");
+        return 1;
+    }
+
+    //Se cae al acceder data.f pero justo antes del return de la funcion si lo deja acceder
+    printf("%d\n", mat->data.f[0]); 
+    printf("EXIT \n");
+
+    print_matrix(mat);
+   
+
     lg_write(lg, "\\section{The final simplex table}\n");
     tex_table_draw(lg, mat->rows, mat->cols, data->headers, mat->data.f);
-    //printf("#################RESULTADO OPTIMO######################\n");
-    //print_matrix(mat);
     lg_write(lg, "\\section{Solution}\n");
     double *solution1 = find_solution(mat, data->variables);
     lg_write(lg, "\\textbf{Solution 1:}\\\\\n");
     write_solution(solution1, data->variables, data->headers, lg);
-    //printf("1: ");
-    //print_solution(solution1, num_variables);
     double *solution2 = multiple_solutions(mat, data->variables);
 
 
@@ -416,8 +425,6 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         lg_write(lg, "\\\\Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty.\\\\\\\\\n"); 
         lg_write(lg, "\\textbf{Solution 2:}\\\\\n");
         write_solution(solution2, data->variables, data->headers, lg);
-        //printf("2: ");
-        //print_solution(solution2, num_variables);
         lg_write(lg, "\\\\By using the following formula, infinite optimal solutions can be found:\\\\\n"); 
         lg_write(lg, "\\begin{dmath}\n");
         lg_write(lg, "\\alpha*solution1 + (1-\\alpha)*solution2\\\\\n");
