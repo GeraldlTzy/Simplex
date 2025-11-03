@@ -83,7 +83,7 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
   double min, fraction;
-  int pivot_counter = 0; pivot_row, pivot_col;
+  int pivot_counter = 0, pivot_row, pivot_col;
   
   while(1){
     min = MAX_VAL; pivot_row = -1; pivot_col = -1;
