@@ -379,12 +379,13 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
 
     if (unbound){
-        lg_write(lg, "\\section{Solution}\n");
+        lg_write(lg, "\\section{Unbound Solution}\n");
         lg_write(lg, "The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value\n");
         return 1;
     } else if (!have_solution){
         //TODO: en el otro proyecto manejar esto mejor
         lg_write(lg, "\\section{No solution found}\n");
+        lg_write(lg, "The solution found is in another dimension, and can not posibly exist using the existing restrictions and desicion variables.\n");
         return 1;
     }
 
