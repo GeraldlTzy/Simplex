@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <glib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "simplex.h"
 #include "latex_generator.h"
@@ -81,6 +82,59 @@ void  node_list_free(Node *node){
 /*###########################################################################*/
 
 /*###########################################################################*/
+
+void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, char **headers, int pivot_row, int pivot_col){
+    char buf[1024];
+    buf[0] = '\0';
+    //Init the table
+    for (int c = 0; c < mat->cols+1; ++c)
+        strcat(buf, "|c");
+    strcat(buf, "|");
+    lg_write(lg, "\\begin{center}\n");
+    lg_write(lg, "\\begin{adjustbox}{max width=1\\textwidth,keepaspectratio}\n");
+    lg_write(lg, "\\begin{tabular}{%s} \n \\hline \n", buf);
+    //headers  
+    buf[0] = '\0';
+    for(int c = 0; c < mat->cols; ++c){
+        sprintf(buf + strlen(buf), "$%s$", headers[c]);
+        strcat(buf, " & ");
+    }
+    sprintf(buf + strlen(buf), "$Fraction$");
+    strcat(buf, "\\\\ \n \\hline \n");
+    lg_write(lg, buf);
+    // content
+    for (int r = 0; r < mat->rows; ++r){
+        buf[0] = '\0';
+        // valor de la fila del pivote
+        double val = mat->data.f[r][pivot_col];
+        double b = mat->data.f[r][mat->cols-1];
+        printf("PIVOT VAL %lf, B \n", val);
+        for (int c = 0; c < mat->cols; ++c){
+            if (r == pivot_row || c == pivot_col)
+                strcat(buf, "\\cellcolor{PurpleNoMamado}");
+            sprintf(buf + strlen(buf), "%.5lf", mat->data.f[r][c]);
+            strcat(buf, " & ");
+        }
+        // Si la fraccion  no es valida
+        if (val <= 0 || r == 0){
+            strcat(buf, "$-$");
+        } else {
+            if (r == pivot_row)
+                strcat(buf, "\\cellcolor{PurpleNoMamado}");
+            sprintf(buf + strlen(buf), "%.5lf", b/val);
+        }
+        strcat(buf, "\\\\ \n \\hline \n");
+        lg_write(lg, buf);
+    }
+    buf[0] = '\0';
+    // end the table
+    lg_write(lg, "\\end{tabular} \n");
+    lg_write(lg, "\\end{adjustbox}\n");
+    lg_write(lg, "\\end{center}\n");
+    printf("TABLE PRINTED\n");
+    
+}
+
 Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
@@ -159,11 +213,11 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       }
     }
     pivot_counter++;
-    canonize(mat, pivot_row, pivot_col);
     if (do_intermediates) {
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
-      tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+      intermediate_table_draw(lg, mat, headers, pivot_row, pivot_col);
     }
+    canonize(mat, pivot_row, pivot_col);
   }
 }
 
@@ -251,11 +305,11 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       }
     }
     pivot_counter++;
-    canonize(mat, pivot_row, pivot_col);
     if (do_intermediates){
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
-      tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+      intermediate_table_draw(lg, mat, headers, pivot_row, pivot_col);
     }
+    canonize(mat, pivot_row, pivot_col);
   }
 }
 

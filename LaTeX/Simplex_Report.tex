@@ -12,7 +12,7 @@
 \usepackage{makecell}
 \usepackage[a4paper, margin=2cm]{geometry}
 \definecolor{DarkPurpleMamado}{RGB}{128,0,128}
-\definecolor{PurpleNoMamado}{RGB}{128,70,128}
+\definecolor{PurpleNoMamado}{RGB}{200,100,200}
 \lstset{
     language=C,
     basicstyle=\footnotesize,
@@ -121,6 +121,47 @@ $Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $
 0,00000 & 2,00000 & 1,50000 & 0,50000 & 0,00000 & 0,00000 & 1,00000 & 0,00000 & 8,00000\\ 
  \hline 
 0,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{The intermediates simplex tables}
+Pivoting(1)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & \cellcolor{PurpleNoMamado}-60,00000 & -35,00000 & -20,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & \cellcolor{PurpleNoMamado}8,00000 & 6,00000 & 1,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 48,00000 & 6,00000\\ 
+ \hline 
+0,00000 & \cellcolor{PurpleNoMamado}4,00000 & 2,00000 & 1,50000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 20,00000 & 5,00000\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}2,00000 & \cellcolor{PurpleNoMamado}1,50000 & \cellcolor{PurpleNoMamado}0,50000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}8,00000 & \cellcolor{PurpleNoMamado}4,00000\\ 
+ \hline 
+0,00000 & \cellcolor{PurpleNoMamado}0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000 & $-$\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(2)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 10,00000 & \cellcolor{PurpleNoMamado}-5,00000 & 0,00000 & 0,00000 & 30,00000 & 0,00000 & 240,00000 & $-$\\ 
+ \hline 
+0,00000 & 0,00000 & 0,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 1,00000 & 0,00000 & -4,00000 & 0,00000 & 16,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,00000 & \cellcolor{PurpleNoMamado}0,50000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}4,00000 & \cellcolor{PurpleNoMamado}8,00000\\ 
+ \hline 
+0,00000 & 1,00000 & 0,75000 & \cellcolor{PurpleNoMamado}0,25000 & 0,00000 & 0,00000 & 0,50000 & 0,00000 & 4,00000 & 16,00000\\ 
+ \hline 
+0,00000 & 0,00000 & 1,00000 & \cellcolor{PurpleNoMamado}0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000 & $-$\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}

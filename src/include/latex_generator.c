@@ -96,7 +96,7 @@ void lg_write(Latex_Generator *lg, const char *format, ...) {
 
 void lg_define_colors(Latex_Generator *lg){
     fprintf(lg->file, "\\definecolor{DarkPurpleMamado}{RGB}{128,0,128}\n");
-    fprintf(lg->file, "\\definecolor{PurpleNoMamado}{RGB}{128,70,128}\n");
+    fprintf(lg->file, "\\definecolor{PurpleNoMamado}{RGB}{200,100,200}\n");
 }
 
 void lg_write_simplex_info(Latex_Generator *lg) {
