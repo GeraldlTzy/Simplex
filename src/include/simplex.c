@@ -309,7 +309,7 @@ double *find_solution(Matrix *mat, int num_variables) {
     return solution;
 }
 
-double *multiple_solutions(Matrix *mat, int num_variables){
+Matrix *multiple_solutions(Matrix *mat, int num_variables, double **sol_array){
     int pivot_col = -1;
     int pivot_row = -1;
     for (int c = 1; c < mat->cols; ++c) {
@@ -335,7 +335,8 @@ double *multiple_solutions(Matrix *mat, int num_variables){
         }
     }
     canonize(mat, pivot_row, pivot_col);
-    return find_solution(mat, num_variables);
+    *sol_array = find_solution(mat, num_variables);
+    return mat;
 }
 
 
@@ -380,7 +381,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
 
     if (unbound){
         lg_write(lg, "\\section{Unbound Solution}\n");
-        lg_write(lg, "The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value\n");
+        lg_write(lg, "The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value.\n");
         return 1;
     } else if (!have_solution){
         //TODO: en el otro proyecto manejar esto mejor
@@ -388,15 +389,20 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         lg_write(lg, "The solution found is in another dimension, and can not posibly exist using the existing restrictions and desicion variables.\n");
         return 1;
     }
+    double *solution1 = find_solution(data->table, data->variables);
+    double *solution2;
+    data->table = multiple_solutions(data->table, data->variables, &solution2);
+    if (solution2 != NULL){
+        lg_write(lg, "\\section{The final simplex table 2}\n");
+        lg_write(lg, "Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty. When pivoting said column, the folowing table can be obtained.\n"); 
+        tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
+    }
 
     lg_write(lg, "\\section{Solution}\n");
-    double *solution1 = find_solution(data->table, data->variables);
     lg_write(lg, "\\textbf{Solution 1:}\\\\\n");
     write_solution(solution1, data->variables, data->headers, lg);
-    double *solution2 = multiple_solutions(data->table, data->variables);
 
     if (solution2 != NULL) {  
-        lg_write(lg, "\\\\Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty.\\\\\\\\\n"); 
         lg_write(lg, "\\textbf{Solution 2:}\\\\\n");
         write_solution(solution2, data->variables, data->headers, lg);
         lg_write(lg, "\\\\By using the following formula, infinite optimal solutions can be found:\\\\\n"); 
