@@ -96,6 +96,8 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, char **headers, i
     //headers  
     buf[0] = '\0';
     for(int c = 0; c < mat->cols; ++c){
+        if (c == pivot_col)
+            strcat(buf, "\\cellcolor{PurpleNoMamado}");
         sprintf(buf + strlen(buf), "$%s$", headers[c]);
         strcat(buf, " & ");
     }
