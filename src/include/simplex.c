@@ -375,7 +375,7 @@ Matrix *multiple_solutions(Matrix *mat, int num_variables, double **sol_array){
         }
     }
     // si no tiene, no hay nada que hacer
-    if (pivot_col == -1) return NULL;
+    if (pivot_col == -1) return mat;
     // encontrar la fraccion 
     double min =  MAX_VAL;
     double fraction;
@@ -421,7 +421,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
       data->table = maximize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
     }
     printf("ENDDDDDDDDDD\n");
-    print_matrix(data->table);
+    //print_matrix(data->table);
 
     //TODO: me gustaria mover esto a la funcion para que el chunche muestre la tabla que genera el empoate
     if (degenerate) {
@@ -444,7 +444,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         return 1;
     }
     double *solution1 = find_solution(data->table, data->variables);
-    double *solution2;
+    double *solution2 = NULL;
     data->table = multiple_solutions(data->table, data->variables, &solution2);
     if (solution2 != NULL){
         lg_write(lg, "\\section{The final simplex table 2}\n");
