@@ -359,71 +359,30 @@ char **simplex_data_put_headers(SimplexData *data){
   strcpy(headers[acc], "B");
   data->headers = headers;
 }
-void on_btn_finish_clicked(){
-  simplex_data = malloc(sizeof(SimplexData));
-  simplex_data->slacks = 0;
-  simplex_data->artificials = 0;
-  simplex_data->excess = 0;
-  simplex_data->rows = 0;
-  simplex_data->cols = 0;
-  simplex_data->variables = num_variables;
-  simplex_data->minimize = do_minimize;
-  simplex_data->show_intermediates = gtk_toggle_button_get_active(intermediate_toggle);
-  simplex_data_put_inequalities(simplex_data);
-  simplex_data_put_headers(simplex_data);
 
+/*#########################MANEJO DE ARCHIVOS################################*/
 
-  int rows = simplex_data->rows;
-  int cols = simplex_data->cols;
-  simplex_data->table = new_matrix(rows, cols, FLOAT);
-  init_matrix_num(simplex_data->table, 0);
-
-  double **table = simplex_data->table->data.f;
-  table[0][0] = 1;
-  table[0][cols-1] = 0;
-      print_matrix(simplex_data->table);
-  
-  int canonic_i = num_variables + 1;
-  GtkWidget *entry;
-  
-  for(int r = 0; r < rows; ++r){
-    for(int c = 1; c < cols; ++c){
-      if(r == 0 && c <= num_variables){
-        entry = gtk_grid_get_child_at(gd_variables, (c-1)*2, r);      
-        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
-      } else if(c <= num_variables){
-        entry = gtk_grid_get_child_at(gd_constraints, (c-1)*2, (r-1));
-        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
-      } else if(r > 0 && c == canonic_i){
-        table[r][c] = 1;
-      } else if(r > 0 && c == cols-1){
-        entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, (r-1));
-        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
-      }
-    }
-      print_matrix(simplex_data->table);
-    if(r > 0){
-      canonic_i++;
-    }
+void select_file(char **filename, char *oper, GtkWidget *parent){
+  GtkWidget *chooser_window;
+  GtkFileChooserAction open_window = GTK_FILE_CHOOSER_ACTION_SAVE;
+  int response;
+  chooser_window = gtk_file_chooser_dialog_new(oper,
+                                                GTK_WINDOW(parent),
+                                                open_window,
+                                                "_Cancel",
+                                                GTK_RESPONSE_CANCEL,
+                                                "_Open",
+                                                GTK_RESPONSE_ACCEPT,
+                                                NULL);
+  response = gtk_dialog_run(GTK_DIALOG(chooser_window));
+  if (response == GTK_RESPONSE_ACCEPT){
+    GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
+    *filename = gtk_file_chooser_get_filename(chooser);
+  } else {
+    *filename = NULL;
   }
-  if (!lg_open(lg, "LaTeX/Simplex_Report")) {
-    perror("Error al crear el archivo de LaTeX");
-    return;
-  }
-  lg_init(lg);
-  prepare_simplex_lg();
-  simplex(simplex_data, lg);
-  simplex_data_free(simplex_data);
-  lg_simplex_references(lg);
-  lg_close(lg);
-  lg_generate(lg);
+  gtk_widget_destroy(chooser_window);
 }
-
-
-
-
-
-
 // TODO: signal para validar numeros
 void load_data(char *filename){
   FILE *file;
@@ -521,31 +480,6 @@ void load_data(char *filename){
   gtk_widget_show_all(second_window);
 }
 
-int simplex_table_cols;
-
-void select_file(char **filename, char *oper, GtkWidget *parent){
-  GtkWidget *chooser_window;
-  GtkFileChooserAction open_window = GTK_FILE_CHOOSER_ACTION_SAVE;
-  int response;
-  chooser_window = gtk_file_chooser_dialog_new(oper,
-                                                GTK_WINDOW(parent),
-                                                open_window,
-                                                "_Cancel",
-                                                GTK_RESPONSE_CANCEL,
-                                                "_Open",
-                                                GTK_RESPONSE_ACCEPT,
-                                                NULL);
-  response = gtk_dialog_run(GTK_DIALOG(chooser_window));
-  if (response == GTK_RESPONSE_ACCEPT){
-    GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
-    *filename = gtk_file_chooser_get_filename(chooser);
-  } else {
-    *filename = NULL;
-  }
-  gtk_widget_destroy(chooser_window);
-}
-
-
 int save_data(char *filename){
   FILE *f = fopen(filename, "w");
   if (!f) return 1;
@@ -585,23 +519,7 @@ int save_data(char *filename){
   fclose(f);
 }
 
-
-void on_btn_save_clicked(){
-  char *filename;
-  select_file(&filename, "Save File", second_window);
-  if(filename){
-    save_data(filename);
-  }
-}
-
-void on_btn_load_clicked(){
-  char *filename;
-  select_file(&filename, "Open File", main_window);
-  if (filename){
-    load_data(filename);
-  }
-}
-
+/*###############################SIGNALS#####################################*/
 
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
   const char* str = gtk_entry_get_text(e);
@@ -631,3 +549,79 @@ void on_back_button_clicked() {
   gtk_widget_show_all(main_window);
 
 }
+
+void on_btn_save_clicked(){
+  char *filename;
+  select_file(&filename, "Save File", second_window);
+  if(filename){
+    save_data(filename);
+  }
+}
+
+void on_btn_load_clicked(){
+  char *filename;
+  select_file(&filename, "Open File", main_window);
+  if (filename){
+    load_data(filename);
+  }
+}
+void on_btn_finish_clicked(){
+  simplex_data = malloc(sizeof(SimplexData));
+  simplex_data->slacks = 0;
+  simplex_data->artificials = 0;
+  simplex_data->excess = 0;
+  simplex_data->rows = 0;
+  simplex_data->cols = 0;
+  simplex_data->variables = num_variables;
+  simplex_data->minimize = do_minimize;
+  simplex_data->show_intermediates = gtk_toggle_button_get_active(intermediate_toggle);
+  simplex_data_put_inequalities(simplex_data);
+  simplex_data_put_headers(simplex_data);
+
+
+  int rows = simplex_data->rows;
+  int cols = simplex_data->cols;
+  simplex_data->table = new_matrix(rows, cols, FLOAT);
+  init_matrix_num(simplex_data->table, 0);
+
+  double **table = simplex_data->table->data.f;
+  table[0][0] = 1;
+  table[0][cols-1] = 0;
+      print_matrix(simplex_data->table);
+  
+  int canonic_i = num_variables + 1;
+  GtkWidget *entry;
+  
+  for(int r = 0; r < rows; ++r){
+    for(int c = 1; c < cols; ++c){
+      if(r == 0 && c <= num_variables){
+        entry = gtk_grid_get_child_at(gd_variables, (c-1)*2, r);      
+        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
+      } else if(c <= num_variables){
+        entry = gtk_grid_get_child_at(gd_constraints, (c-1)*2, (r-1));
+        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+      } else if(r > 0 && c == canonic_i){
+        table[r][c] = 1;
+      } else if(r > 0 && c == cols-1){
+        entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, (r-1));
+        table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+      }
+    }
+      print_matrix(simplex_data->table);
+    if(r > 0){
+      canonic_i++;
+    }
+  }
+  if (!lg_open(lg, "LaTeX/Simplex_Report")) {
+    perror("Error al crear el archivo de LaTeX");
+    return;
+  }
+  lg_init(lg);
+  prepare_simplex_lg();
+  simplex(simplex_data, lg);
+  simplex_data_free(simplex_data);
+  lg_simplex_references(lg);
+  lg_close(lg);
+  lg_generate(lg);
+}
+
