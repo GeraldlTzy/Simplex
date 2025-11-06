@@ -1,0 +1,8 @@
+name=mofongo
+objective=Maximize
+count_variables=4
+count_constraints=2
+x_1=hola^x_2=adios^x_3=mana^x_4=hoy
+x_1=2.00000^x_2=3.00000^x_3=-1.00000^x_4=-12.00000
+x_1=-2.00000^x_2=-9.00000^x_3=1.00000^x_4=9.00000^<0.00000
+x_1=0.33333^x_2=1.00000^x_3=-0.33333^x_4=-2.00000^<0.00000
