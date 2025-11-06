@@ -8,6 +8,7 @@
 #include "include/matrix.h"
 #include "include/utils.h"
 #include "include/latex_generator.h"
+#include <locale.h>
 
 #define NAME_SIZE 32
 
@@ -65,6 +66,7 @@ void initialize(){
 
 int main(int argc, char *argv[]){
 	//Inicializaciones
+  setlocale(LC_NUMERIC, "en_US.UTF-8");
 	FcInit();
 	gtk_init(&argc, &argv);
 
