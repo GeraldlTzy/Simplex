@@ -168,7 +168,6 @@
             <property name="can-focus">True</property>
             <property name="receives-default">False</property>
             <property name="draw-indicator">True</property>
-            <signal name="toggled" handler="on_ckbtn_intermediate_tables_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="x">720</property>
@@ -250,11 +249,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="in_num_var">
                 <property name="width-request">200</property>
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <signal name="insert-text" handler="numeric_entry" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -275,11 +275,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="in_num_const">
                 <property name="width-request">200</property>
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <signal name="insert-text" handler="numeric_entry" swapped="no"/>
               </object>
               <packing>
                 <property name="left-attach">1</property>

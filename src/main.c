@@ -35,6 +35,63 @@ Latex_Generator l;
 Latex_Generator *lg = &l;
 GtkListStore *inequalities;
 char **ineq_arr;
+#include <regex.h>
+
+
+/*####################################UTILS##################################*/
+typedef struct {
+  int inf_limit;
+  int sup_limit;
+} NumericEntryParams;
+
+
+void numeric_entry(GtkEditable *editable, const gchar *text,
+                            gint length, gint *position, gpointer data) {
+  const gchar *current = gtk_entry_get_text(GTK_ENTRY(editable));
+  const char *pattern = (const char *) data;
+
+  gchar *new_text = g_strdup_printf("%.*s%.*s%s", 
+      *position, current, length, text, current + *position);
+
+  regex_t regex;
+  gboolean valid = (regcomp(&regex, pattern, REG_EXTENDED) == 0) &&
+                   (regexec(&regex, new_text, 0, NULL, 0) == 0);
+  regfree(&regex);
+  g_free(new_text);
+
+  if (!valid) {
+    g_signal_stop_emission_by_name(editable, "insert-text");
+    gdk_display_beep(gdk_display_get_default());
+  }
+}
+
+static void real_numeric_entry(GtkEditable *editable, const gchar *text,
+                            gint length, gint *position, gpointer data) {
+  const gchar *current = gtk_entry_get_text(GTK_ENTRY(editable));
+
+  if (text[0] == '-' && *position == 0){
+    return;
+  }
+
+  gchar *new_text = g_strdup_printf("%.*s%.*s%s", 
+      *position, current, length, text, current + *position);
+
+  const char *pattern = "^[-+]?([0-9]+(\\.[0-9]{0,5})?|\\.[0-9]{1,5})$";
+  regex_t regex;
+  gboolean valid = (regcomp(&regex, pattern, REG_EXTENDED) == 0) &&
+                   (regexec(&regex, new_text, 0, NULL, 0) == 0);
+  regfree(&regex);
+  g_free(new_text);
+
+  if (!valid) {
+    g_signal_stop_emission_by_name(editable, "insert-text");
+    gdk_display_beep(gdk_display_get_default());
+  }
+}
+/*###########################################################################*/
+
+
+
 void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
@@ -48,6 +105,16 @@ void initialize(){
   vp_varnames = GTK_WIDGET(gtk_builder_get_object(builder, "vp_varnames"));
   intermediate_toggle = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "ckbtn_intermediate_tables"));
   inequalities = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
+  
+  GtkWidget *in_num_const = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_const"));
+  GtkWidget *in_num_var = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_var"));
+
+  char *pattern = "^[0-9]+$";
+
+  g_signal_connect(in_num_const, "insert-text", G_CALLBACK(numeric_entry), (void *) pattern);
+  g_signal_connect(in_num_var, "insert-text", G_CALLBACK(numeric_entry), (void *) pattern);
+
+
   GtkTreeIter iter;
   gtk_list_store_append(inequalities, &iter);
   gtk_list_store_set(inequalities, &iter, 0, "<=", 1, TRUE, -1);
@@ -197,7 +264,7 @@ void on_btn_var_continue_clicked(){
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
     gtk_entry_set_text(GTK_ENTRY(entry), "0");
-    // TODO: conectar a una signal que valide el numero
+    g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
     gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
     gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
   }
@@ -215,7 +282,7 @@ void on_btn_var_continue_clicked(){
       gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
       gtk_widget_set_hexpand(entry, TRUE);
       gtk_entry_set_text(GTK_ENTRY(entry), "0");
-      // TODO: conectar a una signal que valide el numero
+      g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
       gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
       gtk_grid_attach(gd_constraints, label, col_i++, c, 1, 1);
     }
@@ -234,7 +301,8 @@ void on_btn_var_continue_clicked(){
     entry = gtk_entry_new();
     gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
     gtk_widget_set_hexpand(entry, TRUE);
-    // TODO: conectar a una signal que valide el numero, debe ser mayor o igual a 0
+    const char *pattern = "^[0-9]+$";
+    g_signal_connect(entry, "insert-text", G_CALLBACK(numeric_entry), (void *) pattern);
     gtk_entry_set_text(GTK_ENTRY(entry), "0");
     gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
     col_i=0;
