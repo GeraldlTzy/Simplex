@@ -76,7 +76,7 @@ static void real_numeric_entry(GtkEditable *editable, const gchar *text,
   gchar *new_text = g_strdup_printf("%.*s%.*s%s", 
       *position, current, length, text, current + *position);
 
-  const char *pattern = "^[-+]?([0-9]+(\\.[0-9]{0,5})?|\\.[0-9]{1,5})$";
+  const char *pattern = "^[-+]?([0-9]+(\\,[0-9]{0,5})?|\\,[0-9]{1,5})$";
   regex_t regex;
   gboolean valid = (regcomp(&regex, pattern, REG_EXTENDED) == 0) &&
                    (regexec(&regex, new_text, 0, NULL, 0) == 0);

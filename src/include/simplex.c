@@ -149,11 +149,12 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
     // Cambia de matrix si es que se enciclo
     if(list_contain(list, mat) || (matrix_compare(mat, init) && pivot_counter != 0)){ 
       Node *node;
+      lg_write(lg, "\\textbf{Notice:} the algorithm entered a loop. \n");
       get_last_state(&list, &node);
-      
       if(!node){                                // Retorna si no hay mas opciones
+        lg_write(lg, "No other paths were found, so the program has ended its execution\\\\\n");
         *have_solution = 0;
-        return init;
+        return mat;
       }
       
       if(mat && mat != node->mat){              // Asigna la ultima bifurcacion
@@ -164,6 +165,7 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       mat = node->mat;
       pivot_row = node->pv_r;
       pivot_col = node->pv_c;
+      lg_write(lg, "Another path was found, the program continues its execution using this one to hopefuly find something different. \\\\\n");
     
     } else {                                    // Busca la columna del pivote
       for(int c = 1; c < mat->cols-1; ++c){
@@ -185,6 +187,27 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
             min = fraction;
             pivot_row = r;
           } else if(fabs(min - fraction) < tolerance){ // Degenerado
+            if (!degenerate) {
+                if (do_intermediates)
+                    lg_write(lg, "\\textbf{Degenerate Problem Found:}\n");
+                else 
+                    lg_write(lg, "\\section{Degenerate Problem Found}\n");
+                lg_write(lg, "A draw when choosing a pivot ocurred during the Simplex execution.\n");
+                lg_write(lg, "To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\\\\\n");
+            }
+            lg_write(lg, "\\textbf{Draw:} the rows %d and %d have a fraction of the same value,"
+                            "\\textbf{row %d} (fraction %.5lf) with the %.5lf pivot was \\textbf{choosen} and "
+                            "\\textbf{row %d} (fraction %.5lf) with the %.5lf pivot was \\textbf{stored} along with the table in case it is needed.\\\\\n",
+                            pivot_row,
+                            r,
+                            pivot_row,
+                            min,
+                            mat->data.f[pivot_row][pivot_col],
+                            r,
+                            fraction,
+                            mat->data.f[r][pivot_col]
+                    );
+            lg_write(lg, "To apretiate this please see the following table:\\\\\n");
             degenerate = 1;
             Node *node = malloc(sizeof(Node));  // Se guarda la matriz y el pivote para volver en caso
             node->mat = matrix_copy(mat);       // de enciclarse o encontrarse con problema no acotado
@@ -197,6 +220,7 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       // Si no hay opciones termina
       if(pivot_row < 0){                        // Si es no acotado y hay opciones cambia 
         if(list){
+          lg_write(lg, "\\textbf{Notice:} No other paths were found and there are no pivots to choose, so the program has ended its execution.\\\\\n");
           Node *node;
           get_last_state(&list, &node);
           if(mat && mat != node->mat){
@@ -426,12 +450,6 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     printf("ENDDDDDDDDDD\n");
     //print_matrix(data->table);
 
-    //TODO: me gustaria mover esto a la funcion para que el chunche muestre la tabla que genera el empoate
-    if (degenerate) {
-        lg_write(lg, "\\section{Degenerate Problem Found}\n");
-        lg_write(lg, "A draw when choosing a pivot ocurred during the Simplex execution.\n");
-        lg_write(lg, "To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\n");
-    }
 
     lg_write(lg, "\\section{The final simplex table}\n");
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);

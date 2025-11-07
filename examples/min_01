@@ -1,5 +1,5 @@
 name=mofongo
-objective=minimize
+objective=Minimize
 count_variables=2
 count_constraints=2
 x_1=Feliz^x_2=Jueves

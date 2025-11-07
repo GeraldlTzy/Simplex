@@ -1,5 +1,5 @@
 name=Multiple
-objective=maximize
+objective=Maximize
 count_variables=3
 count_constraints=4
 x_1=abeja^x_2=babuino^x_3=coyote

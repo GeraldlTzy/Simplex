@@ -132,6 +132,11 @@ $Z$ & $hola$ & \cellcolor{PurpleNoMamado}$adios$ & $mana$ & $hoy$ & $s_{1}$ & $s
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\textbf{Degenerate Problem Found:}
+A draw when choosing a pivot ocurred during the Simplex execution.
+To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\\
+\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,99997 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 0,33333 pivot was \textbf{stored} along with the table in case it is needed\\
+To apretiate this please see the following table:\\
 Pivoting(2)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
@@ -164,6 +169,8 @@ $Z$ & $hola$ & $adios$ & $mana$ & \cellcolor{PurpleNoMamado}$hoy$ & $s_{1}$ & $s
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,99994 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 0,33332 pivot was \textbf{stored} along with the table in case it is needed\\
+To apretiate this please see the following table:\\
 Pivoting(4)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
@@ -196,6 +203,8 @@ $Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & \cellcolor{PurpleNoMamado}$s
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 1,00000 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 0,33333 pivot was \textbf{stored} along with the table in case it is needed\\
+To apretiate this please see the following table:\\
 Pivoting(6)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
@@ -212,6 +221,8 @@ $Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\textbf{Notice:} the algorithm entered a loop. 
+Another path was found, the program continues its execution using this one to hopefuly find something different. \\
 Pivoting(7)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
@@ -228,6 +239,7 @@ $Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\textbf{Notice:} No other paths were found and there are no pivots to choose, so the program has ended its execution\\
 Pivoting(8)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
@@ -244,6 +256,7 @@ $Z$ & $hola$ & $adios$ & \cellcolor{PurpleNoMamado}$mana$ & $hoy$ & $s_{1}$ & $s
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\textbf{Notice:} No other paths were found and there are no pivots to choose, so the program has ended its execution\\
 Pivoting(9)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
@@ -260,9 +273,6 @@ $Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{Degenerate Problem Found}
-A draw when choosing a pivot ocurred during the Simplex execution.
-To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.
 \section{The final simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}

@@ -5,6 +5,5 @@
 \contentsline {section}{\numberline {2.1}Mathematical representation}{4}{section.2.1}%
 \contentsline {section}{\numberline {2.2}The initial simplex table}{4}{section.2.2}%
 \contentsline {section}{\numberline {2.3}The intermediates simplex tables}{4}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Degenerate Problem Found}{5}{section.2.4}%
-\contentsline {section}{\numberline {2.5}The final simplex table}{6}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Unbound Solution}{6}{section.2.6}%
+\contentsline {section}{\numberline {2.4}The final simplex table}{6}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Unbound Solution}{6}{section.2.5}%
