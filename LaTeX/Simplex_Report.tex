@@ -90,14 +90,14 @@ Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calcula
 \section{Mathematical representation}
 \textbf{Maximize:}
 \begin{dmath}
-z = 2.00000hola + 3.00000adios + -1.00000mana + -12.00000hoy 
+z = 2,00000hola + 3,00000adios + -1,00000mana + -12,00000hoy 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
--2.00000hola + -9.00000adios + 1.00000mana + 9.00000hoy \leq0.00000
+-2,00000hola + -9,00000adios + 1,00000mana + 9,00000hoy \leq0,00000
 \end{dmath}
 \begin{dmath}
-0.33333hola + 1.00000adios + -0.33333mana + -2.00000hoy \leq0.00000
+0,33333hola + 1,00000adios + -0,33333mana + -2,00000hoy \leq0,00000
 \end{dmath}
 \section{The initial simplex table}
 \begin{center}
@@ -106,11 +106,156 @@ z = 2.00000hola + 3.00000adios + -1.00000mana + -12.00000hoy
  \hline 
 $Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1.00000 & -2.00000 & -3.00000 & 1.00000 & 12.00000 & 0.00000 & 0.00000 & 0.00000\\ 
+1,00000 & -2,00000 & -3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0.00000 & -2.00000 & -9.00000 & 1.00000 & 9.00000 & 1.00000 & 0.00000 & 0.00000\\ 
+0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0.00000 & 0.33333 & 1.00000 & -0.33333 & -2.00000 & 0.00000 & 1.00000 & 0.00000\\ 
+0,00000 & 0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{The intermediates simplex tables}
+Pivoting(1)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & \cellcolor{PurpleNoMamado}$adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & -2,00000 & \cellcolor{PurpleNoMamado}-3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & -2,00000 & \cellcolor{PurpleNoMamado}-9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(2)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & \cellcolor{PurpleNoMamado}-1,00001 & 0,00000 & 0,00001 & 6,00000 & 0,00000 & 3,00000 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99997 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,99997 & \cellcolor{PurpleNoMamado}-9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}9,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+0,00000 & \cellcolor{PurpleNoMamado}0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(3)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & \cellcolor{PurpleNoMamado}$hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 0,00000 & -2,00004 & \cellcolor{PurpleNoMamado}-3,00036 & 1,00004 & 12,00036 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & 1,00000 & 0,00000 & -2,00003 & \cellcolor{PurpleNoMamado}-9,00027 & 1,00003 & 9,00027 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,33334 & \cellcolor{PurpleNoMamado}1,00006 & \cellcolor{PurpleNoMamado}-0,33334 & \cellcolor{PurpleNoMamado}-2,00006 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(4)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & \cellcolor{PurpleNoMamado}$mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 3,00018 & \cellcolor{PurpleNoMamado}-0,99996 & 0,00000 & -0,00004 & 5,99982 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}8,99973 & \cellcolor{PurpleNoMamado}0,99994 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,99994 & \cellcolor{PurpleNoMamado}-8,99973 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+0,00000 & 0,00000 & 0,99994 & \cellcolor{PurpleNoMamado}0,33332 & 1,00000 & -0,33332 & -1,99994 & 0,00000 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(5)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & \cellcolor{PurpleNoMamado}$s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 1,00002 & 12,00009 & 0,00000 & 0,00000 & -2,00002 & \cellcolor{PurpleNoMamado}-3,00009 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & 1,00006 & 9,00027 & 1,00000 & 0,00000 & -2,00006 & \cellcolor{PurpleNoMamado}-9,00027 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-0,33334 & \cellcolor{PurpleNoMamado}-2,00003 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,33334 & \cellcolor{PurpleNoMamado}1,00003 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(6)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 6,00000 & 0,00000 & 3,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 0,00000 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}-9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+0,00000 & -0,33333 & -1,99997 & 0,00000 & 0,99997 & \cellcolor{PurpleNoMamado}0,33333 & 1,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(7)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 6,00000 & 0,00000 & 3,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 0,00000 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & \cellcolor{PurpleNoMamado}1,00000 & 0,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-1,99997 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99997 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(8)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & \cellcolor{PurpleNoMamado}$mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 3,00018 & \cellcolor{PurpleNoMamado}-0,99996 & 0,00000 & -0,00004 & 5,99982 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & 1,00000 & 8,99973 & \cellcolor{PurpleNoMamado}0,99994 & 0,00000 & -1,99994 & -8,99973 & 0,00000 & 0,00000\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99994 & \cellcolor{PurpleNoMamado}0,33332 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33332 & \cellcolor{PurpleNoMamado}-1,99994 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(9)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & \cellcolor{PurpleNoMamado}-1,00001 & 0,00000 & 0,00001 & 6,00000 & 0,00000 & 3,00000 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & \cellcolor{PurpleNoMamado}0,99997 & 0,00000 & -1,99997 & -9,00000 & 1,00000 & 9,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -125,11 +270,11 @@ To manage this, one of the pivots was choosen and the other table was stored in 
  \hline 
 $Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1.00000 & 0.00000 & 3.00006 & -1.00000 & -0.00012 & 0.00000 & 6.00006 & 0.00000\\ 
+1,00000 & 0,00000 & 3,00006 & -1,00000 & -0,00012 & 0,00000 & 6,00006 & 0,00000\\ 
  \hline 
-0.00000 & 0.00000 & -2.99994 & -1.00000 & -3.00012 & 1.00000 & 6.00006 & 0.00000\\ 
+0,00000 & 0,00000 & -2,99994 & -1,00000 & -3,00012 & 1,00000 & 6,00006 & 0,00000\\ 
  \hline 
-0.00000 & 1.00000 & 3.00003 & -1.00000 & -6.00006 & 0.00000 & 3.00003 & 0.00000\\ 
+0,00000 & 1,00000 & 3,00003 & -1,00000 & -6,00006 & 0,00000 & 3,00003 & 0,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}

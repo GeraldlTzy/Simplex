@@ -1,8 +1,8 @@
 name=mofongo
-objective=maximize
+objective=Maximize
 count_variables=4
 count_constraints=2
 x_1=hola^x_2=adios^x_3=mana^x_4=hoy
 x_1=2^x_2=3^x_3=-1^x_4=-12
 1=-2^2=-9^3=1^4=9^<0
-1=0.333333^2=1^3=-0.333333^4=-2^<0
+1=0,333333^2=1^3=-0,333333^4=-2^<0
