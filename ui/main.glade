@@ -249,7 +249,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="in_num_var">
                 <property name="width-request">200</property>
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
@@ -274,7 +274,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry">
+              <object class="GtkEntry" id="in_num_const">
                 <property name="width-request">200</property>
                 <property name="height-request">50</property>
                 <property name="visible">True</property>
