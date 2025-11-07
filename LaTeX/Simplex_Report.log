@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  4 NOV 2025 21:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  6 NOV 2025 18:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -623,7 +623,7 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logo_tec.jpg, id=40, 1445.4pt x 336.25626pt>
+<logo_tec.jpg, id=44, 1445.4pt x 336.25626pt>
 File: logo_tec.jpg Graphic file (type jpg)
 <use logo_tec.jpg>
 Package pdftex.def Info: logo_tec.jpg  used on input line 53.
@@ -658,15 +658,25 @@ Chapter 1.
 [3]
 Chapter 2.
 
-Underfull \hbox (badness 10000) in paragraph at lines 167--169
-
- []
-
-
 
 [4
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 211--216
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 211--216
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--228
+
+ []
+
+
 
 [5]
 
@@ -678,25 +688,25 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `Simplex_Report.out' has not changed.
-(rerunfilecheck)             Checksum: 3D2D4E3D081325D78DFDA14D51F53307;1335.
+(rerunfilecheck)             Checksum: 41BD6878966872E9E96BE2A5982013AD;1532.
  ) 
 Here is how much of TeX's memory you used:
- 13980 strings out of 475109
- 212175 string characters out of 5765325
- 828431 words of memory out of 5000000
- 36777 multiletter control sequences out of 15000+600000
+ 13983 strings out of 475109
+ 212204 string characters out of 5765325
+ 837431 words of memory out of 5000000
+ 36779 multiletter control sequences out of 15000+600000
  564363 words of font info for 55 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 75i,10n,86p,1554b,456s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,10n,86p,1555b,511s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 r8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on LaTeX/Simplex_Report.pdf (7 pages, 198640 bytes).
+Output written on LaTeX/Simplex_Report.pdf (7 pages, 203420 bytes).
 PDF statistics:
- 127 PDF objects out of 1000 (max. 8388607)
- 103 compressed objects within 2 object streams
- 19 named destinations out of 1000 (max. 500000)
- 78 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 132 PDF objects out of 1000 (max. 8388607)
+ 108 compressed objects within 2 object streams
+ 20 named destinations out of 1000 (max. 500000)
+ 86 words of extra memory for PDF output out of 10000 (max. 10000000)
 
