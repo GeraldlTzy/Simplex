@@ -318,6 +318,42 @@ void on_btn_var_continue_clicked(){
   gtk_widget_show_all(second_window);
 }
 
+void draw_2d_graph(){
+    lg_write(lg, "\\begin{tikzpicture}\n");
+    lg_write(lg, "\\begin{axis}[\n"
+                 "axis lines = left\n"
+                 "xlabel = {$%s$}\n"
+                 "ylabel = {$%s$}\n"
+                 "xmin = 0, xmax = 100\n"
+                 "ymin = 0, ymax = 100\n"
+                 "domain = 0:100\n"
+                 "samples = 500\n"
+                 "]\n",
+                 headers[0],
+                 headers[1]
+    );
+
+    //las restriccione son restricciones perronas
+    //hay un label y un entry por cada bichita
+    GtkWidget *entry;
+
+    // parseo bien perron de las restricciones
+    char** restricctions[num_constraints][256];
+    char c = 'A';
+    for (int i = 0; i < num_constraints; ++i){
+        // la constante de la restriccion
+        //entry = gtk_grid_get_child_at(2 * num_variables + 2, i);
+        //const char* str = gtk_entry_get_text(GTK_ENTRY(entry));
+        //strcpy(restricctions[i], str);
+        // el coeficiente de la primera variable
+        entry = gtk_grid_get_child_at(gd_variables, 0, i);
+    }
+
+    lg_write(lg, "\\end{axis}\n");
+    lg_write(lg, "\\end{tikzpicture}\n");
+
+}
+
 void prepare_simplex_lg(){
     lg_write(lg, "\\chapter{Solving %s}\n", problem_name);
     lg_write(lg, "\\section{Mathematical representation}\n");
@@ -378,6 +414,11 @@ void prepare_simplex_lg(){
         lg_write(lg, "\\begin{dmath}\n");
         lg_write(lg, "%s\n", to_write);
         lg_write(lg, "\\end{dmath}\n");
+    }
+
+    if (num_variables == 2) {
+        lg_write(lg, "\\section{Graphical representation}\n");
+        draw_2d_graph();
     }
 }
 void simplex_data_put_inequalities(SimplexData *simplex_data){
@@ -451,7 +492,6 @@ void select_file(char **filename, char *oper, GtkWidget *parent){
   }
   gtk_widget_destroy(chooser_window);
 }
-// TODO: signal para validar numeros
 void load_data(char *filename){
   FILE *file;
   file = fopen(filename, "r");
@@ -486,6 +526,7 @@ void load_data(char *filename){
     gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
     sprintf(buf, "%.5lf", atof(read_text(file, '=', '^')));
     gtk_entry_set_text(entry, buf);
+    g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
     gtk_grid_attach(gd_variables, GTK_WIDGET(entry), gd_left++, 0, 1, 1);
     //Cargar los nombres de las variables al grid 
     sprintf(buf, "%s %s", var_names[x], ((x < num_variables-1) ? ("+ ") : ("")));
@@ -511,6 +552,7 @@ void load_data(char *filename){
       gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
       sprintf(buf, "%.5lf", atof(read_text(file, '=', '^')));
       gtk_entry_set_text(entry, buf);
+      g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
       gtk_grid_attach(gd_constraints, GTK_WIDGET(entry), gd_left, gd_top, 1, 1);
       gd_left += 2;
     }
@@ -529,6 +571,7 @@ void load_data(char *filename){
     entry = GTK_ENTRY(gtk_entry_new());
     gtk_entry_set_width_chars(entry, 5);
     gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
+    g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
 
     sprintf(buf, "%.5lf", atof(read_text(file, '<', '^')));
     gtk_entry_set_text(entry, buf);

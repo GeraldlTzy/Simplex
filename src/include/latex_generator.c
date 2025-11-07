@@ -156,8 +156,8 @@ fprintf(lg->file, "\\documentclass[12pt,a4paper]{report}\n");
     fprintf(lg->file, "\\usepackage{graphicx}\n");
     fprintf(lg->file, "\\usepackage{float}\n");
     fprintf(lg->file, "\\usepackage{url}\n");
-    //fprintf(lg->file, "\\usepackage{tikz}\n");
-    //fprintf(lg->file, "\\usetikzlibrary{tikzmark, calc}\n");
+    fprintf(lg->file, "\\usepackage{tikz}\n");
+    fprintf(lg->file, "\\usepackage{pgfplots}\n");
 
     fprintf(lg->file, "\\usepackage[dvipsnames]{xcolor}\n");
     fprintf(lg->file, "\\usepackage[table]{xcolor}\n");
