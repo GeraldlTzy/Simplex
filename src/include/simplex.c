@@ -3,6 +3,7 @@
 #include <glib.h>
 #include <assert.h>
 #include <string.h>
+#include <math.h>
 
 #include "simplex.h"
 #include "latex_generator.h"
@@ -12,6 +13,7 @@
 int pivot_counter = 0;
 int unbound = 0;
 int degenerate = 0;
+double tolerance = 1e-4;
 
 void canonize(Matrix *mat, int pivot_row, int pivot_col){
     double k;
@@ -183,7 +185,7 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           if(min > fraction){
             min = fraction;
             pivot_row = r;
-          } else if(min == fraction){ // Degenerado
+          } else if(fabs(min-fraction) < tolerance){ // Degenerado
             degenerate = 1;
             Node *node = malloc(sizeof(Node));  // Se guarda la matriz y el pivote para volver en caso
             node->mat = matrix_copy(mat);       // de enciclarse o encontrarse con problema no acotado
@@ -275,7 +277,7 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           if(min_max > fraction){
             min_max = fraction;
             pivot_row = r;
-          } else if(min_max == fraction){ // Degenerado 
+          } else if(fabs(min_max-fraction)<tolerance){ // Degenerado 
             degenerate = 1;
             Node *node = malloc(sizeof(Node));
             node->mat = matrix_copy(mat);

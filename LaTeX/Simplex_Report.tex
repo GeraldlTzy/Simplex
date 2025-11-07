@@ -86,41 +86,31 @@ The Simplex algorithm is an algorithm discovered by George Dantzig. This algorit
 The Simplex algorithm uses matrix operations to find the optimal solution to a linear programming problem, or to find out if it does not have a feasible solution \cite{torres2025}.A linear programming problem has desition variables and restrictions under them, so you would think that you could solve the problem simply by using a normal method to find the value of the variables.Sadly, in these types of problems thre are usually far more varaibles than equations, to this aproach is not good enough.Using the equations you can find the feasible region of the problem, where all the posible solutions are.Simplex starts from a vertex of the feasible region and jumps to adjacent vertices that give a better value for the objective function.Once you can not find a vertex that upgrades the objective value, that is the optimal solution.\\
 The simplex algorithm has a set of variables that are called basic, these variables can be found in canonical columns \cite{torres2025}.The first step is to level out any inecuations with slack or excess variables depending on what you need,when one of the restrictions is equals or greater than you will also need to add artificial variables, because these forms of restrictions do not give enough basic variables.After leveling out the restrictions, you need to clear out the z variable from the objective function, this will give you an extra equation to work with.\\
 Once you have made that you can build the simplex table, giving each variable a column and each equation a row.To maximize the objective value you will find the smallest negative number in the first row (or the biggest positive number if you are minimizing).If you did not find any numbers that meet the criteria, congratulations, you found the optimal solution.However if you did, then you need to divide all the numbers in that column by the numbers of the final column (ignore negative numbers and 0's) and choose the smallest fraction to meet all the restrictions, the number on the column and row is called the pivot.Once you have a pivot you need to canonize the column, keep in mid that in this process you want the pivot to be the one of the canonical column, this process is called pivoting.Once you have canonized the column, repeat the process until you have ended \cite{torres2025}.\\
-Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction.If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found.If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting.However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop.But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution.\chapter{Solving Multiple}
+Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction.If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found.If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting.However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop.But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution.\chapter{Solving mofongo}
 \section{Mathematical representation}
 \textbf{Maximize:}
 \begin{dmath}
-z = 60,00000abeja + 35,00000babuino + 20,00000coyote 
+z = 2,00000hola + 3,00000adios + -1,00000mana + -12,00000hoy 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
-8,00000abeja + 6,00000babuino + 1,00000coyote \leq48,00000
+-2,00000hola + -9,00000adios + 1,00000mana + 9,00000hoy \leq0,00000
 \end{dmath}
 \begin{dmath}
-4,00000abeja + 2,00000babuino + 1,50000coyote \leq20,00000
-\end{dmath}
-\begin{dmath}
-2,00000abeja + 1,50000babuino + 0,50000coyote \leq8,00000
-\end{dmath}
-\begin{dmath}
-0,00000abeja + 1,00000babuino + 0,00000coyote \leq5,00000
+0,33333hola + 1,00000adios + -0,33333mana + -2,00000hoy \leq0,00000
 \end{dmath}
 \section{The initial simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1,00000 & -60,00000 & -35,00000 & -20,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000\\ 
+1,00000 & -2,00000 & -3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0,00000 & 8,00000 & 6,00000 & 1,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 48,00000\\ 
+0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0,00000 & 4,00000 & 2,00000 & 1,50000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 20,00000\\ 
- \hline 
-0,00000 & 2,00000 & 1,50000 & 0,50000 & 0,00000 & 0,00000 & 1,00000 & 0,00000 & 8,00000\\ 
- \hline 
-0,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000\\ 
+0,00000 & 0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -129,19 +119,15 @@ $Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $
 Pivoting(1)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & \cellcolor{PurpleNoMamado}$abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$ & $Fraction$\\ 
+$Z$ & $hola$ & \cellcolor{PurpleNoMamado}$adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00000 & \cellcolor{PurpleNoMamado}-60,00000 & -35,00000 & -20,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & $-$\\ 
+1,00000 & -2,00000 & \cellcolor{PurpleNoMamado}-3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000 & $-$\\ 
  \hline 
-0,00000 & \cellcolor{PurpleNoMamado}8,00000 & 6,00000 & 1,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 48,00000 & 6,00000\\ 
+0,00000 & -2,00000 & \cellcolor{PurpleNoMamado}-9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000 & $-$\\ 
  \hline 
-0,00000 & \cellcolor{PurpleNoMamado}4,00000 & 2,00000 & 1,50000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 20,00000 & 5,00000\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}2,00000 & \cellcolor{PurpleNoMamado}1,50000 & \cellcolor{PurpleNoMamado}0,50000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}8,00000 & \cellcolor{PurpleNoMamado}4,00000\\ 
- \hline 
-0,00000 & \cellcolor{PurpleNoMamado}0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000 & $-$\\ 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -149,82 +135,152 @@ $Z$ & \cellcolor{PurpleNoMamado}$abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2
 Pivoting(2)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $abeja$ & $babuino$ & \cellcolor{PurpleNoMamado}$coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$ & $Fraction$\\ 
+$Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00000 & 0,00000 & 10,00000 & \cellcolor{PurpleNoMamado}-5,00000 & 0,00000 & 0,00000 & 30,00000 & 0,00000 & 240,00000 & $-$\\ 
+1,00000 & \cellcolor{PurpleNoMamado}-1,00001 & 0,00000 & 0,00001 & 6,00000 & 0,00000 & 3,00000 & 0,00000 & $-$\\ 
  \hline 
-0,00000 & 0,00000 & 0,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 1,00000 & 0,00000 & -4,00000 & 0,00000 & 16,00000 & $-$\\ 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99997 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,99997 & \cellcolor{PurpleNoMamado}-9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}9,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,00000 & \cellcolor{PurpleNoMamado}0,50000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}4,00000 & \cellcolor{PurpleNoMamado}8,00000\\ 
- \hline 
-0,00000 & 1,00000 & 0,75000 & \cellcolor{PurpleNoMamado}0,25000 & 0,00000 & 0,00000 & 0,50000 & 0,00000 & 4,00000 & 16,00000\\ 
- \hline 
-0,00000 & 0,00000 & 1,00000 & \cellcolor{PurpleNoMamado}0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000 & $-$\\ 
+0,00000 & \cellcolor{PurpleNoMamado}0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+Pivoting(3)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & \cellcolor{PurpleNoMamado}$hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 0,00000 & -2,00004 & \cellcolor{PurpleNoMamado}-3,00036 & 1,00004 & 12,00036 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & 1,00000 & 0,00000 & -2,00003 & \cellcolor{PurpleNoMamado}-9,00027 & 1,00003 & 9,00027 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,33334 & \cellcolor{PurpleNoMamado}1,00006 & \cellcolor{PurpleNoMamado}-0,33334 & \cellcolor{PurpleNoMamado}-2,00006 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(4)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & \cellcolor{PurpleNoMamado}$mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 3,00018 & \cellcolor{PurpleNoMamado}-0,99996 & 0,00000 & -0,00004 & 5,99982 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}8,99973 & \cellcolor{PurpleNoMamado}0,99994 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,99994 & \cellcolor{PurpleNoMamado}-8,99973 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+0,00000 & 0,00000 & 0,99994 & \cellcolor{PurpleNoMamado}0,33332 & 1,00000 & -0,33332 & -1,99994 & 0,00000 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(5)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & \cellcolor{PurpleNoMamado}$s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 1,00002 & 12,00009 & 0,00000 & 0,00000 & -2,00002 & \cellcolor{PurpleNoMamado}-3,00009 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & 1,00006 & 9,00027 & 1,00000 & 0,00000 & -2,00006 & \cellcolor{PurpleNoMamado}-9,00027 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-0,33334 & \cellcolor{PurpleNoMamado}-2,00003 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,33334 & \cellcolor{PurpleNoMamado}1,00003 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(6)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 6,00000 & 0,00000 & 3,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 0,00000 & 0,00000 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}-9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+0,00000 & -0,33333 & -1,99997 & 0,00000 & 0,99997 & \cellcolor{PurpleNoMamado}0,33333 & 1,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(7)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 6,00000 & 0,00000 & 3,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 0,00000 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & \cellcolor{PurpleNoMamado}1,00000 & 0,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-1,99997 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99997 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(8)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $hola$ & $adios$ & \cellcolor{PurpleNoMamado}$mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & 0,00000 & 3,00018 & \cellcolor{PurpleNoMamado}-0,99996 & 0,00000 & -0,00004 & 5,99982 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & 1,00000 & 8,99973 & \cellcolor{PurpleNoMamado}0,99994 & 0,00000 & -1,99994 & -8,99973 & 0,00000 & 0,00000\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99994 & \cellcolor{PurpleNoMamado}0,33332 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33332 & \cellcolor{PurpleNoMamado}-1,99994 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(9)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00000 & \cellcolor{PurpleNoMamado}-1,00001 & 0,00000 & 0,00001 & 6,00000 & 0,00000 & 3,00000 & 0,00000 & $-$\\ 
+ \hline 
+0,00000 & \cellcolor{PurpleNoMamado}0,99997 & 0,00000 & -1,99997 & -9,00000 & 1,00000 & 9,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{Degenerate Problem Found}
+A draw when choosing a pivot ocurred during the Simplex execution.
+To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.
 \section{The final simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
+$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 10,00000 & 10,00000 & 0,00000 & 280,00000\\ 
+1,00000 & 0,00000 & 3,00006 & -1,00000 & -0,00012 & 0,00000 & 6,00006 & 0,00000\\ 
  \hline 
-0,00000 & 0,00000 & -2,00000 & 0,00000 & 1,00000 & 2,00000 & -8,00000 & 0,00000 & 24,00000\\ 
+0,00000 & 0,00000 & -2,99994 & -1,00000 & -3,00012 & 1,00000 & 6,00006 & 0,00000\\ 
  \hline 
-0,00000 & 0,00000 & -2,00000 & 1,00000 & 0,00000 & 2,00000 & -4,00000 & 0,00000 & 8,00000\\ 
- \hline 
-0,00000 & 1,00000 & 1,25000 & 0,00000 & 0,00000 & -0,50000 & 1,50000 & 0,00000 & 2,00000\\ 
- \hline 
-0,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 1,00000 & 5,00000\\ 
+0,00000 & 1,00000 & 3,00003 & -1,00000 & -6,00006 & 0,00000 & 3,00003 & 0,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{The final simplex table 2}
-Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty. When pivoting said column, the folowing table can be obtained.
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
- \hline 
-1,00000 & 0,00000 & 0,00000 & 0,00000 & 0,00000 & 10,00000 & 10,00000 & 0,00000 & 280,00000\\ 
- \hline 
-0,00000 & 1,60000 & 0,00000 & 0,00000 & 1,00000 & 1,20000 & -5,60000 & 0,00000 & 27,20000\\ 
- \hline 
-0,00000 & 1,60000 & 0,00000 & 1,00000 & 0,00000 & 1,20000 & -1,60000 & 0,00000 & 11,20000\\ 
- \hline 
-0,00000 & 0,80000 & 1,00000 & 0,00000 & 0,00000 & -0,40000 & 1,20000 & 0,00000 & 1,60000\\ 
- \hline 
-0,00000 & -0,80000 & 0,00000 & 0,00000 & 0,00000 & 0,40000 & -1,20000 & 1,00000 & 3,40000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\section{Solution}
-\textbf{Solution 1:}\\
-abeja: 2,00000, babuino: 0,00000, coyote: 8,00000\\
-\textbf{Solution 2:}\\
-abeja: 0,00000, babuino: 1,60000, coyote: 11,20000\\
-\\By using the following formula, infinite optimal solutions can be found:\\
-\begin{dmath}
-\alpha*solution1 + (1-\alpha)*solution2\\
-\end{dmath}
-$$
-0 \leq \alpha \leq 1
-$$
-\textbf{Solution 3:}\\
-abeja: 0,50000, babuino: 1,20000, coyote: 10,40000\\
-\textbf{Solution 4:}\\
-abeja: 1,00000, babuino: 0,80000, coyote: 9,60000\\
-\textbf{Solution 5:}\\
-abeja: 1,50000, babuino: 0,40000, coyote: 8,80000\\
+\section{Unbound Solution}
+The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value.
 \begin{thebibliography}{9}
 \bibitem{torres2025}
 F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.
