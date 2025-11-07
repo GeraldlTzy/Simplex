@@ -353,12 +353,8 @@ char **simplex_data_put_headers(SimplexData *data){
     headers[acc] = malloc(8);
     sprintf(headers[acc++], "a_{%d}", i+1);
   }
-  printf("termina\n");
   headers[acc] = malloc(2);
   strcpy(headers[acc], "B");
-  for(i = 0; i < data->cols; ++i)
-    printf("%s \t", headers[i]);
-  printf("\n");
   data->headers = headers;
 }
 void on_btn_finish_clicked(){
@@ -421,8 +417,29 @@ void on_btn_finish_clicked(){
   lg_generate(lg);
 }
 
+/*#########################MANEJO DE ARCHIVOS################################*/
 
-
+void select_file(char **filename, char *oper, GtkWidget *parent){
+  GtkWidget *chooser_window;
+  GtkFileChooserAction open_window = GTK_FILE_CHOOSER_ACTION_SAVE;
+  int response;
+  chooser_window = gtk_file_chooser_dialog_new(oper,
+                                                GTK_WINDOW(parent),
+                                                open_window,
+                                                "_Cancel",
+                                                GTK_RESPONSE_CANCEL,
+                                                "_Open",
+                                                GTK_RESPONSE_ACCEPT,
+                                                NULL);
+  response = gtk_dialog_run(GTK_DIALOG(chooser_window));
+  if (response == GTK_RESPONSE_ACCEPT){
+    GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
+    *filename = gtk_file_chooser_get_filename(chooser);
+  } else {
+    *filename = NULL;
+  }
+  gtk_widget_destroy(chooser_window);
+}
 // TODO: signal para validar numeros
 void load_data(char *filename){
   FILE *file;
@@ -430,7 +447,7 @@ void load_data(char *filename){
   char objective[9];
   strcpy(problem_name, read_text(file, '=', '\n'));
   strcpy(objective, read_text(file, '=', '\n'));
-  if(strcmp(objective, "maximize") == 0){
+  if(strcmp(objective, "Maximize") == 0){
     do_minimize = 0;
   } else {
     do_minimize = 1;
@@ -520,31 +537,62 @@ void load_data(char *filename){
   gtk_widget_show_all(second_window);
 }
 
+int save_data(char *filename){
+  FILE *f = fopen(filename, "w");
+  if (!f) return 1;
+  fprintf(f, "name=%s\n", problem_name);
+  fprintf(f, "objective=%s\n", (do_minimize == 1 ? "Minimize" : "Maximize"));
+  fprintf(f, "count_variables=%d\n", num_variables);
+  fprintf(f, "count_constraints=%d\n", num_constraints);
+  for (int x = 0; x < num_variables; ++x){
+    fprintf(f, "x_%d=%s%s", x+1, var_names[x], (x != num_variables-1 ? "^" : "\n"));
+  }
+
+  GtkWidget *entry, *cmb;
+  double value;
+  const char *ineq;
+
+  for (int c = 0; c <= num_constraints; ++c){
+    for (int x = 0; x < num_variables; ++x){
+      if (c == 0){
+        entry = gtk_grid_get_child_at(gd_variables, x*2, 0);
+        value = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+        fprintf(f, "x_%d=%.5lf%s", x+1, value, (x != num_variables-1 ? "^" : "\n"));
+      } else {
+        entry = gtk_grid_get_child_at(gd_constraints, x*2, c-1);
+        value = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+        fprintf(f, "x_%d=%.5lf^", x+1, value);
+      }
+    }
+    if (c != 0){
+      cmb = gtk_grid_get_child_at(gd_constraints, num_variables*2, c-1);
+      entry = gtk_bin_get_child(GTK_BIN(cmb));
+      ineq = gtk_entry_get_text(GTK_ENTRY(entry));
+      entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, c-1);
+      value = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+      fprintf(f, "%c%.5lf\n", ineq[0], value);
+    }
+  }
+  fclose(f);
+}
+
 int simplex_table_cols;
+
+void on_btn_save_clicked(){
+  char *filename;
+  select_file(&filename, "Save File", second_window);
+  if(filename){
+    save_data(filename);
+  }
+}
 
 void on_btn_load_clicked(){
   char *filename;
-  GtkWidget *chooser_window;
-  GtkFileChooserAction open_window = GTK_FILE_CHOOSER_ACTION_SAVE;
-  int response;
-  chooser_window = gtk_file_chooser_dialog_new("Open File",
-                                                GTK_WINDOW(main_window),
-                                                open_window,
-                                                "_Cancel",
-                                                GTK_RESPONSE_CANCEL,
-                                                "_Open",
-                                                GTK_RESPONSE_ACCEPT,
-                                                NULL);
-  response = gtk_dialog_run(GTK_DIALOG(chooser_window));
-  if (response == GTK_RESPONSE_ACCEPT){
-    GtkFileChooser *chooser = GTK_FILE_CHOOSER(chooser_window);
-    filename = gtk_file_chooser_get_filename(chooser);
+  select_file(&filename, "Open File", main_window);
+  if (filename){
     load_data(filename);
   }
-  gtk_widget_destroy(chooser_window);
 }
-
-
 void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
   const char* str = gtk_entry_get_text(e);
   if (strcmp(str, "Maximize") == 0) do_minimize = 0;

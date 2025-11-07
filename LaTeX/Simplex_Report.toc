@@ -1,10 +1,10 @@
 \contentsline {chapter}{\numberline {1}Simplex Description}{2}{chapter.1}%
 \contentsline {section}{\numberline {1.1}History}{2}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Description}{2}{section.1.2}%
-\contentsline {chapter}{\numberline {2}Solving mofongo}{4}{chapter.2}%
+\contentsline {chapter}{\numberline {2}Solving qwe}{4}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Mathematical representation}{4}{section.2.1}%
 \contentsline {section}{\numberline {2.2}The initial simplex table}{4}{section.2.2}%
 \contentsline {section}{\numberline {2.3}The intermediates simplex tables}{4}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Degenerate Problem Found}{5}{section.2.4}%
-\contentsline {section}{\numberline {2.5}The final simplex table}{6}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Unbound Solution}{6}{section.2.6}%
+\contentsline {section}{\numberline {2.4}The final simplex table}{4}{section.2.4}%
+\contentsline {section}{\numberline {2.5}The final simplex table 2}{5}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Solution}{5}{section.2.6}%
