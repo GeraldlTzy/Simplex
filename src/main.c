@@ -320,17 +320,11 @@ void on_btn_var_continue_clicked(){
 
 void draw_2d_graph(){
     lg_write(lg, "\\begin{tikzpicture}\n");
-    lg_write(lg, "\\begin{axis}[\n"
-                 "axis lines = left\n"
-                 "xlabel = {$%s$}\n"
-                 "ylabel = {$%s$}\n"
-                 "xmin = 0, xmax = 100\n"
-                 "ymin = 0, ymax = 100\n"
-                 "domain = 0:100\n"
-                 "samples = 500\n"
-                 "]\n",
-                 headers[0],
-                 headers[1]
+    lg_write(lg,    "\\begin{axis}[\n"
+                    "\txmin = 0, ymin = 0,"
+                    "\taxis lines = left,\n"
+                    "\tgrid = both"
+                    "]\n"
     );
 
     //las restriccione son restricciones perronas
@@ -338,20 +332,75 @@ void draw_2d_graph(){
     GtkWidget *entry;
 
     // parseo bien perron de las restricciones
-    char** restricctions[num_constraints][256];
+    char restricctions[num_constraints][256];
     char c = 'A';
+    const char *str;
+    char buf[64];
+    int k;
     for (int i = 0; i < num_constraints; ++i){
         // la constante de la restriccion
-        //entry = gtk_grid_get_child_at(2 * num_variables + 2, i);
-        //const char* str = gtk_entry_get_text(GTK_ENTRY(entry));
-        //strcpy(restricctions[i], str);
-        // el coeficiente de la primera variable
-        entry = gtk_grid_get_child_at(gd_variables, 0, i);
+        entry = gtk_grid_get_child_at(gd_constraints, 2 * num_variables + 1, i);
+        str = gtk_entry_get_text(GTK_ENTRY(entry));
+
+        k = 0;
+        for (int i = 0; str[i] != '\0'; ++i){
+            if (str[i] == ',') buf[k++] = '.';
+            else buf[k++] = str[i];
+        }
+        buf[k] = '\0';
+        strcpy(restricctions[i], "(");
+        strcat(restricctions[i], buf);
+
+        if (atof(str) != 0){
+            // el coeficiente de la primera variable
+            entry = gtk_grid_get_child_at(gd_constraints, 0, i);
+            str = gtk_entry_get_text(GTK_ENTRY(entry));
+            k = 0;
+            for (int i = 0; str[i] != '\0'; ++i){
+                if (str[i] == ',') buf[k++] = '.';
+                else buf[k++] = str[i];
+            }
+            buf[k] = '\0';
+            // como se despeja van con el simbolo opuesto
+            if (buf[0] == '-'){
+                //strcpy(buf, "+");
+                //strcat(buf,str+1);
+                buf[0] = '+';
+                strcat(restricctions[i], buf);
+            } else {
+                //strcpy(buf, "-");
+                //strcat(buf,str);
+                strcat(restricctions[i], "-");
+                strcat(restricctions[i], buf);
+            }
+            strcat(restricctions[i], "*x)/");
+            // el coeficiente de la segunda
+            entry = gtk_grid_get_child_at(gd_constraints, 2, i);
+            str = gtk_entry_get_text(GTK_ENTRY(entry));
+            k = 0;
+            for (int i = 0; str[i] != '\0'; ++i){
+                if (str[i] == ',') buf[k++] = '.';
+                else buf[k++] = str[i];
+            }
+            buf[k] = '\0';
+            strcat(restricctions[i], buf);
+        }
     }
 
+    for (int i = 0; i < num_constraints; ++i){
+        lg_write(lg,    "\\addplot[\n"
+                        "\tcolor=black,\n"
+                        "\tname path=R%d\n"
+                        "]\n"
+                        "{%s}\n"
+                        "node[pos=0.8, above] {%s};\n",
+                        i,
+                        restricctions[i],
+                        restricctions[i]
+        ); 
+    }
     lg_write(lg, "\\end{axis}\n");
-    lg_write(lg, "\\end{tikzpicture}\n");
-
+    lg_write(lg, "\\end{tikzpicture}\n\n");
 }
 
 void prepare_simplex_lg(){
@@ -417,7 +466,7 @@ void prepare_simplex_lg(){
     }
 
     if (num_variables == 2) {
-        lg_write(lg, "\\section{Graphical representation}\n");
+        lg_write(lg, "\n\\section{Graphical representation}\n");
         draw_2d_graph();
     }
 }

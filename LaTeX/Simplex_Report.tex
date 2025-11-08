@@ -4,6 +4,9 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{url}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[table]{xcolor}
 \usepackage{amsmath}
@@ -88,187 +91,82 @@ The simplex algorithm has a set of variables that are called basic, these variab
 Once you have made that you can build the simplex table, giving each variable a column and each equation a row.To maximize the objective value you will find the smallest negative number in the first row (or the biggest positive number if you are minimizing).If you did not find any numbers that meet the criteria, congratulations, you found the optimal solution.However if you did, then you need to divide all the numbers in that column by the numbers of the final column (ignore negative numbers and 0's) and choose the smallest fraction to meet all the restrictions, the number on the column and row is called the pivot.Once you have a pivot you need to canonize the column, keep in mid that in this process you want the pivot to be the one of the canonical column, this process is called pivoting.Once you have canonized the column, repeat the process until you have ended \cite{torres2025}.\\
 Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction.If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found.If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting.However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop.But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution.\chapter{Solving mofongo}
 \section{Mathematical representation}
-\textbf{Maximize:}
+\textbf{Minimize:}
 \begin{dmath}
-z = 2,00000hola + 3,00000adios + -1,00000mana + -12,00000hoy 
+z = 2,00000Feliz + -3,00000Jueves 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
--2,00000hola + -9,00000adios + 1,00000mana + 9,00000hoy \leq0,00000
+1,00000Feliz + 1,00000Jueves \leq4,00000
 \end{dmath}
 \begin{dmath}
-0,33333hola + 1,00000adios + -0,33333mana + -2,00000hoy \leq0,00000
+1,00000Feliz + -1,00000Jueves \leq6,00000
 \end{dmath}
+
+\section{Graphical representation}
+\begin{tikzpicture}
+\begin{axis}[
+	xmin = 0, ymin = 0,	axis lines = left,
+	grid = both]
+\addplot[
+	color=black,
+	name path=R0
+]
+{(4.00000-1.00000*x)/1.00000}
+node[pos=0.8, above] {(4.00000-1.00000*x)/1.00000};
+\addplot[
+	color=black,
+	name path=R1
+]
+{(6.00000-1.00000*x)/-1.00000}
+node[pos=0.8, above] {(6.00000-1.00000*x)/-1.00000};
+\end{axis}
+\end{tikzpicture}
+
 \section{The initial simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
+$Z$ & $Feliz$ & $Jueves$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1,00000 & -2,00000 & -3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000\\ 
+1,00000 & -2,00000 & 3,00000 & 0,00000 & 0,00000 & 0,00000\\ 
  \hline 
-0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000\\ 
+0,00000 & 1,00000 & 1,00000 & 1,00000 & 0,00000 & 4,00000\\ 
  \hline 
-0,00000 & 0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000\\ 
+0,00000 & 1,00000 & -1,00000 & 0,00000 & 1,00000 & 6,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
 \section{The intermediates simplex tables}
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $Feliz$ & $Jueves$ & $s_{1}$ & $s_{2}$ & $B$\\ 
+ \hline 
+1,00000 & -2,00000 & 3,00000 & 0,00000 & 0,00000 & 0,00000\\ 
+ \hline 
+0,00000 & 1,00000 & 1,00000 & 1,00000 & 0,00000 & 4,00000\\ 
+ \hline 
+0,00000 & 1,00000 & -1,00000 & 0,00000 & 1,00000 & 6,00000\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
 Pivoting(1)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $hola$ & \cellcolor{PurpleNoMamado}$adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
+$Z$ & $Feliz$ & \cellcolor{PurpleNoMamado}$Jueves$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00000 & -2,00000 & \cellcolor{PurpleNoMamado}-3,00000 & 1,00000 & 12,00000 & 0,00000 & 0,00000 & 0,00000 & $-$\\ 
+1,00000 & -2,00000 & \cellcolor{PurpleNoMamado}3,00000 & 0,00000 & 0,00000 & 0,00000 & $-$\\ 
  \hline 
-0,00000 & -2,00000 & \cellcolor{PurpleNoMamado}-9,00000 & 1,00000 & 9,00000 & 1,00000 & 0,00000 & 0,00000 & $-$\\ 
+\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}4,00000 & \cellcolor{PurpleNoMamado}4,00000\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Degenerate Problem Found:}
-A draw when choosing a pivot ocurred during the Simplex execution.
-To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\\
-\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,99997 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 0,33333 pivot was \textbf{stored} along with the table in case it is needed\\
-To apretiate this please see the following table:\\
-Pivoting(2)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & \cellcolor{PurpleNoMamado}-1,00001 & 0,00000 & 0,00001 & 6,00000 & 0,00000 & 3,00000 & 0,00000 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99997 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,99997 & \cellcolor{PurpleNoMamado}-9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}9,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-0,00000 & \cellcolor{PurpleNoMamado}0,33333 & 1,00000 & -0,33333 & -2,00000 & 0,00000 & 1,00000 & 0,00000 & 0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(3)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $hola$ & $adios$ & $mana$ & \cellcolor{PurpleNoMamado}$hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & 0,00000 & 0,00000 & -2,00004 & \cellcolor{PurpleNoMamado}-3,00036 & 1,00004 & 12,00036 & 0,00000 & $-$\\ 
- \hline 
-0,00000 & 1,00000 & 0,00000 & -2,00003 & \cellcolor{PurpleNoMamado}-9,00027 & 1,00003 & 9,00027 & 0,00000 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,33334 & \cellcolor{PurpleNoMamado}1,00006 & \cellcolor{PurpleNoMamado}-0,33334 & \cellcolor{PurpleNoMamado}-2,00006 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,99994 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 0,33332 pivot was \textbf{stored} along with the table in case it is needed\\
-To apretiate this please see the following table:\\
-Pivoting(4)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $hola$ & $adios$ & \cellcolor{PurpleNoMamado}$mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & 0,00000 & 3,00018 & \cellcolor{PurpleNoMamado}-0,99996 & 0,00000 & -0,00004 & 5,99982 & 0,00000 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}8,99973 & \cellcolor{PurpleNoMamado}0,99994 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-1,99994 & \cellcolor{PurpleNoMamado}-8,99973 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-0,00000 & 0,00000 & 0,99994 & \cellcolor{PurpleNoMamado}0,33332 & 1,00000 & -0,33332 & -1,99994 & 0,00000 & 0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(5)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & \cellcolor{PurpleNoMamado}$s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & 1,00002 & 12,00009 & 0,00000 & 0,00000 & -2,00002 & \cellcolor{PurpleNoMamado}-3,00009 & 0,00000 & $-$\\ 
- \hline 
-0,00000 & 1,00006 & 9,00027 & 1,00000 & 0,00000 & -2,00006 & \cellcolor{PurpleNoMamado}-9,00027 & 0,00000 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-0,33334 & \cellcolor{PurpleNoMamado}-2,00003 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,33334 & \cellcolor{PurpleNoMamado}1,00003 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 1,00000 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 0,33333 pivot was \textbf{stored} along with the table in case it is needed\\
-To apretiate this please see the following table:\\
-Pivoting(6)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & 0,00000 & 6,00000 & 0,00000 & 3,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 0,00000 & 0,00000 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}-9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}9,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-0,00000 & -0,33333 & -1,99997 & 0,00000 & 0,99997 & \cellcolor{PurpleNoMamado}0,33333 & 1,00000 & 0,00000 & 0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Notice:} the algorithm entered a loop. 
-Another path was found, the program continues its execution using this one to hopefuly find something different. \\
-Pivoting(7)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & 0,00000 & 6,00000 & 0,00000 & 3,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 0,00000 & 0,00000 & $-$\\ 
- \hline 
-0,00000 & -2,00000 & -9,00000 & 1,00000 & 9,00000 & \cellcolor{PurpleNoMamado}1,00000 & 0,00000 & 0,00000 & 0,00000\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-1,99997 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99997 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Notice:} No other paths were found and there are no pivots to choose, so the program has ended its execution\\
-Pivoting(8)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $hola$ & $adios$ & \cellcolor{PurpleNoMamado}$mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & 0,00000 & 3,00018 & \cellcolor{PurpleNoMamado}-0,99996 & 0,00000 & -0,00004 & 5,99982 & 0,00000 & $-$\\ 
- \hline 
-0,00000 & 1,00000 & 8,99973 & \cellcolor{PurpleNoMamado}0,99994 & 0,00000 & -1,99994 & -8,99973 & 0,00000 & 0,00000\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,99994 & \cellcolor{PurpleNoMamado}0,33332 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33332 & \cellcolor{PurpleNoMamado}-1,99994 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Notice:} No other paths were found and there are no pivots to choose, so the program has ended its execution\\
-Pivoting(9)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00000 & \cellcolor{PurpleNoMamado}-1,00001 & 0,00000 & 0,00001 & 6,00000 & 0,00000 & 3,00000 & 0,00000 & $-$\\ 
- \hline 
-0,00000 & \cellcolor{PurpleNoMamado}0,99997 & 0,00000 & -1,99997 & -9,00000 & 1,00000 & 9,00000 & 0,00000 & 0,00000\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,33333 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}-0,33333 & \cellcolor{PurpleNoMamado}-2,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}1,00000 & \cellcolor{PurpleNoMamado}0,00000 & \cellcolor{PurpleNoMamado}0,00000\\ 
+0,00000 & 1,00000 & \cellcolor{PurpleNoMamado}-1,00000 & 0,00000 & 1,00000 & 6,00000 & $-$\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -276,21 +174,22 @@ $Z$ & \cellcolor{PurpleNoMamado}$hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s
 \section{The final simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $hola$ & $adios$ & $mana$ & $hoy$ & $s_{1}$ & $s_{2}$ & $B$\\ 
+$Z$ & $Feliz$ & $Jueves$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1,00000 & 0,00000 & 3,00006 & -1,00000 & -0,00012 & 0,00000 & 6,00006 & 0,00000\\ 
+1,00000 & -5,00000 & 0,00000 & -3,00000 & 0,00000 & -12,00000\\ 
  \hline 
-0,00000 & 0,00000 & -2,99994 & -1,00000 & -3,00012 & 1,00000 & 6,00006 & 0,00000\\ 
+0,00000 & 1,00000 & 1,00000 & 1,00000 & 0,00000 & 4,00000\\ 
  \hline 
-0,00000 & 1,00000 & 3,00003 & -1,00000 & -6,00006 & 0,00000 & 3,00003 & 0,00000\\ 
+0,00000 & 2,00000 & 0,00000 & 1,00000 & 1,00000 & 10,00000\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{Unbound Solution}
-The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value.
+\section{Solution}
+\textbf{Solution 1:}\\
+Feliz: 0,00000, Jueves: 4,00000\\
 \begin{thebibliography}{9}
 \bibitem{torres2025}
 F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.
