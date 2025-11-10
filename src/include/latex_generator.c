@@ -23,7 +23,7 @@ void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **conten
   tex_buf2[0] = '\0';
   for(int r = 0; r < rows; ++r){
     for(int c = 0; c < cols; ++c){
-      sprintf(tex_buf2, "%.5lf%s", content[r][c],
+      sprintf(tex_buf2, "%.2lf%s", content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
       lg_write(lg, tex_buf2);
     }

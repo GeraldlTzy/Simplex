@@ -111,11 +111,10 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, char **headers, i
         // valor de la fila del pivote
         double val = mat->data.f[r][pivot_col];
         double b = mat->data.f[r][mat->cols-1];
-        printf("PIVOT VAL %lf, B \n", val);
         for (int c = 0; c < mat->cols; ++c){
             if (r == pivot_row || c == pivot_col)
                 strcat(buf, "\\cellcolor{PurpleNoMamado}");
-            sprintf(buf + strlen(buf), "%.5lf", mat->data.f[r][c]);
+            sprintf(buf + strlen(buf), "%.2lf", mat->data.f[r][c]);
             strcat(buf, " & ");
         }
         // Si la fraccion  no es valida
@@ -124,7 +123,7 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, char **headers, i
         } else {
             if (r == pivot_row)
                 strcat(buf, "\\cellcolor{PurpleNoMamado}");
-            sprintf(buf + strlen(buf), "%.5lf", b/val);
+            sprintf(buf + strlen(buf), "%.2lf", b/val);
         }
         strcat(buf, "\\\\ \n \\hline \n");
         lg_write(lg, buf);
@@ -134,8 +133,6 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, char **headers, i
     lg_write(lg, "\\end{tabular} \n");
     lg_write(lg, "\\end{adjustbox}\n");
     lg_write(lg, "\\end{center}\n");
-    printf("TABLE PRINTED\n");
-    
 }
 
 Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
@@ -348,10 +345,12 @@ void print_solution(double *sol, int size) {
     printf("---- \n");
 }
 void write_solution(double *sol, int size, char** headers, Latex_Generator* lg) {
+    lg_write(lg, "$");
     for (int i = 0; i < size; ++i) {
-        lg_write(lg, "%s: %.5lf", headers[i+1], sol[i]);
+        lg_write(lg, "%s: %.2lf", headers[i+1], sol[i]);
         if (i != size-1) lg_write(lg, ", ");
     }
+    lg_write(lg, "$");
     lg_write(lg, "\\\\\n");
 }
 int is_basic_var(Matrix *mat, int col) {
@@ -447,9 +446,6 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     } else {
       data->table = maximize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
     }
-    printf("ENDDDDDDDDDD\n");
-    //print_matrix(data->table);
-
 
     lg_write(lg, "\\section{The final simplex table}\n");
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
