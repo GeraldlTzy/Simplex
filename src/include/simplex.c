@@ -355,11 +355,15 @@ void write_solution(double *sol, int size, char** headers, Latex_Generator* lg) 
 }
 int is_basic_var(Matrix *mat, int col) {
     int one_ammount = 0;
+    double value, tmp;
     for (int r = 0; r < mat->rows; ++r) {
-        double value = mat->data.f[r][col];
-        if (value == 0.0) {
+        value = mat->data.f[r][col];
+        tmp = value;
+        if(value < 0) tmp = value * -1;
+        
+        if (tmp <= tolerance) {
             continue;
-        } else if (value == 1.0) {
+        } else if (fabs(value - 1.0) <= tolerance) {
             ++one_ammount;
             if (one_ammount > 1) {
                 return 0;
