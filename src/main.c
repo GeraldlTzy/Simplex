@@ -313,6 +313,7 @@ void on_btn_var_continue_clicked(){
 
   gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
   gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
+  gtk_widget_destroy(GTK_WIDGET(gd_varnames));
 
   gtk_widget_hide(varname_window);
   gtk_widget_show_all(second_window);
@@ -697,7 +698,6 @@ void on_back_button_clicked() {
   for (int i = 0; i < num_variables; ++i) free(var_names[i]);
   free(var_names);
   
-  gtk_widget_destroy(GTK_WIDGET(gd_varnames));
   
   problem_name[0] = '\0';
   num_variables = 0;
