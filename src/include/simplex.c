@@ -259,9 +259,11 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
     if(list_contain(list, mat) || (matrix_compare(mat, init) && pivot_counter != 0)){
       // Si entra al siguiente if es que se enciclo y no hay otras opciones
       Node *node;
+      lg_write(lg, "\\textbf{Notice:} the algorithm entered a loop. \n");
       get_last_state(&list, &node);
       
       if(!node){
+        lg_write(lg, "No other paths were found, so the program has ended its execution\\\\\n");
         free_matrix(mat);
         *have_solution = 0;
         return init;
@@ -275,6 +277,7 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       mat = node->mat;
       pivot_row = node->pv_r;
       pivot_col = node->pv_c;
+      lg_write(lg, "Another path was found, the program continues its execution using this one to hopefuly find something different. \\\\\n");
     
     } else {
       // elegir el mas positivo
@@ -297,7 +300,28 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           if(min_max > fraction){
             min_max = fraction;
             pivot_row = r;
-          } else if(min_max == fraction){ // Degenerado 
+          } else if(fabs(min_max - fraction) < tolerance){ // Degenerado 
+            if (!degenerate) {
+                if (do_intermediates)
+                    lg_write(lg, "\\textbf{Degenerate Problem Found:}\n");
+                else 
+                    lg_write(lg, "\\section{Degenerate Problem Found}\n");
+                lg_write(lg, "A draw when choosing a pivot ocurred during the Simplex execution.\n");
+                lg_write(lg, "To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\\\\\n");
+            }
+            lg_write(lg, "\\textbf{Draw:} the rows %d and %d have a fraction of the same value,"
+                            "\\textbf{row %d} (fraction %.5lf) with the %.5lf pivot was \\textbf{choosen} and "
+                            "\\textbf{row %d} (fraction %.5lf) with the %.5lf pivot was \\textbf{stored} along with the table in case it is needed.\\\\\n",
+                            pivot_row,
+                            r,
+                            pivot_row,
+                            min_max,
+                            mat->data.f[pivot_row][pivot_col],
+                            r,
+                            fraction,
+                            mat->data.f[r][pivot_col]
+                    );
+            lg_write(lg, "To apretiate this please see the following table:\\\\\n");
             degenerate = 1;
             Node *node = malloc(sizeof(Node));
             node->mat = matrix_copy(mat);
@@ -310,6 +334,7 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       // Si no hay opciones termina
       if(pivot_row < 0){
         if(list){
+          lg_write(lg, "\\textbf{Notice:} No other paths were found and there are no pivots to choose, so the program has ended its execution.\\\\\n");
           Node *node;
           get_last_state(&list, &node);
           if(mat && mat != node->mat){

@@ -1,4 +1,4 @@
-name=Minimizar 2
+name=Minimizar Degenerado
 objective=Minimize
 count_variables=2
 count_constraints=2
