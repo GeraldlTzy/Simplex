@@ -515,7 +515,6 @@ void simplex_data_put_inequalities(SimplexData *simplex_data){
     if (strcmp(ineq, "<=") == 0) {simplex_data->slacks++;}
     else if (strcmp(ineq, "=") == 0) {simplex_data->slacks++;}
     else if (strcmp(ineq, ">=") == 0) {simplex_data->artificials++; simplex_data->excess++;}
-    printf("Rest: %d, %s\n", i, ineq_arr[i]);
   }
   simplex_data->rows = 1 + num_constraints;
   simplex_data->cols = ((2 + num_variables) + (simplex_data->slacks +
@@ -777,7 +776,6 @@ void on_btn_finish_clicked(){
   double **table = simplex_data->table->data.f;
   table[0][0] = 1;
   table[0][cols-1] = 0;
-      print_matrix(simplex_data->table);
   
   int canonic_i = num_variables + 1;
   GtkWidget *entry;
@@ -797,7 +795,6 @@ void on_btn_finish_clicked(){
         table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
       }
     }
-      print_matrix(simplex_data->table);
     if(r > 0){
       canonic_i++;
     }

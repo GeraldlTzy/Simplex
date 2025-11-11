@@ -478,7 +478,6 @@ int simplex(SimplexData *data, Latex_Generator *lg){
 
     lg_write(lg, "\\textbf{Solution 1:}\\\\\n");
     write_solution(solution1, data->table->cols-2, data->headers, lg);
-    print_solution(solution1, data->table->cols-2);
 
     if (solution2 != NULL) {  
         lg_write(lg, "\\textbf{Solution 2:}\\\\\n");

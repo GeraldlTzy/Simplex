@@ -141,17 +141,6 @@ int matrix_compare(const Matrix *self, const Matrix *other){
 }
 
 
-/*void print_matrix(Matrix matrix){
-    printf("Matrix --------\n");
-    for (int i = 0; i < matrix.rows; i++){
-        for (int j = 0; j < matrix.cols; j++){
-            printf("%d, ", matrix.data[i][j]);  
-        }
-        printf("\n");  // salto de línea al terminar cada fila
-    }
-
-    printf("---------------\n");
-}*/
 void init_matrix_num(Matrix *mat, int num){
     for (int i = 0;i < mat->rows; i++) {
         for (int j = 0; j < mat->cols; j++){
