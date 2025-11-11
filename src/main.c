@@ -319,10 +319,23 @@ void on_btn_var_continue_clicked(){
   gtk_widget_show_all(second_window);
 }
 
+char *drawmin_simplex_2d(char restrictions[][256], int i){
+    if (i == num_constraints-1) {
+        char *base = malloc(strlen(restrictions[i])+1);
+        strcpy(base, restrictions[i]);
+        return base;
+    }
+    char *next = drawmin_simplex_2d(restrictions, i+1);
+    int len = strlen("min(,)") + strlen(restrictions[i]) + strlen(next) + 1;
+    char *result = malloc(len);
+    sprintf(result, "min(%s,%s)", restrictions[i], next);
+    free(next);
+    return result;
+}
+
 void draw_2d_graph(){
     lg_write(lg, "\\begin{tikzpicture}\n");
     lg_write(lg,    "\\begin{axis}[\n"
-                    "\txmin = 0, ymin = 0,\n"
                     "\txmax=100,\n"
                     "\taxis lines = left,\n"
                     "\tgrid = both,"
@@ -390,6 +403,7 @@ void draw_2d_graph(){
         }
     }
 
+    // dibuja cada restriccion
     for (int i = 0; i < num_constraints; ++i){
         lg_write(lg,    "\\addplot[\n"
                         "\tcolor=black,\n"
@@ -400,6 +414,22 @@ void draw_2d_graph(){
                         restricctions[i]
         ); 
     }
+
+    //Resaltar el cuerpo simplex en un color diferente
+    // https://tex.stackexchange.com/questions/326746/how-to-plot-max-min-function-in-latex
+    lg_write(lg,    "\\addplot[\n"
+                    "\tcolor=red,\n"
+                    "\tname path=S\n"
+                    "]\n");
+    
+    lg_write(lg, "{");
+
+    char *simplex = drawmin_simplex_2d(restricctions, 0);
+    lg_write(lg, simplex);
+    free(simplex);
+
+    lg_write(lg, "};\n");
+
     lg_write(lg, "\\end{axis}\n");
     lg_write(lg, "\\end{tikzpicture}\n\n");
 }
