@@ -375,10 +375,10 @@ int is_basic_var(Matrix *mat, int col) {
     return 1;
 }
 
-double *find_solution(Matrix *mat, int num_variables) {
-    double *solution = malloc(sizeof(double)*num_variables);
+double *find_solution(Matrix *mat) {
+    double *solution = malloc(sizeof(double)*(mat->cols-2));
     // el valor de z no entra en el vector solucion
-    for (int c = 1; c < num_variables+1; ++c) {
+    for (int c = 1; c < mat->cols-1; ++c) {
         if (!is_basic_var(mat, c)) {
             solution[c-1] = 0.0;
             continue;
@@ -393,7 +393,7 @@ double *find_solution(Matrix *mat, int num_variables) {
     return solution;
 }
 
-Matrix *multiple_solutions(Matrix *mat, int num_variables, double **sol_array){
+Matrix *multiple_solutions(Matrix *mat, double **sol_array){
     int pivot_col = -1;
     int pivot_row = -1;
     for (int c = 1; c < mat->cols; ++c) {
@@ -419,7 +419,7 @@ Matrix *multiple_solutions(Matrix *mat, int num_variables, double **sol_array){
         }
     }
     canonize(mat, pivot_row, pivot_col);
-    *sol_array = find_solution(mat, num_variables);
+    *sol_array = find_solution(mat);
     return mat;
 }
 
@@ -464,9 +464,9 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         lg_write(lg, "The solution found is in another dimension, and can not posibly exist using the existing restrictions and desicion variables.\n");
         return 1;
     }
-    double *solution1 = find_solution(data->table, data->variables);
+    double *solution1 = find_solution(data->table);
     double *solution2 = NULL;
-    data->table = multiple_solutions(data->table, data->variables, &solution2);
+    data->table = multiple_solutions(data->table, &solution2);
     if (solution2 != NULL){
         lg_write(lg, "\\section{The final simplex table 2}\n");
         lg_write(lg, "Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty. When pivoting said column, the folowing table can be obtained.\n"); 
@@ -474,12 +474,15 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     }
 
     lg_write(lg, "\\section{Solution}\n");
+    lg_write(lg, "z=%.2lf\\\\\n", data->table->data.f[0][data->cols-1]);
+
     lg_write(lg, "\\textbf{Solution 1:}\\\\\n");
-    write_solution(solution1, data->variables, data->headers, lg);
+    write_solution(solution1, data->table->cols-2, data->headers, lg);
+    print_solution(solution1, data->table->cols-2);
 
     if (solution2 != NULL) {  
         lg_write(lg, "\\textbf{Solution 2:}\\\\\n");
-        write_solution(solution2, data->variables, data->headers, lg);
+        write_solution(solution2, data->table->cols-2, data->headers, lg);
         lg_write(lg, "\\\\By using the following formula, infinite optimal solutions can be found:\\\\\n"); 
         lg_write(lg, "\\begin{dmath}\n");
         lg_write(lg, "\\alpha*solution1 + (1-\\alpha)*solution2\\\\\n");
@@ -487,15 +490,15 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         lg_write(lg, "$$\n");
         lg_write(lg, "0 \\leq \\alpha \\leq 1\n");
         lg_write(lg, "$$\n");
-        double *solution3 = generate_solution(solution1, solution2, data->variables, 0.25);
+        double *solution3 = generate_solution(solution1, solution2, data->table->cols-2, 0.25);
         lg_write(lg, "\\textbf{Solution 3:}\\\\\n");
-        write_solution(solution3, data->variables, data->headers, lg);
-        double *solution4 = generate_solution(solution1, solution2, data->variables, 0.5);
+        write_solution(solution3, data->table->cols-2, data->headers, lg);
+        double *solution4 = generate_solution(solution1, solution2, data->table->cols-2, 0.5);
         lg_write(lg, "\\textbf{Solution 4:}\\\\\n");
-        write_solution(solution4, data->variables, data->headers, lg);
-        double *solution5 = generate_solution(solution1, solution2, data->variables, 0.75);
+        write_solution(solution4, data->table->cols-2, data->headers, lg);
+        double *solution5 = generate_solution(solution1, solution2, data->table->cols-2, 0.75);
         lg_write(lg, "\\textbf{Solution 5:}\\\\\n");
-        write_solution(solution5, data->variables, data->headers, lg);
+        write_solution(solution5, data->table->cols-2, data->headers, lg);
         free(solution2);
         free(solution3);
         free(solution4);

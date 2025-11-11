@@ -321,9 +321,11 @@ void on_btn_var_continue_clicked(){
 void draw_2d_graph(){
     lg_write(lg, "\\begin{tikzpicture}\n");
     lg_write(lg,    "\\begin{axis}[\n"
-                    "\txmin = 0, ymin = 0,"
+                    "\txmin = 0, ymin = 0,\n"
+                    "\txmax=100,\n"
                     "\taxis lines = left,\n"
-                    "\tgrid = both"
+                    "\tgrid = both,"
+                    "\tdomain = 0:100\n"
                     "]\n"
     );
 
@@ -392,10 +394,8 @@ void draw_2d_graph(){
                         "\tcolor=black,\n"
                         "\tname path=R%d\n"
                         "]\n"
-                        "{%s}\n"
-                        "node[pos=0.8, above] {%s};\n",
+                        "{%s};\n",
                         i,
-                        restricctions[i],
                         restricctions[i]
         ); 
     }
