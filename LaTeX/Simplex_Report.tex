@@ -89,76 +89,89 @@ The Simplex algorithm is an algorithm discovered by George Dantzig. This algorit
 The Simplex algorithm uses matrix operations to find the optimal solution to a linear programming problem, or to find out if it does not have a feasible solution \cite{torres2025}.A linear programming problem has desition variables and restrictions under them, so you would think that you could solve the problem simply by using a normal method to find the value of the variables.Sadly, in these types of problems thre are usually far more varaibles than equations, to this aproach is not good enough.Using the equations you can find the feasible region of the problem, where all the posible solutions are.Simplex starts from a vertex of the feasible region and jumps to adjacent vertices that give a better value for the objective function.Once you can not find a vertex that upgrades the objective value, that is the optimal solution.\\
 The simplex algorithm has a set of variables that are called basic, these variables can be found in canonical columns \cite{torres2025}.The first step is to level out any inecuations with slack or excess variables depending on what you need,when one of the restrictions is equals or greater than you will also need to add artificial variables, because these forms of restrictions do not give enough basic variables.After leveling out the restrictions, you need to clear out the z variable from the objective function, this will give you an extra equation to work with.\\
 Once you have made that you can build the simplex table, giving each variable a column and each equation a row.To maximize the objective value you will find the smallest negative number in the first row (or the biggest positive number if you are minimizing).If you did not find any numbers that meet the criteria, congratulations, you found the optimal solution.However if you did, then you need to divide all the numbers in that column by the numbers of the final column (ignore negative numbers and 0's) and choose the smallest fraction to meet all the restrictions, the number on the column and row is called the pivot.Once you have a pivot you need to canonize the column, keep in mid that in this process you want the pivot to be the one of the canonical column, this process is called pivoting.Once you have canonized the column, repeat the process until you have ended \cite{torres2025}.\\
-Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction.If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found.If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting.However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop.But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution.\chapter{Solving A ver}
+Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction.If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found.If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting.However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop.But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution.\chapter{Solving Minimizar Degenerado?}
 \section{Mathematical representation}
-\textbf{Maximize:}
+\textbf{Minimize:}
 \begin{dmath}
-z = 3,00000x_{1} + 5,00000x_{2} + 2,00000x_{3} + 7,00000x_{4} + 4,00000x_{5} + 6,00000x_{6} + 3,00000x_{7} + 5,00000x_{8} + 2,00000x_{9} + 4,00000x_{10} + 3,00000x_{11} + 2,00000x_{12} + 6,00000x_{13} + 1,00000x_{14} + 5,00000x_{15} 
+z = -3x_{1} + -9x_{2} 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
-2,00000x_{1} + 1,00000x_{2} + 0,00000x_{3} + 3,00000x_{4} + 1,00000x_{5} + 0,00000x_{6} + 2,00000x_{7} + 0,00000x_{8} + 1,00000x_{9} + 0,00000x_{10} + 0,00000x_{11} + 1,00000x_{12} + 0,00000x_{13} + 2,00000x_{14} + 1,00000x_{15} \leq40,00000
+1x_{1} + 4x_{2} \leq8
 \end{dmath}
 \begin{dmath}
-1,00000x_{1} + 3,00000x_{2} + 2,00000x_{3} + 0,00000x_{4} + 2,00000x_{5} + 1,00000x_{6} + 0,00000x_{7} + 2,00000x_{8} + 0,00000x_{9} + 1,00000x_{10} + 1,00000x_{11} + 0,00000x_{12} + 1,00000x_{13} + 0,00000x_{14} + 2,00000x_{15} \leq60,00000
+1x_{1} + 2x_{2} \leq4
 \end{dmath}
-\begin{dmath}
-0,00000x_{1} + 2,00000x_{2} + 4,00000x_{3} + 1,00000x_{4} + 0,00000x_{5} + 3,00000x_{6} + 2,00000x_{7} + 1,00000x_{8} + 0,00000x_{9} + 2,00000x_{10} + 0,00000x_{11} + 1,00000x_{12} + 2,00000x_{13} + 1,00000x_{14} + 0,00000x_{15} \leq50,00000
-\end{dmath}
-\begin{dmath}
-3,00000x_{1} + 0,00000x_{2} + 1,00000x_{3} + 2,00000x_{4} + 3,00000x_{5} + 0,00000x_{6} + 1,00000x_{7} + 2,00000x_{8} + 1,00000x_{9} + 0,00000x_{10} + 2,00000x_{11} + 0,00000x_{12} + 1,00000x_{13} + 0,00000x_{14} + 1,00000x_{15} \leq45,00000
-\end{dmath}
-\begin{dmath}
-1,00000x_{1} + 1,00000x_{2} + 1,00000x_{3} + 1,00000x_{4} + 1,00000x_{5} + 1,00000x_{6} + 1,00000x_{7} + 1,00000x_{8} + 1,00000x_{9} + 1,00000x_{10} + 1,00000x_{11} + 1,00000x_{12} + 1,00000x_{13} + 1,00000x_{14} + 1,00000x_{15} \leq80,00000
-\end{dmath}
-\begin{dmath}
-0,00000x_{1} + 1,00000x_{2} + 0,00000x_{3} + 2,00000x_{4} + 1,00000x_{5} + 4,00000x_{6} + 0,00000x_{7} + 1,00000x_{8} + 2,00000x_{9} + 1,00000x_{10} + 0,00000x_{11} + 2,00000x_{12} + 0,00000x_{13} + 1,00000x_{14} + 3,00000x_{15} \leq70,00000
-\end{dmath}
+
+\section{Graphical representation}
+\begin{tikzpicture}
+\begin{axis}[
+	ymin = 0, xmin = 0, xmax=100,
+	axis lines = left,
+	grid = both,	domain = 0:100
+]
+\addplot[
+	color=black,
+	name path=R0
+]
+{(8-1*x)/4};
+\addplot[
+	color=black,
+	name path=R1
+]
+{(4-1*x)/2};
+\addplot[
+	color=red,
+	name path=S
+]
+{min((8-1*x)/4,(4-1*x)/2)};
+\end{axis}
+\end{tikzpicture}
+
 \section{The initial simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & $x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$\\ 
+$Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1,00 & -3,00 & -5,00 & -2,00 & -7,00 & -4,00 & -6,00 & -3,00 & -5,00 & -2,00 & -4,00 & -3,00 & -2,00 & -6,00 & -1,00 & -5,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
+1,00 & 3,00 & 9,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 2,00 & 1,00 & 0,00 & 3,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 2,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 40,00\\ 
+0,00 & 1,00 & 4,00 & 1,00 & 0,00 & 8,00\\ 
  \hline 
-0,00 & 1,00 & 3,00 & 2,00 & 0,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 1,00 & 0,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 60,00\\ 
- \hline 
-0,00 & 0,00 & 2,00 & 4,00 & 1,00 & 0,00 & 3,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 2,00 & 1,00 & 0,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 50,00\\ 
- \hline 
-0,00 & 3,00 & 0,00 & 1,00 & 2,00 & 3,00 & 0,00 & 1,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 45,00\\ 
- \hline 
-0,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 0,00 & 80,00\\ 
- \hline 
-0,00 & 0,00 & 1,00 & 0,00 & 2,00 & 1,00 & 4,00 & 0,00 & 1,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 3,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 70,00\\ 
+0,00 & 1,00 & 2,00 & 0,00 & 1,00 & 4,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
 \section{The intermediates simplex tables}
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $s_{2}$ & $B$\\ 
+ \hline 
+1,00 & 3,00 & 9,00 & 0,00 & 0,00 & 0,00\\ 
+ \hline 
+0,00 & 1,00 & 4,00 & 1,00 & 0,00 & 8,00\\ 
+ \hline 
+0,00 & 1,00 & 2,00 & 0,00 & 1,00 & 4,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
 Pivoting(1)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & \cellcolor{PurpleNoMamado}$x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & $x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$ & $Fraction$\\ 
+$Z$ & $x_{1}$ & \cellcolor{PurpleNoMamado}$x_{2}$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & -3,00 & -5,00 & -2,00 & \cellcolor{PurpleNoMamado}-7,00 & -4,00 & -6,00 & -3,00 & -5,00 & -2,00 & -4,00 & -3,00 & -2,00 & -6,00 & -1,00 & -5,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
+1,00 & 3,00 & \cellcolor{PurpleNoMamado}9,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}2,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}3,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}2,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}2,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}40,00 & \cellcolor{PurpleNoMamado}13,33\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}4,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}8,00 & \cellcolor{PurpleNoMamado}2,00\\ 
  \hline 
-0,00 & 1,00 & 3,00 & 2,00 & \cellcolor{PurpleNoMamado}0,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 1,00 & 0,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 60,00 & $-$\\ 
- \hline 
-0,00 & 0,00 & 2,00 & 4,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 3,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 2,00 & 1,00 & 0,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 50,00 & 50,00\\ 
- \hline 
-0,00 & 3,00 & 0,00 & 1,00 & \cellcolor{PurpleNoMamado}2,00 & 3,00 & 0,00 & 1,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 45,00 & 22,50\\ 
- \hline 
-0,00 & 1,00 & 1,00 & 1,00 & \cellcolor{PurpleNoMamado}1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 0,00 & 80,00 & 80,00\\ 
- \hline 
-0,00 & 0,00 & 1,00 & 0,00 & \cellcolor{PurpleNoMamado}2,00 & 1,00 & 4,00 & 0,00 & 1,00 & 2,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 3,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 70,00 & 35,00\\ 
+0,00 & 1,00 & \cellcolor{PurpleNoMamado}2,00 & 0,00 & 1,00 & 4,00 & 2,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -166,143 +179,15 @@ $Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & \cellcolor{PurpleNoMamado}$x_{4}$ & $x_{5}$ 
 Pivoting(2)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & \cellcolor{PurpleNoMamado}$x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & $x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$ & $Fraction$\\ 
+$Z$ & \cellcolor{PurpleNoMamado}$x_{1}$ & $x_{2}$ & $s_{1}$ & $s_{2}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & 1,67 & -2,67 & -2,00 & 0,00 & -1,67 & \cellcolor{PurpleNoMamado}-6,00 & 1,67 & -5,00 & 0,33 & -4,00 & -3,00 & 0,33 & -6,00 & 3,67 & -2,67 & 2,33 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 93,33 & $-$\\ 
+1,00 & \cellcolor{PurpleNoMamado}0,75 & 0,00 & -2,25 & 0,00 & -18,00 & $-$\\ 
  \hline 
-0,00 & 0,67 & 0,33 & 0,00 & 1,00 & 0,33 & \cellcolor{PurpleNoMamado}0,00 & 0,67 & 0,00 & 0,33 & 0,00 & 0,00 & 0,33 & 0,00 & 0,67 & 0,33 & 0,33 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 13,33 & $-$\\ 
+0,00 & \cellcolor{PurpleNoMamado}0,25 & 1,00 & 0,25 & 0,00 & 2,00 & 8,00\\ 
  \hline 
-0,00 & 1,00 & 3,00 & 2,00 & 0,00 & 2,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 1,00 & 0,00 & 1,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 60,00 & 60,00\\ 
- \hline 
-0,00 & -0,67 & 1,67 & 4,00 & 0,00 & -0,33 & \cellcolor{PurpleNoMamado}3,00 & 1,33 & 1,00 & -0,33 & 2,00 & 0,00 & 0,67 & 2,00 & 0,33 & -0,33 & -0,33 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 36,67 & 12,22\\ 
- \hline 
-0,00 & 1,67 & -0,67 & 1,00 & 0,00 & 2,33 & \cellcolor{PurpleNoMamado}0,00 & -0,33 & 2,00 & 0,33 & 0,00 & 2,00 & -0,67 & 1,00 & -1,33 & 0,33 & -0,67 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 18,33 & $-$\\ 
- \hline 
-0,00 & 0,33 & 0,67 & 1,00 & 0,00 & 0,67 & \cellcolor{PurpleNoMamado}1,00 & 0,33 & 1,00 & 0,67 & 1,00 & 1,00 & 0,67 & 1,00 & 0,33 & 0,67 & -0,33 & 0,00 & 0,00 & 0,00 & 1,00 & 0,00 & 66,67 & 66,67\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,33 & \cellcolor{PurpleNoMamado}0,33 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,33 & \cellcolor{PurpleNoMamado}4,00 & \cellcolor{PurpleNoMamado}-1,33 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}1,33 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,33 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,33 & \cellcolor{PurpleNoMamado}2,33 & \cellcolor{PurpleNoMamado}-0,67 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}43,33 & \cellcolor{PurpleNoMamado}10,83\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(3)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & \cellcolor{PurpleNoMamado}$x_{13}$ & $x_{14}$ & $x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & -0,33 & -2,17 & -2,00 & 0,00 & -1,17 & 0,00 & -0,33 & -3,50 & 2,33 & -2,50 & -3,00 & 2,33 & \cellcolor{PurpleNoMamado}-6,00 & 3,17 & 0,83 & 1,33 & 0,00 & 0,00 & 0,00 & 0,00 & 1,50 & 158,33 & $-$\\ 
- \hline 
-0,00 & 0,67 & 0,33 & 0,00 & 1,00 & 0,33 & 0,00 & 0,67 & 0,00 & 0,33 & 0,00 & 0,00 & 0,33 & \cellcolor{PurpleNoMamado}0,00 & 0,67 & 0,33 & 0,33 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 13,33 & $-$\\ 
- \hline 
-0,00 & 1,33 & 2,92 & 2,00 & 0,00 & 1,92 & 0,00 & 0,33 & 1,75 & -0,33 & 0,75 & 1,00 & -0,33 & \cellcolor{PurpleNoMamado}1,00 & 0,08 & 1,42 & 0,17 & 1,00 & 0,00 & 0,00 & 0,00 & -0,25 & 49,17 & 49,17\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,33 & \cellcolor{PurpleNoMamado}1,42 & \cellcolor{PurpleNoMamado}4,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,58 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}2,33 & \cellcolor{PurpleNoMamado}0,25 & \cellcolor{PurpleNoMamado}-1,33 & \cellcolor{PurpleNoMamado}1,25 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,33 & \cellcolor{PurpleNoMamado}2,00 & \cellcolor{PurpleNoMamado}0,58 & \cellcolor{PurpleNoMamado}-2,08 & \cellcolor{PurpleNoMamado}0,17 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,75 & \cellcolor{PurpleNoMamado}4,17 & \cellcolor{PurpleNoMamado}2,08\\ 
- \hline 
-0,00 & 1,67 & -0,67 & 1,00 & 0,00 & 2,33 & 0,00 & -0,33 & 2,00 & 0,33 & 0,00 & 2,00 & -0,67 & \cellcolor{PurpleNoMamado}1,00 & -1,33 & 0,33 & -0,67 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 18,33 & 18,33\\ 
- \hline 
-0,00 & 0,67 & 0,58 & 1,00 & 0,00 & 0,58 & 0,00 & 0,67 & 0,75 & 0,33 & 0,75 & 1,00 & 0,33 & \cellcolor{PurpleNoMamado}1,00 & 0,42 & 0,08 & -0,17 & 0,00 & 0,00 & 0,00 & 1,00 & -0,25 & 55,83 & 55,83\\ 
- \hline 
-0,00 & -0,33 & 0,08 & 0,00 & 0,00 & 0,08 & 1,00 & -0,33 & 0,25 & 0,33 & 0,25 & 0,00 & 0,33 & \cellcolor{PurpleNoMamado}0,00 & -0,08 & 0,58 & -0,17 & 0,00 & 0,00 & 0,00 & 0,00 & 0,25 & 10,83 & $-$\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(4)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & \cellcolor{PurpleNoMamado}$x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & 0,67 & 2,08 & 10,00 & 0,00 & -2,92 & 0,00 & 6,67 & -2,75 & -1,67 & 1,25 & -3,00 & 1,33 & 0,00 & 4,92 & \cellcolor{PurpleNoMamado}-5,42 & 1,83 & 0,00 & 3,00 & 0,00 & 0,00 & -0,75 & 170,83 & $-$\\ 
- \hline 
-0,00 & 0,67 & 0,33 & 0,00 & 1,00 & 0,33 & 0,00 & 0,67 & 0,00 & 0,33 & 0,00 & 0,00 & 0,33 & 0,00 & 0,67 & \cellcolor{PurpleNoMamado}0,33 & 0,33 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 13,33 & 40,00\\ 
- \hline 
-0,00 & 1,17 & 2,21 & 0,00 & 0,00 & 2,21 & 0,00 & -0,83 & 1,62 & 0,33 & 0,12 & 1,00 & -0,17 & 0,00 & -0,21 & \cellcolor{PurpleNoMamado}2,46 & 0,08 & 1,00 & -0,50 & 0,00 & 0,00 & 0,12 & 47,08 & 19,15\\ 
- \hline 
-0,00 & 0,17 & 0,71 & 2,00 & 0,00 & -0,29 & 0,00 & 1,17 & 0,12 & -0,67 & 0,62 & 0,00 & -0,17 & 1,00 & 0,29 & \cellcolor{PurpleNoMamado}-1,04 & 0,08 & 0,00 & 0,50 & 0,00 & 0,00 & -0,38 & 2,08 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,50 & \cellcolor{PurpleNoMamado}-1,38 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}2,62 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,50 & \cellcolor{PurpleNoMamado}1,88 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}-0,62 & \cellcolor{PurpleNoMamado}2,00 & \cellcolor{PurpleNoMamado}-0,50 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,62 & \cellcolor{PurpleNoMamado}1,38 & \cellcolor{PurpleNoMamado}-0,75 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,50 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,38 & \cellcolor{PurpleNoMamado}16,25 & \cellcolor{PurpleNoMamado}11,82\\ 
- \hline 
-0,00 & 0,50 & -0,12 & -1,00 & 0,00 & 0,88 & 0,00 & -0,50 & 0,62 & 1,00 & 0,12 & 1,00 & 0,50 & 0,00 & 0,13 & \cellcolor{PurpleNoMamado}1,12 & -0,25 & 0,00 & -0,50 & 0,00 & 1,00 & 0,12 & 53,75 & 47,78\\ 
- \hline 
-0,00 & -0,33 & 0,08 & 0,00 & 0,00 & 0,08 & 1,00 & -0,33 & 0,25 & 0,33 & 0,25 & 0,00 & 0,33 & 0,00 & -0,08 & \cellcolor{PurpleNoMamado}0,58 & -0,17 & 0,00 & 0,00 & 0,00 & 0,00 & 0,25 & 10,83 & 18,57\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(5)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & \cellcolor{PurpleNoMamado}$x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & $x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & 6,58 & \cellcolor{PurpleNoMamado}-3,33 & 6,06 & 0,00 & 7,42 & 0,00 & 0,76 & 4,64 & 2,27 & -1,21 & 4,88 & -0,64 & 0,00 & -1,48 & 0,00 & -1,12 & 0,00 & 1,03 & 3,94 & 0,00 & 0,73 & 234,85 & $-$\\ 
- \hline 
-0,00 & 0,30 & \cellcolor{PurpleNoMamado}0,67 & 0,24 & 1,00 & -0,30 & 0,00 & 1,03 & -0,45 & 0,09 & 0,15 & -0,48 & 0,45 & 0,00 & 1,06 & 0,00 & 0,52 & 0,00 & 0,12 & -0,24 & 0,00 & -0,09 & 9,39 & 14,09\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,52 & \cellcolor{PurpleNoMamado}4,67 & \cellcolor{PurpleNoMamado}1,79 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-2,48 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,85 & \cellcolor{PurpleNoMamado}-1,73 & \cellcolor{PurpleNoMamado}-1,45 & \cellcolor{PurpleNoMamado}1,24 & \cellcolor{PurpleNoMamado}-2,58 & \cellcolor{PurpleNoMamado}0,73 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}2,70 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,42 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,39 & \cellcolor{PurpleNoMamado}-1,79 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,55 & \cellcolor{PurpleNoMamado}18,03 & \cellcolor{PurpleNoMamado}3,86\\ 
- \hline 
-0,00 & 1,30 & \cellcolor{PurpleNoMamado}-0,33 & 1,24 & 0,00 & 1,70 & 0,00 & 0,03 & 1,55 & 0,09 & 0,15 & 1,52 & -0,55 & 1,00 & -0,94 & 0,00 & -0,48 & 0,00 & 0,12 & 0,76 & 0,00 & -0,09 & 14,39 & $-$\\ 
- \hline 
-0,00 & 1,09 & \cellcolor{PurpleNoMamado}-1,00 & -0,73 & 0,00 & 1,91 & 0,00 & -1,09 & 1,36 & 0,73 & -0,45 & 1,45 & -0,36 & 0,00 & -1,18 & 1,00 & -0,55 & 0,00 & -0,36 & 0,73 & 0,00 & 0,27 & 11,82 & $-$\\ 
- \hline 
-0,00 & -0,73 & \cellcolor{PurpleNoMamado}1,00 & -0,18 & 0,00 & -1,27 & 0,00 & 0,73 & -0,91 & 0,18 & 0,64 & -0,64 & 0,91 & 0,00 & 1,45 & 0,00 & 0,36 & 0,00 & -0,09 & -0,82 & 1,00 & -0,18 & 40,45 & 40,45\\ 
- \hline 
-0,00 & -0,97 & \cellcolor{PurpleNoMamado}0,67 & 0,42 & 0,00 & -1,03 & 1,00 & 0,30 & -0,55 & -0,09 & 0,52 & -0,85 & 0,55 & 0,00 & 0,61 & 0,00 & 0,15 & 0,00 & 0,21 & -0,42 & 0,00 & 0,09 & 3,94 & 5,91\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(6)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & \cellcolor{PurpleNoMamado}$x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & $x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & 5,49 & 0,00 & 7,34 & 0,00 & 5,65 & 0,00 & 2,08 & 3,40 & 1,23 & \cellcolor{PurpleNoMamado}-0,32 & 3,04 & -0,12 & 0,00 & 0,44 & 0,00 & -0,10 & 0,71 & 1,31 & 2,66 & 0,00 & 0,34 & 247,73 & $-$\\ 
- \hline 
-0,00 & 0,52 & 0,00 & -0,01 & 1,00 & 0,05 & 0,00 & 0,77 & -0,21 & 0,30 & \cellcolor{PurpleNoMamado}-0,03 & -0,12 & 0,35 & 0,00 & 0,68 & 0,00 & 0,31 & -0,14 & 0,06 & 0,01 & 0,00 & -0,01 & 6,82 & $-$\\ 
- \hline 
-0,00 & -0,32 & 1,00 & 0,38 & 0,00 & -0,53 & 0,00 & 0,40 & -0,37 & -0,31 & \cellcolor{PurpleNoMamado}0,27 & -0,55 & 0,16 & 0,00 & 0,58 & 0,00 & 0,31 & 0,21 & 0,08 & -0,38 & 0,00 & -0,12 & 3,86 & 14,51\\ 
- \hline 
-0,00 & 1,19 & 0,00 & 1,37 & 0,00 & 1,52 & 0,00 & 0,16 & 1,42 & -0,01 & \cellcolor{PurpleNoMamado}0,24 & 1,33 & -0,49 & 1,00 & -0,75 & 0,00 & -0,38 & 0,07 & 0,15 & 0,63 & 0,00 & -0,13 & 15,68 & 65,27\\ 
- \hline 
-0,00 & 0,77 & 0,00 & -0,34 & 0,00 & 1,38 & 0,00 & -0,69 & 0,99 & 0,42 & \cellcolor{PurpleNoMamado}-0,19 & 0,90 & -0,21 & 0,00 & -0,60 & 1,00 & -0,24 & 0,21 & -0,28 & 0,34 & 0,00 & 0,16 & 15,68 & $-$\\ 
- \hline 
-0,00 & -0,40 & 0,00 & -0,56 & 0,00 & -0,74 & 0,00 & 0,33 & -0,54 & 0,49 & \cellcolor{PurpleNoMamado}0,37 & -0,08 & 0,75 & 0,00 & 0,88 & 0,00 & 0,06 & -0,21 & -0,18 & -0,44 & 1,00 & -0,06 & 36,59 & 98,86\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,75 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,17 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,68 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,04 & \cellcolor{PurpleNoMamado}-0,30 & \cellcolor{PurpleNoMamado}0,12 & \cellcolor{PurpleNoMamado}0,34 & \cellcolor{PurpleNoMamado}-0,48 & \cellcolor{PurpleNoMamado}0,44 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,22 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,05 & \cellcolor{PurpleNoMamado}-0,14 & \cellcolor{PurpleNoMamado}0,16 & \cellcolor{PurpleNoMamado}-0,17 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,17 & \cellcolor{PurpleNoMamado}1,36 & \cellcolor{PurpleNoMamado}4,04\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(7)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & $x_{15}$ & \cellcolor{PurpleNoMamado}$s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & 4,77 & 0,00 & 7,50 & 0,00 & 5,00 & 0,96 & 2,12 & 3,12 & 1,35 & 0,00 & 2,58 & 0,31 & 0,00 & 0,65 & 0,00 & \cellcolor{PurpleNoMamado}-0,15 & 0,58 & 1,46 & 2,50 & 0,00 & 0,50 & 249,04 & $-$\\ 
- \hline 
-0,00 & 0,46 & 0,00 & -0,00 & 1,00 & -0,00 & 0,08 & 0,77 & -0,23 & 0,31 & 0,00 & -0,15 & 0,38 & 0,00 & 0,69 & 0,00 & \cellcolor{PurpleNoMamado}0,31 & -0,15 & 0,08 & 0,00 & 0,00 & 0,00 & 6,92 & 22,50\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,27 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,25 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,79 & \cellcolor{PurpleNoMamado}0,37 & \cellcolor{PurpleNoMamado}-0,13 & \cellcolor{PurpleNoMamado}-0,40 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,17 & \cellcolor{PurpleNoMamado}-0,19 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,40 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,35 & \cellcolor{PurpleNoMamado}0,33 & \cellcolor{PurpleNoMamado}-0,04 & \cellcolor{PurpleNoMamado}-0,25 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,25 & \cellcolor{PurpleNoMamado}2,79 & \cellcolor{PurpleNoMamado}8,06\\ 
- \hline 
-0,00 & 1,73 & 0,00 & 1,25 & 0,00 & 2,00 & -0,71 & 0,13 & 1,63 & -0,10 & 0,00 & 1,67 & -0,81 & 1,00 & -0,90 & 0,00 & \cellcolor{PurpleNoMamado}-0,35 & 0,17 & 0,04 & 0,75 & 0,00 & -0,25 & 14,71 & $-$\\ 
- \hline 
-0,00 & 0,35 & 0,00 & -0,25 & 0,00 & 1,00 & 0,56 & -0,67 & 0,83 & 0,48 & 0,00 & 0,63 & 0,04 & 0,00 & -0,48 & 1,00 & \cellcolor{PurpleNoMamado}-0,27 & 0,13 & -0,19 & 0,25 & 0,00 & 0,25 & 16,44 & $-$\\ 
- \hline 
-0,00 & 0,42 & 0,00 & -0,75 & 0,00 & 0,00 & -1,10 & 0,29 & -0,21 & 0,37 & 0,00 & 0,44 & 0,27 & 0,00 & 0,63 & 0,00 & \cellcolor{PurpleNoMamado}0,12 & -0,06 & -0,35 & -0,25 & 1,00 & -0,25 & 35,10 & 304,17\\ 
- \hline 
-0,00 & -2,23 & 0,00 & 0,50 & 0,00 & -2,00 & 2,96 & 0,12 & -0,88 & 0,35 & 1,00 & -1,42 & 1,31 & 0,00 & 0,65 & 0,00 & \cellcolor{PurpleNoMamado}-0,15 & -0,42 & 0,46 & -0,50 & 0,00 & 0,50 & 4,04 & $-$\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,50 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -310,31 +195,23 @@ $Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{
 \section{The final simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ & $x_{7}$ & $x_{8}$ & $x_{9}$ & $x_{10}$ & $x_{11}$ & $x_{12}$ & $x_{13}$ & $x_{14}$ & $x_{15}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $s_{5}$ & $s_{6}$ & $B$\\ 
+$Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $s_{2}$ & $B$\\ 
  \hline 
-1,00 & 4,89 & 0,44 & 7,61 & 0,00 & 5,00 & 0,61 & 2,28 & 3,06 & 1,17 & 0,00 & 2,50 & 0,22 & 0,00 & 0,83 & 0,00 & 0,00 & 0,72 & 1,44 & 2,39 & 0,00 & 0,39 & 250,28\\ 
+1,00 & 0,00 & 0,00 & -1,50 & -1,50 & -18,00\\ 
  \hline 
-0,00 & 0,22 & -0,89 & -0,22 & 1,00 & -0,00 & 0,78 & 0,44 & -0,11 & 0,67 & 0,00 & -0,00 & 0,56 & 0,00 & 0,33 & 0,00 & 0,00 & -0,44 & 0,11 & 0,22 & 0,00 & 0,22 & 4,44\\ 
+0,00 & 0,00 & 1,00 & 0,50 & -0,50 & 2,00\\ 
  \hline 
-0,00 & 0,78 & 2,89 & 0,72 & 0,00 & 0,00 & -2,28 & 1,06 & -0,39 & -1,17 & 0,00 & -0,50 & -0,56 & 0,00 & 1,17 & 0,00 & 1,00 & 0,94 & -0,11 & -0,72 & 0,00 & -0,72 & 8,06\\ 
- \hline 
-0,00 & 2,00 & 1,00 & 1,50 & 0,00 & 2,00 & -1,50 & 0,50 & 1,50 & -0,50 & 0,00 & 1,50 & -1,00 & 1,00 & -0,50 & 0,00 & 0,00 & 0,50 & -0,00 & 0,50 & 0,00 & -0,50 & 17,50\\ 
- \hline 
-0,00 & 0,56 & 0,78 & -0,06 & 0,00 & 1,00 & -0,06 & -0,39 & 0,72 & 0,17 & 0,00 & 0,50 & -0,11 & 0,00 & -0,17 & 1,00 & 0,00 & 0,39 & -0,22 & 0,06 & 0,00 & 0,06 & 18,61\\ 
- \hline 
-0,00 & 0,33 & -0,33 & -0,83 & 0,00 & -0,00 & -0,83 & 0,17 & -0,17 & 0,50 & 0,00 & 0,50 & 0,33 & 0,00 & 0,50 & 0,00 & 0,00 & -0,17 & -0,33 & -0,17 & 1,00 & -0,17 & 34,17\\ 
- \hline 
-0,00 & -2,11 & 0,44 & 0,61 & 0,00 & -2,00 & 2,61 & 0,28 & -0,94 & 0,17 & 1,00 & -1,50 & 1,22 & 0,00 & 0,83 & 0,00 & 0,00 & -0,28 & 0,44 & -0,61 & 0,00 & 0,39 & 5,28\\ 
+0,00 & 1,00 & 0,00 & -1,00 & 2,00 & 0,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
 \section{Solution}
-z=250,28\\
+z=-18,00\\
 \textbf{Solution 1:}\\
-$x_{1}: 0,00, x_{2}: 0,00, x_{3}: 0,00, x_{4}: 4,44, x_{5}: 0,00, x_{6}: 0,00, x_{7}: 0,00, x_{8}: 0,00, x_{9}: 0,00, x_{10}: 5,28, x_{11}: 0,00, x_{12}: 0,00, x_{13}: 17,50, x_{14}: 0,00, x_{15}: 18,61, s_{1}: 8,06, s_{2}: 0,00, s_{3}: 0,00, s_{4}: 0,00, s_{5}: 34,17, s_{6}: 0,00$\\
+$x_{1}: 0,00, x_{2}: 2,00, s_{1}: 0,00, s_{2}: 0,00$\\
 \begin{thebibliography}{9}
 \bibitem{torres2025}
 F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.

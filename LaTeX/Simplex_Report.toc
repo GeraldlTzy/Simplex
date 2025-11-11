@@ -1,9 +1,10 @@
 \contentsline {chapter}{\numberline {1}Simplex Description}{2}{chapter.1}%
 \contentsline {section}{\numberline {1.1}History}{2}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Description}{2}{section.1.2}%
-\contentsline {chapter}{\numberline {2}Solving A ver}{4}{chapter.2}%
+\contentsline {chapter}{\numberline {2}Solving Minimizar Degenerado?}{4}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Mathematical representation}{4}{section.2.1}%
-\contentsline {section}{\numberline {2.2}The initial simplex table}{5}{section.2.2}%
-\contentsline {section}{\numberline {2.3}The intermediates simplex tables}{5}{section.2.3}%
-\contentsline {section}{\numberline {2.4}The final simplex table}{6}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Solution}{6}{section.2.5}%
+\contentsline {section}{\numberline {2.2}Graphical representation}{4}{section.2.2}%
+\contentsline {section}{\numberline {2.3}The initial simplex table}{4}{section.2.3}%
+\contentsline {section}{\numberline {2.4}The intermediates simplex tables}{5}{section.2.4}%
+\contentsline {section}{\numberline {2.5}The final simplex table}{5}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Solution}{5}{section.2.6}%
