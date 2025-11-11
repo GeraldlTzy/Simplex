@@ -336,7 +336,7 @@ char *drawmin_simplex_2d(char restrictions[][256], int i){
 void draw_2d_graph(){
     lg_write(lg, "\\begin{tikzpicture}\n");
     lg_write(lg,    "\\begin{axis}[\n"
-                    "\txmax=100,\n"
+                    "\tymin = 0, xmin = 0, xmax=100,\n"
                     "\taxis lines = left,\n"
                     "\tgrid = both,"
                     "\tdomain = 0:100\n"
