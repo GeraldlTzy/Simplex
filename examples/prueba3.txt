@@ -1,0 +1,8 @@
+name=prueba 3
+objective=Minimize
+count_variables=2
+count_constraints=2
+x_1=x_{1}^x_2=x_{2}
+x_1=-2,00000^x_2=-3,00000
+x_1=1,00000^x_2=-1,00000^<1,00000
+x_1=1,00000^x_2=-2,00000^<2,00000
