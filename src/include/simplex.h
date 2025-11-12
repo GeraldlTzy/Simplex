@@ -6,6 +6,7 @@
 
 typedef struct {
   Matrix *table;
+  double *big_M;
   int rows;
   int cols;
   int variables;
