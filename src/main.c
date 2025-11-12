@@ -495,6 +495,17 @@ void prepare_simplex_lg(){
         lg_write(lg, "%s\n", to_write);
         lg_write(lg, "\\end{dmath}\n");
     }
+    // constraints x>0
+    to_write[0] = '\0';
+    for (int i = 0; i < num_variables; ++i){
+        buffer[0] = '\0';
+        if (i < num_variables-1) sprintf(buffer, "%s,", var_names[i]);
+        else sprintf(buffer, "%s", var_names[i]);
+        strcat(to_write, buffer);
+    }
+        lg_write(lg, "\\begin{dmath}\n");
+        lg_write(lg, "%s \\geq 0\n", to_write);
+        lg_write(lg, "\\end{dmath}\n");
 
     if (num_variables == 2) {
         lg_write(lg, "\n\\section{Graphical representation}\n");
