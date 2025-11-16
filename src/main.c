@@ -507,10 +507,10 @@ void prepare_simplex_lg(){
         lg_write(lg, "%s \\geq 0\n", to_write);
         lg_write(lg, "\\end{dmath}\n");
 
-    if (num_variables == 2) {
+    /*if (num_variables == 2) {
         lg_write(lg, "\n\\section{Graphical representation}\n");
         draw_2d_graph();
-    }
+    }*/
 }
 void simplex_data_put_inequalities(SimplexData *simplex_data){
   ineq_arr = malloc(sizeof(char *) * num_constraints);

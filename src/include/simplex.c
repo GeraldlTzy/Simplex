@@ -189,8 +189,25 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
                     lg_write(lg, "\\textbf{Degenerate Problem Found:}\n");
                 else 
                     lg_write(lg, "\\section{Degenerate Problem Found}\n");
-                lg_write(lg, "A draw when choosing a pivot ocurred during the Simplex execution.\n");
-                lg_write(lg, "To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\\\\\n");
+                lg_write(lg,    "When you are in the execution of the Simplex algorithm you might find some peculiar tables.\n"
+                                "These tables can occur when one of the values on the last column is zero.\n"
+                                "When one of those values is zero an interesting phenomenon happens, and that is that a basic variable has the value of zero.\n"
+                                "You could think that the only variables that have a value of zero are the non basic ones, but this is totally false.\n"
+                                "In some cases you might not see a basic variable whose value is zero, but a basic variable having a value of zero is not an uncommon ocurrence.\n"
+                                "When this happens we call the table a degenerate table, and when a problem has at least one degenerate table, we call it a degenerate problem.\\\\\n"
+                );
+                lg_write(lg,    "Degenerate problems might seem inocent, and for the most part they are.\n"
+                                "But these problems come with some peculiarity, that is the reason behind the name, because these are hard to classify.\n"
+                                "When a problem is degenerate, you might find that when you pivot the table, the objective function does not increase.\n"
+                                "When this happens, do not panic, just keep pivoting, and in most cases you will solve the problem just like any other.\n"
+                                "Another peculiarity of these problems is that you could find a draw when choosing a pivot, in that case feel free to choose the one you like, and in most cases you will be fine.\n"
+                                "But in some very rare cases you can be very unlucky, and come to a pretty bad realization, and that is that the tables are starting to repeat.\n"
+                                "Turns out, that in some extremely rare cases, Simplex can find a loop in it's execution, and thus never end.\n"
+                                "If this happens you have two solutions, save every table and compare then to find if you are in a loop and choose a different pivot from last time (this is extremely expensive), or you could simply stop the program if it is taking to long to solve.\n"
+                                "Both solutions have their downsides, but this a risk you take when using Simplex, and as far as it is known, this is unavoidable.\\\\\n"
+                );
+
+                lg_write(lg, "In the case of this program, when it realizes it is a degenerate problem, it stars to save the tables to see if it has entered a loop.\\\\\n");
             }
             lg_write(lg, "\\textbf{Draw:} the rows %d and %d have a fraction of the same value,"
                             "\\textbf{row %d} (fraction %.5lf) with the %.5lf pivot was \\textbf{choosen} and "
@@ -204,7 +221,7 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
                             fraction,
                             mat->data.f[r][pivot_col]
                     );
-            lg_write(lg, "To apretiate this please see the following table:\\\\\n");
+            lg_write(lg, "To appreciate this please see the following table:\\\\\n");
             degenerate = 1;
             Node *node = malloc(sizeof(Node));  // Se guarda la matriz y el pivote para volver en caso
             node->mat = matrix_copy(mat);       // de enciclarse o encontrarse con problema no acotado
@@ -306,8 +323,25 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
                     lg_write(lg, "\\textbf{Degenerate Problem Found:}\n");
                 else 
                     lg_write(lg, "\\section{Degenerate Problem Found}\n");
-                lg_write(lg, "A draw when choosing a pivot ocurred during the Simplex execution.\n");
-                lg_write(lg, "To manage this, one of the pivots was choosen and the other table was stored in case a loop is found.\\\\\n");
+                lg_write(lg,    "When you are in the execution of the Simplex algorithm you might find some peculiar tables.\n"
+                                "These tables can occur when one of the values on the last column is zero.\n"
+                                "When one of those values is zero an interesting phenomenon happens, and that is that a basic variable has the value of zero.\n"
+                                "You could think that the only variables that have a value of zero are the non basic ones, but this is totally false.\n"
+                                "In some cases you might not see a basic variable whose value is zero, but a basic variable having a value of zero is not an uncommon ocurrence.\n"
+                                "When this happens we call the table a degenerate table, and when a problem has at least one degenerate table, we call it a degenerate problem.\\\\\n"
+                );
+                lg_write(lg,    "Degenerate problems might seem inocent, and for the most part they are.\n"
+                                "But these problems come with some peculiarity, that is the reason behind the name, because these are hard to classify.\n"
+                                "When a problem is degenerate, you might find that when you pivot the table, the objective function does not increase.\n"
+                                "When this happens, do not panic, just keep pivoting, and in most cases you will solve the problem just like any other.\n"
+                                "Another peculiarity of these problems is that you could find a draw when choosing a pivot, in that case feel free to choose the one you like, and in most cases you will be fine.\n"
+                                "But in some very rare cases you can be very unlucky, and come to a pretty bad realization, and that is that the tables are starting to repeat.\n"
+                                "Turns out, that in some extremely rare cases, Simplex can find a loop in it's execution, and thus never end.\n"
+                                "If this happens you have two solutions, save every table and compare them to find if you are in a loop and choose a different pivot from last time (this is extremely expensive), or you could simply stop the program if it is taking to long to solve.\n"
+                                "Both solutions have their downsides, but this a risk you take when using Simplex, and as far as it is known, this is unavoidable.\\\\\n"
+                );
+
+                lg_write(lg, "In the case of this program, when it realizes it is a degenerate problem, it stars to save the tables to see if it has entered a loop.\\\\\n");
             }
             lg_write(lg, "\\textbf{Draw:} the rows %d and %d have a fraction of the same value,"
                             "\\textbf{row %d} (fraction %.5lf) with the %.5lf pivot was \\textbf{choosen} and "
@@ -321,7 +355,7 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
                             fraction,
                             mat->data.f[r][pivot_col]
                     );
-            lg_write(lg, "To apretiate this please see the following table:\\\\\n");
+            lg_write(lg, "To appreciate this please see the following table:\\\\\n");
             degenerate = 1;
             Node *node = malloc(sizeof(Node));
             node->mat = matrix_copy(mat);
@@ -464,7 +498,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
 
     if (data->show_intermediates){
-      lg_write(lg, "\\section{The intermediates simplex tables}\n");
+      lg_write(lg, "\\section{The intermediate simplex tables}\n");
     }
     int have_solution = 0;
     unbound = 0;
@@ -493,8 +527,28 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     double *solution2 = NULL;
     data->table = multiple_solutions(data->table, &solution2);
     if (solution2 != NULL){
-        lg_write(lg, "\\section{The final simplex table 2}\n");
-        lg_write(lg, "Multiple optimal solutions where found because one of the non basic functions can be pivoted without penalty. When pivoting said column, the folowing table can be obtained.\n"); 
+        lg_write(lg, "\\section{Multiple solutions found}\n");
+        lg_write(lg,    "Once you end the execution of the Simplex algorithm, you might think that everything has ended and that the soulution you found is the only way to get the optimal objective value, but this is untrue.\n"
+                        "Before asuming that you are finished check if you can pivot one of the non-basic variables without a penalty.\n"
+                        "To do this check all of the columns that correspond whith a non-basic variable, if one of them has a zero in the first row, this means that if you pivot it you objective value will not change.\n"
+                        "After you have found the row, canonize it, after doing it you will notice that as said, the objective value has not changed, but more importantly, you will find one of the basic variables is different, and that the values of the variables that stayed in the base have changed.\n"
+                        "This is another optimal solution to the problem, because the value is still optimal and the variables are different than before.\\\\\n"
+                        "If you thought that this is the end, think again, remember that Simplex is a graphic method that jumps between vertices of the body that cointains all feasible solutions.\n"
+                        "Which means that the second solution you found is another vertex of the body. \n"
+                        "If you join the vertices that have an optimal solution, you will draw a line (or a plane, or another body in multiple dimensions).\n"
+                        "The body you drew contains other optimal solutions, infinite of them. \n"
+                        "This means that the problem you found can be optimized in an infinite number of ways.\\\\\n"
+        );
+        lg_write(lg, "\\\\By using the following formula, infinite optimal solutions can be found:\\\\\n"); 
+        lg_write(lg, "\\begin{dmath}\n");
+        lg_write(lg, "\\alpha*solution1 + (1-\\alpha)*solution2\\\\\n");
+        lg_write(lg, "\\end{dmath}\n");
+        lg_write(lg, "$$\n");
+        lg_write(lg, "0 \\leq \\alpha \\leq 1\n");
+        lg_write(lg, "$$\n");
+        
+        lg_write(lg, "\\\\You can see the second optimal table found:\\\\\n"); 
+
         tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
     }
 
@@ -507,13 +561,6 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     if (solution2 != NULL) {  
         lg_write(lg, "\\textbf{Solution 2:}\\\\\n");
         write_solution(solution2, data->table->cols-2, data->headers, lg);
-        lg_write(lg, "\\\\By using the following formula, infinite optimal solutions can be found:\\\\\n"); 
-        lg_write(lg, "\\begin{dmath}\n");
-        lg_write(lg, "\\alpha*solution1 + (1-\\alpha)*solution2\\\\\n");
-        lg_write(lg, "\\end{dmath}\n");
-        lg_write(lg, "$$\n");
-        lg_write(lg, "0 \\leq \\alpha \\leq 1\n");
-        lg_write(lg, "$$\n");
         double *solution3 = generate_solution(solution1, solution2, data->table->cols-2, 0.25);
         lg_write(lg, "\\textbf{Solution 3:}\\\\\n");
         write_solution(solution3, data->table->cols-2, data->headers, lg);
