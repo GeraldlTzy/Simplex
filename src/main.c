@@ -35,6 +35,7 @@ Latex_Generator l;
 Latex_Generator *lg = &l;
 GtkListStore *inequalities;
 char **ineq_arr;
+int *canon_number;
 #include <regex.h>
 
 
@@ -119,9 +120,9 @@ void initialize(){
   gtk_list_store_append(inequalities, &iter);
   gtk_list_store_set(inequalities, &iter, 0, "<=", 1, TRUE, -1);
   gtk_list_store_append(inequalities, &iter);
-  gtk_list_store_set(inequalities, &iter, 0, "==", 1, FALSE, -1);
+  gtk_list_store_set(inequalities, &iter, 0, "==", 1, TRUE, -1);
   gtk_list_store_append(inequalities, &iter);
-  gtk_list_store_set(inequalities, &iter, 0, ">=", 1, FALSE, -1);
+  gtk_list_store_set(inequalities, &iter, 0, ">=", 1, TRUE, -1);
   
   gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
   g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -523,9 +524,15 @@ void simplex_data_put_inequalities(SimplexData *simplex_data){
     entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cmb)));
     const gchar *ineq = gtk_entry_get_text(entry);
     strcpy(ineq_arr[i], ineq);
-    if (strcmp(ineq, "<=") == 0) {simplex_data->slacks++;}
-    else if (strcmp(ineq, "=") == 0) {simplex_data->slacks++;}
-    else if (strcmp(ineq, ">=") == 0) {simplex_data->artificials++; simplex_data->excess++;}
+    if (strcmp(ineq, "<=") == 0) {
+        simplex_data->slacks++;
+    } else if (strcmp(ineq, "==") == 0) {
+        simplex_data->artificials++;
+    }
+    else if (strcmp(ineq, ">=") == 0) {
+        simplex_data->artificials++; 
+        simplex_data->excess++;
+    }
   }
   simplex_data->rows = 1 + num_constraints;
   simplex_data->cols = ((2 + num_variables) + (simplex_data->slacks +
@@ -783,33 +790,84 @@ void on_btn_finish_clicked(){
   int cols = simplex_data->cols;
   simplex_data->table = new_matrix(rows, cols, FLOAT);
   init_matrix_num(simplex_data->table, 0);
+  simplex_data->big_M = malloc(sizeof(double) * cols);
+  for (int i = 0; i < cols; ++i) simplex_data->big_M[i] = 0.0;
 
   double **table = simplex_data->table->data.f;
   table[0][0] = 1;
   table[0][cols-1] = 0;
+
+  int canonic_i = num_variables + 1; 
+
+  int start_slacks = num_variables;
+  int start_excess = num_variables + simplex_data->slacks;
+  int start_artificials = num_variables + simplex_data->slacks + simplex_data->excess;
+
+  // un 0 es que esta vacio y que se puede poner el indice 
+  // un 1 es que ya esta lleno y que hay que poner en otra parte
+  int *artificials_mark = calloc(simplex_data->artificials, sizeof(int));
   
-  int canonic_i = num_variables + 1;
+  int slack_i = start_slacks + 1;
+  int excess_i = start_excess + 1;
+  int artificial_i = start_artificials + 1;
+
   GtkWidget *entry;
-  
   for(int r = 0; r < rows; ++r){
+    int added_artificial = 0;
+    int add_canon = 0;
     for(int c = 1; c < cols; ++c){
+      int is_slack = simplex_data->slacks > 0 && c > start_slacks && c <= start_excess;
+      int is_excess = simplex_data->excess > 0 && c > start_excess && c <= start_artificials;
+      int is_artificial = simplex_data->artificials > 0 && c > start_artificials && c != cols-1; 
+
+
+      // los negativos en las varaibles en la funcion objetivo 
       if(r == 0 && c <= num_variables){
         entry = gtk_grid_get_child_at(gd_variables, (c-1)*2, r);      
         table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry))) * -1;
+      // los coeficientes de las variables 
       } else if(c <= num_variables){
         entry = gtk_grid_get_child_at(gd_constraints, (c-1)*2, (r-1));
         table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
-      } else if(r > 0 && c == canonic_i){
-        table[r][c] = 1;
-      } else if(r > 0 && c == cols-1){
+      // las B
+      } else if (r > 0 && c == cols-1) {
         entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, (r-1));
         table[r][c] = atof(gtk_entry_get_text(GTK_ENTRY(entry)));
+      // slack 1
+      } else if (r > 0 && is_slack && c == canonic_i){
+          if (strcmp(ineq_arr[r-1], "<=") == 0) {
+            add_canon = 1;
+            table[r][c] = 1;
+          }
+      // excess -1 
+      } else if (r > 0 && is_excess && c == canonic_i){
+          if (strcmp(ineq_arr[r-1], ">=") == 0) {
+            add_canon = 1;
+            table[r][c] = -1;
+          }
+      // artificial 1
+      } else if (r > 0 && is_artificial && !added_artificial) {
+          char *ineq = ineq_arr[r-1];
+          added_artificial = 1;
+          if (strcmp(ineq, ">=") == 0 || strcmp(ineq, "==") == 0) {
+            // agrega en la siguiente artificial que tenga espacio disponible
+            for (int i = 0; i < simplex_data->artificials; ++i) {
+                // si esta vacio se pone 
+                if (!artificials_mark[i]) {
+                    artificials_mark[i] = 1;
+                    table[r][c+i] = 1;
+                    break;
+                }
+            }
+          }
       }
     }
-    if(r > 0){
-      canonic_i++;
-    }
+    if (r > 0 && add_canon) ++canonic_i;
   }
+
+  free(artificials_mark);
+
+  print_matrix(simplex_data->table);
   if (!lg_open(lg, "LaTeX/Simplex_Report")) {
     perror("Error al crear el archivo de LaTeX");
     return;

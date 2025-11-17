@@ -496,7 +496,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
 
     lg_write(lg, "\\section{The initial simplex table}\n");
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
-
+/*
     if (data->show_intermediates){
       lg_write(lg, "\\section{The intermediate simplex tables}\n");
     }
@@ -575,7 +575,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         free(solution4);
         free(solution5);
     }
-    free(solution1);
+    free(solution1);*/
     return 0;
 }
 
