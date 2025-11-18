@@ -266,7 +266,7 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
 Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
-  tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
+  //tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
   double fraction, min_max;
   int pivot_row, pivot_col, pivot_counter = 0;
 
@@ -494,9 +494,15 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
 int simplex(SimplexData *data, Latex_Generator *lg){
     pivot_counter = 0;
 
+    printf("BIG_M: \n");
+    for (int i = 0; i < data->cols; ++i) printf("%2.lf ", data->big_M[i]);
+    printf("\nPURE TABLE\n");
+    print_matrix(data->table);
+
+
     lg_write(lg, "\\section{The initial simplex table}\n");
-    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
-/*
+    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);
+
     if (data->show_intermediates){
       lg_write(lg, "\\section{The intermediate simplex tables}\n");
     }
@@ -504,6 +510,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     unbound = 0;
     degenerate = 0;
 
+    
     if (data->minimize) {
       data->table = minimize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
     } else {
@@ -511,8 +518,9 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     }
 
     lg_write(lg, "\\section{The final simplex table}\n");
-    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
+    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);
 
+    /*
     if (unbound){
         lg_write(lg, "\\section{Unbound Solution}\n");
         lg_write(lg, "The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value.\n");

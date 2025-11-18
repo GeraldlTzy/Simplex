@@ -19,12 +19,26 @@ void tex_table_init(Latex_Generator *lg, int cols){
   tex_buf2[0] = '\0';
 }
 
-void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **content){
+void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **content, double *big_M){
   tex_buf2[0] = '\0';
   for(int r = 0; r < rows; ++r){
     for(int c = 0; c < cols; ++c){
-      sprintf(tex_buf2, "%.2lf%s", content[r][c],
+      if (r != 0){ 
+          sprintf(tex_buf2, "%.2lf%s", content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
+      // primera fila contiene las M
+      } else {
+        if (big_M[c] != 0 && content[r][c] != 0) {
+          sprintf(tex_buf2, "%.2lf*M + %.2lf%s", big_M[c], content[r][c],
+              ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
+        } else if (big_M[c] != 0){
+          sprintf(tex_buf2, "%.2lf*M%s", big_M[c],
+              ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
+        } else {
+          sprintf(tex_buf2, "%.2lf%s", content[r][c],
+              ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
+        }
+      }
       lg_write(lg, tex_buf2);
     }
   }
@@ -50,10 +64,10 @@ void tex_table_end(Latex_Generator *lg){
   lg_write(lg, "\\end{center}\n");
 }
 
-void tex_table_draw(Latex_Generator *lg, int rows, int cols, char **headers, double **content){
+void tex_table_draw(Latex_Generator *lg, int rows, int cols, char **headers, double **content, double *big_M){
   tex_table_init(lg, cols);
   tex_table_headers(lg, cols, headers);
-  tex_table_content(lg, rows, cols, content);
+  tex_table_content(lg, rows, cols, content, big_M);
   tex_table_end(lg);
 }
 

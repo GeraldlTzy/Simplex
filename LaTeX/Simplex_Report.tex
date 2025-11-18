@@ -89,21 +89,21 @@ The Simplex algorithm is an algorithm discovered by George Dantzig. This algorit
 The Simplex algorithm uses matrix operations to find the optimal solution to a linear programming problem, or to find out if it does not have a feasible solution \cite{torres2025}.A linear programming problem has desition variables and restrictions under them, so you would think that you could solve the problem simply by using a normal method to find the value of the variables.Sadly, in these types of problems thre are usually far more varaibles than equations, to this aproach is not good enough.Using the equations you can find the feasible region of the problem, where all the posible solutions are.Simplex starts from a vertex of the feasible region and jumps to adjacent vertices that give a better value for the objective function.Once you can not find a vertex that upgrades the objective value, that is the optimal solution.\\
 The simplex algorithm has a set of variables that are called basic, these variables can be found in canonical columns \cite{torres2025}.The first step is to level out any inecuations with slack or excess variables depending on what you need,when one of the restrictions is equals or greater than you will also need to add artificial variables, because these forms of restrictions do not give enough basic variables.After leveling out the restrictions, you need to clear out the z variable from the objective function, this will give you an extra equation to work with.\\
 Once you have made that you can build the simplex table, giving each variable a column and each equation a row.To maximize the objective value you will find the smallest negative number in the first row (or the biggest positive number if you are minimizing).If you did not find any numbers that meet the criteria, congratulations, you found the optimal solution.However if you did, then you need to divide all the numbers in that column by the numbers of the final column (ignore negative numbers and 0's) and choose the smallest fraction to meet all the restrictions, the number on the column and row is called the pivot.Once you have a pivot you need to canonize the column, keep in mid that in this process you want the pivot to be the one of the canonical column, this process is called pivoting.Once you have canonized the column, repeat the process until you have ended \cite{torres2025}.\\
-Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction.If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found.If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting.However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop.But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution.\chapter{Solving 3}
+Sadly, not every problem is as simplex(ba-dum-tss), if in the process of calculating the fractions you do not find any positive numbers, you have found an unbounded problem and it indicates that the objective value can keep growing to infinity, this usually indicates that you might be lacking a restriction.If at the end of a problem you see a non-basic variable that has a 0 in it's column it means that if you canonize that column with the apropiate pivot, the objective value will not go down, this indicates that the problem has multiple optimal solutions and you can choose any solution in between the initial two you found.If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting.However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop.But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution.\chapter{Solving 2}
 \section{Mathematical representation}
 \textbf{Maximize:}
 \begin{dmath}
-z = 10000x_{1} + 3000x_{2} 
+z = 2x_{1} + 3x_{2} 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
-10x_{1} + 4x_{2} \leq40
+0,5x_{1} + 0,25x_{2} \leq4
 \end{dmath}
 \begin{dmath}
-1x_{1} + 1x_{2} \leq7
+1x_{1} + 3x_{2} \geq20
 \end{dmath}
 \begin{dmath}
-0x_{1} + 1x_{2} \geq3
+1x_{1} + 1x_{2} =10
 \end{dmath}
 \begin{dmath}
 x_{1},x_{2} \geq 0
@@ -113,15 +113,33 @@ x_{1},x_{2} \geq 0
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
 \begin{tabular}{|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $s_{2}$ & $e_{1}$ & $a_{1}$ & $B$\\ 
+$Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $e_{1}$ & $a_{1}$ & $a_{2}$ & $B$\\ 
  \hline 
-1,00 & -10000,00 & -3000,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
+1,00 & -2,00 & -3,00 & 0,00 & 0,00 & -1,00*M & -1,00*M & 0,00\\ 
  \hline 
-0,00 & 10,00 & 4,00 & 1,00 & 0,00 & 0,00 & 0,00 & 40,00\\ 
+0,00 & 0,50 & 0,25 & 1,00 & 0,00 & 0,00 & 0,00 & 4,00\\ 
  \hline 
-0,00 & 1,00 & 1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 7,00\\ 
+0,00 & 1,00 & 3,00 & 0,00 & -1,00 & 1,00 & 0,00 & 20,00\\ 
  \hline 
-0,00 & 0,00 & 1,00 & 0,00 & 0,00 & -1,00 & 1,00 & 3,00\\ 
+0,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 1,00 & 10,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{The final simplex table}
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $e_{1}$ & $a_{1}$ & $a_{2}$ & $B$\\ 
+ \hline 
+1,00 & 1,00 & 0,00 & 0,00 & 0,00 & -1,00*M & -1,00*M + 3,00 & 30,00\\ 
+ \hline 
+0,00 & 0,25 & 0,00 & 1,00 & 0,00 & 0,00 & -0,25 & 1,50\\ 
+ \hline 
+0,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 1,00 & 10,00\\ 
+ \hline 
+0,00 & 2,00 & 0,00 & 0,00 & 1,00 & -1,00 & 3,00 & 10,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}

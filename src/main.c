@@ -860,6 +860,12 @@ void on_btn_finish_clicked(){
                 }
             }
           }
+      // artificial M 
+      } if (r == 0 && is_artificial) {
+          if (do_minimize)
+            simplex_data->big_M[c] = 1;
+          else 
+            simplex_data->big_M[c] = -1;
       }
     }
     if (r > 0 && add_canon) ++canonic_i;
@@ -867,7 +873,6 @@ void on_btn_finish_clicked(){
 
   free(artificials_mark);
 
-  print_matrix(simplex_data->table);
   if (!lg_open(lg, "LaTeX/Simplex_Report")) {
     perror("Error al crear el archivo de LaTeX");
     return;
