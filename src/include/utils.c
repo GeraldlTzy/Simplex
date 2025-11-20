@@ -21,7 +21,7 @@ char* read_text(FILE* file, char start, char end){
 }
 
 
-char* read_text_multiple_start(FILE* file, char *start, char end){
+char* read_text_multiple_start(FILE* file, char *start, char end, int *selected_start){
   int str_size = 32, index = 0;
   char *str = malloc(str_size);
   char c;
@@ -31,6 +31,7 @@ char* read_text_multiple_start(FILE* file, char *start, char end){
       c = fgetc(file);
       for (int i = 0; i < size; ++i){
           if (c == start[i]){
+            *selected_start = i;
             can_exit = 1;
             break;
           }

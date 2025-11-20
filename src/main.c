@@ -597,8 +597,10 @@ void load_data(char *filename){
   strcpy(objective, read_text(file, '=', '\n'));
   if(strcmp(objective, "Maximize") == 0){
     do_minimize = 0;
+    gtk_combo_box_set_active(GTK_COMBO_BOX(cmb_objective_func), 0);
   } else {
     do_minimize = 1;
+    gtk_combo_box_set_active(GTK_COMBO_BOX(cmb_objective_func), 1);
   }
   num_variables = atoi(read_text(file, '=', '\n'));
   num_constraints = atoi(read_text(file, '=', '\n'));
@@ -672,8 +674,11 @@ void load_data(char *filename){
     gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
     g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
 
-    sprintf(buf, "%.5lf", atof(read_text_multiple_start(file, "<>=", '^')));
+    int selected_index = 0;
+    sprintf(buf, "%.5lf", atof(read_text_multiple_start(file, "<=>", '^', &selected_index)));
     gtk_entry_set_text(entry, buf);
+
+    gtk_combo_box_set_active(GTK_COMBO_BOX(cmb), selected_index);
 
     gtk_grid_attach(gd_constraints, cmb, gd_left++, gd_top, 1, 1);
     gtk_grid_attach(gd_constraints, GTK_WIDGET(entry), gd_left++, gd_top++, 1, 1);
