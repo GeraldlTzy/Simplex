@@ -642,6 +642,7 @@ void load_data(char *filename){
 
   // agregar las restricciones
   for(int i = 0; i < num_constraints; ++i){
+      
     for(int j = 0; j < num_variables; ++j){
       //Cargar los valores de las variables al grid
       entry = GTK_ENTRY(gtk_entry_new());
@@ -653,6 +654,7 @@ void load_data(char *filename){
       gtk_grid_attach(gd_constraints, GTK_WIDGET(entry), gd_left, gd_top, 1, 1);
       gd_left += 2;
     }
+    
     // Configurar combo box de la desigualdad
     cmb = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(inequalities));
     gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(cmb), 0);
@@ -670,7 +672,7 @@ void load_data(char *filename){
     gtk_widget_set_hexpand(GTK_WIDGET(entry), TRUE);
     g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
 
-    sprintf(buf, "%.5lf", atof(read_text(file, '<', '^')));
+    sprintf(buf, "%.5lf", atof(read_text_multiple_start(file, "<>=", '^')));
     gtk_entry_set_text(entry, buf);
 
     gtk_grid_attach(gd_constraints, cmb, gd_left++, gd_top, 1, 1);
@@ -686,6 +688,7 @@ void load_data(char *filename){
 
   gtk_widget_hide(main_window);
   gtk_widget_show_all(second_window);
+  
 }
 
 int save_data(char *filename){

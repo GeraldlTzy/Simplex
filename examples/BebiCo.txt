@@ -1,0 +1,9 @@
+name=Refrescos BebiCo
+objective=Minimize
+count_variables=2
+count_constraints=3
+x_1=x_{1}^x_2=x_{2}
+x_1=2,00000^x_2=3,00000
+x_1=0,50000^x_2=0,25000^<4,00000
+x_1=1,00000^x_2=3,00000^>20,00000
+x_1=1,00000^x_2=1,00000^=10,00000

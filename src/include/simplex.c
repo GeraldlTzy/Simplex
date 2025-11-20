@@ -520,7 +520,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     lg_write(lg, "\\section{The final simplex table}\n");
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);
 
-    /*
+    
     if (unbound){
         lg_write(lg, "\\section{Unbound Solution}\n");
         lg_write(lg, "The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value.\n");
@@ -531,6 +531,8 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         lg_write(lg, "The solution found is in another dimension, and can not posibly exist using the existing restrictions and desicion variables.\n");
         return 1;
     }
+    
+    ///////////////////////////
     double *solution1 = find_solution(data->table);
     double *solution2 = NULL;
     data->table = multiple_solutions(data->table, &solution2);
@@ -557,7 +559,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         
         lg_write(lg, "\\\\You can see the second optimal table found:\\\\\n"); 
 
-        tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f);
+        tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);
     }
 
     lg_write(lg, "\\section{Solution}\n");
@@ -583,7 +585,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         free(solution4);
         free(solution5);
     }
-    free(solution1);*/
+    free(solution1);
     return 0;
 }
 
