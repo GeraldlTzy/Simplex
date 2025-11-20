@@ -522,13 +522,35 @@ int simplex(SimplexData *data, Latex_Generator *lg){
 
     
     if (unbound){
-        lg_write(lg, "\\section{Unbound Solution}\n");
-        lg_write(lg, "The solution found is infinite, this happened because when choosing the pivot, all posible rows to choose had a non-positive value.\n");
+        lg_write(lg, "\\section{Unbound solution found}\n");
+        lg_write(lg,    "The program found an unbound solution during it's execution, meaning it can grow infinitely.\\\\\n"
+                        "When choosing a pivot you first find the column that most benefits you to be pivoted, after doing that you choose the smallest fraction to make sure all restrictions are met.\n"
+                        "The fractions you choose during the process are the right sides divided by their corresponding number on the column of the pivot. \n"
+                        "More specifically, when choosing the fractions you only take into account the non-negative and non-zero numbers on the pivot column.\n"
+                        "But it could happen that all of the options you have are zero or negative. \n"
+                        "When this happens it means that the solution is unbound, this means that the objective valuje can grow as much as you want. \\\\\n"
+                        "Saying iy in other words, the objective value can be grown to infinity.\n"
+                        "At first this could appear like a positive thing, but these solutions also tend to have infinite values for other variables so they are not posible to replicate in real life.\n"
+                        "A lot of times an unbound solution could mean that you are missing restrictions in the problem given so you might have to rethink the problem in order to find more solutions so that you can have a solution that can be done in real life.\\\\\n"
+
+        );
         return 1;
     } else if (!have_solution){
         //TODO: en el otro proyecto manejar esto mejor
         lg_write(lg, "\\section{No solution found}\n");
-        lg_write(lg, "The solution found is in another dimension, and can not posibly exist using the existing restrictions and desicion variables.\n");
+        lg_write(lg,    "The solution found is in an artificial dimension, meaning the problem given has no solution. \\\\\n"
+                        "The Simplex algorithm deals with problems that have restrictions of the forms greater or equal, less or equal, and equals.\n"
+                        "When solving for restrictions that are less or equal, a slack variable is inserted, this gives the problem a starting solution because these are already canonized.\n"
+                        "But when dealing with greater of equal restrictions, excess variables are inserted, these variables do not produce canonical vectors because these are subtracted. \n"
+                        "Another problematic restriction is the equals, because these do not propduce any variables.\n"
+                        "The simplex algorithm rellies on the matrix having canonical, so something needs to be done about these two restriction types. \\\\\n"
+                        "A way to solve this is with the Big M Method, this method inserts artificial variables to make canonical vectors\n"
+                        "These variables are added to the objective function with a value M (when minimizing you add -M and when maximizing you add +M) which can be interpreted as a very big number.\n"
+                        "When doing this you scale up the ammount of dimensions the problem has, this allows the Simplex algorithm to move in these dimentions, and find a posible solution. \n"
+                        "It could happen that the solution the algorithm found has an M in one of it's non-artificial variables, when this happens it means that the solution is in one of the artificial dimensions you inserted.\n"
+                        "When this happens it means that the program found no solution inside the initial Simplex body, and thus it means that the poroblem has no solution.\n"
+
+        );
         return 1;
     }
     
