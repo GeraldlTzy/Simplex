@@ -14,19 +14,28 @@ int unbound = 0;
 int degenerate = 0;
 double tolerance = 1e-4;
 
-void canonize(Matrix *mat, int pivot_row, int pivot_col){
+void canonize(Matrix *mat, double **big_M, int pivot_row, int pivot_col){
     double k;
+    double big_k;
     for(int r = 0; r < mat->rows; ++r){
         if(r == pivot_row){
             k = mat->data.f[pivot_row][pivot_col];
         } else {
             k = ((-1*mat->data.f[r][pivot_col])/mat->data.f[pivot_row][pivot_col]);
         }
+        if (r == 0){
+            big_k = ((-1*(*big_M)[pivot_col])/mat->data.f[pivot_row][pivot_col]);
+            printf("pivot r %d c %d BIG M %.2lf, BIG K %.2lf\n", pivot_row, pivot_col, (*big_M)[pivot_col], big_k);
+        }
         for(int c = 0; c < mat->cols; ++c){
             if(r == pivot_row){
                 mat->data.f[r][c] /= k;
             } else {
               mat->data.f[r][c] += (mat->data.f[pivot_row][c] * k);
+            }
+            // para la M grande
+            if (r == 0){
+              (*big_M)[c] += (mat->data.f[pivot_row][c] * big_k);
             }
         }
     }
@@ -135,7 +144,7 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, char **headers, i
     lg_write(lg, "\\end{center}\n");
 }
 
-Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
+Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediates, Latex_Generator *lg){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
   double min, fraction;
@@ -150,7 +159,6 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       get_last_state(&list, &node);
       if(!node){                                // Retorna si no hay mas opciones
         lg_write(lg, "No other paths were found, so the program has ended its execution\\\\\n");
-        *have_solution = 0;
         return mat;
       }
       
@@ -172,7 +180,6 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
         }
       }
       if (min >= 0) {
-        *have_solution = 1;
         return mat;                  // termina si no encuentra nuevo valor
       }
       min =  MAX_VAL;
@@ -247,7 +254,6 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
         } else {
           //free_matrix(mat);
           //TODO: esto es una solucion no acotada, no que no tiene solucion
-          *have_solution = 0;
           unbound = 1;
           return mat;
         }
@@ -258,12 +264,12 @@ Matrix *maximize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
       intermediate_table_draw(lg, mat, headers, pivot_row, pivot_col);
     }
-    canonize(mat, pivot_row, pivot_col);
+    canonize(mat, big_M, pivot_row, pivot_col);
   }
 }
 
 
-Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_solution, Latex_Generator *lg){
+Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediates, Latex_Generator *lg){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
   //tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
@@ -282,7 +288,6 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       if(!node){
         lg_write(lg, "No other paths were found, so the program has ended its execution\\\\\n");
         free_matrix(mat);
-        *have_solution = 0;
         return init;
       }
       
@@ -306,7 +311,6 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       }
       // ya no hay positivos
       if (min_max <= 0){
-        *have_solution = 1;
         return mat;
       }
       // esta vez se usa para elegir la fraccion minima, igual que antes
@@ -380,8 +384,6 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
           pivot_col = node->pv_c;
         } else {
           //free_matrix(mat);
-          //TODO: esto es una solucion no acotada, no que no tiene solucion
-          *have_solution = 0;
           unbound = 1;
           return mat;
         }
@@ -392,7 +394,7 @@ Matrix *minimize(Matrix *mat, char **headers, int do_intermediates, int *have_so
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
       intermediate_table_draw(lg, mat, headers, pivot_row, pivot_col);
     }
-    canonize(mat, pivot_row, pivot_col);
+    canonize(mat, big_M, pivot_row, pivot_col);
   }
 }
 
@@ -452,7 +454,7 @@ double *find_solution(Matrix *mat) {
     return solution;
 }
 
-Matrix *multiple_solutions(Matrix *mat, double **sol_array){
+Matrix *multiple_solutions(Matrix *mat, double **big_M, double **sol_array){
     int pivot_col = -1;
     int pivot_row = -1;
     for (int c = 1; c < mat->cols; ++c) {
@@ -477,7 +479,7 @@ Matrix *multiple_solutions(Matrix *mat, double **sol_array){
             }
         }
     }
-    canonize(mat, pivot_row, pivot_col);
+    canonize(mat, big_M, pivot_row, pivot_col);
     *sol_array = find_solution(mat);
     return mat;
 }
@@ -510,11 +512,33 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     unbound = 0;
     degenerate = 0;
 
-    
+    // si hay artificiales canonizarlas primero
+    if (data->artificials != 0){
+        int start = 1 + data->variables + data->slacks + data->excess;
+        for (int i = start; i < start+data->artificials;++i){
+            int r;
+            // encontrar el 1
+            for (int j = 0; j < data->rows; ++j){
+                if (data->table->data.f[j][i] == 1){
+                    r = j;
+                    break;
+                }
+            }
+            printf("1 encontrado %d\n", r);
+            canonize(data->table, &data->big_M, r, i);
+            printf("--------------\n");
+            printf("BIG_M: \n");
+            for (int i = 0; i < data->cols; ++i) printf("%2.lf ", data->big_M[i]);
+            printf("\nPURE TABLE\n");
+            print_matrix(data->table);
+        }
+    }
+
+    /*
     if (data->minimize) {
-      data->table = minimize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
+      data->table = minimize(data->table, &data->big_M, data->headers, data->show_intermediates, lg);
     } else {
-      data->table = maximize(data->table, data->headers, data->show_intermediates, &have_solution, lg);
+      data->table = maximize(data->table, &data->big_M, data->headers, data->show_intermediates, lg);
     }
 
     lg_write(lg, "\\section{The final simplex table}\n");
@@ -607,7 +631,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         free(solution4);
         free(solution5);
     }
-    free(solution1);
+    free(solution1);*/
     return 0;
 }
 

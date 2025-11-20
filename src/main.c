@@ -871,9 +871,9 @@ void on_btn_finish_clicked(){
       // artificial M 
       } if (r == 0 && is_artificial) {
           if (do_minimize)
-            simplex_data->big_M[c] = 1;
-          else 
             simplex_data->big_M[c] = -1;
+          else 
+            simplex_data->big_M[c] = 1;
       }
     }
     if (r > 0 && add_canon) ++canonic_i;
