@@ -1,0 +1,9 @@
+name=Agricultura
+objective=Maximize
+count_variables=2
+count_constraints=3
+x_1=x_{1}^x_2=x_{2}
+x_1=10000,00000^x_2=3000,00000
+x_1=1,00000^x_2=1,00000^<7,00000
+x_1=10,00000^x_2=4,00000^<40,00000
+x_1=0,00000^x_2=1,00000^>3,00000

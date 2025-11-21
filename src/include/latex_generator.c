@@ -2,10 +2,12 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "latex_generator.h"
 
 char tex_buf[256];
 char tex_buf2[4096];
+static double tolerance = 1e-4;
 
 void tex_table_init(Latex_Generator *lg, int cols){
   tex_buf2[0] = '\0';
@@ -28,10 +30,10 @@ void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **conten
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
       // primera fila contiene las M
       } else {
-        if (big_M[c] != 0 && content[r][c] != 0) {
+        if (fabs(big_M[c]) > tolerance && fabs(content[r][c]) > tolerance) {
           sprintf(tex_buf2, "%.2lf*M + %.2lf%s", big_M[c], content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
-        } else if (big_M[c] != 0){
+        } else if (fabs(big_M[c]) > tolerance){
           sprintf(tex_buf2, "%.2lf*M%s", big_M[c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
         } else {

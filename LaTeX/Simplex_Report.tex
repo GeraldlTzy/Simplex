@@ -126,6 +126,65 @@ $Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $e_{1}$ & $a_{1}$ & $a_{2}$ & $B$\\
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\section{The intermediate simplex tables}
+Pivoting(1)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & \cellcolor{PurpleNoMamado}$x_{2}$ & $s_{1}$ & $e_{1}$ & $a_{1}$ & $a_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00 & 2,00*M + -2,00 & \cellcolor{PurpleNoMamado}4,00*M + -3,00 & 0,00 & -1,00*M & 0,00 & 0,00 & 30,00*M & $-$\\ 
+ \hline 
+0,00 & 0,50 & \cellcolor{PurpleNoMamado}0,25 & 1,00 & 0,00 & 0,00 & 0,00 & 4,00 & 16,00\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}3,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}20,00 & \cellcolor{PurpleNoMamado}6,67\\ 
+ \hline 
+0,00 & 1,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 0,00 & 0,00 & 1,00 & 10,00 & 10,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(2)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & \cellcolor{PurpleNoMamado}$x_{1}$ & $x_{2}$ & $s_{1}$ & $e_{1}$ & $a_{1}$ & $a_{2}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00 & \cellcolor{PurpleNoMamado}0,67*M + -1,00 & 0,00 & 0,00 & 0,33*M + -1,00 & -1,33*M + 1,00 & 0,00 & 3,33*M + 20,00 & $-$\\ 
+ \hline 
+0,00 & \cellcolor{PurpleNoMamado}0,42 & 0,00 & 1,00 & 0,08 & -0,08 & 0,00 & 2,33 & 5,60\\ 
+ \hline 
+0,00 & \cellcolor{PurpleNoMamado}0,33 & 1,00 & 0,00 & -0,33 & 0,33 & 0,00 & 6,67 & 20,00\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,67 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,33 & \cellcolor{PurpleNoMamado}-0,33 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}3,33 & \cellcolor{PurpleNoMamado}5,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{The final simplex table}
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & $x_{2}$ & $s_{1}$ & $e_{1}$ & $a_{1}$ & $a_{2}$ & $B$\\ 
+ \hline 
+1,00 & 0,00 & 0,00 & 0,00 & -0,50 & -1,00*M + 0,50 & -1,00*M + 1,50 & 25,00\\ 
+ \hline 
+0,00 & -0,00 & 0,00 & 1,00 & -0,12 & 0,12 & -0,62 & 0,25\\ 
+ \hline 
+0,00 & 0,00 & 1,00 & 0,00 & -0,50 & 0,50 & -0,50 & 5,00\\ 
+ \hline 
+0,00 & 1,00 & 0,00 & 0,00 & 0,50 & -0,50 & 1,50 & 5,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{Solution}
+z=25,00\\
+\textbf{Solution 1:}\\
+$x_{1}= 5,00; x_{2}= 5,00; s_{1}= 0,25; e_{1}= 0,00; a_{1}= 0,00; a_{2}= 0,00$\\
 \begin{thebibliography}{9}
 \bibitem{torres2025}
 F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.
