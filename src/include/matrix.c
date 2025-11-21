@@ -173,7 +173,7 @@ void print_matrix(Matrix *mat){
         case OPTION:
           break;
         case FLOAT:
-          printf("%.4lf\t", mat->data.f[r][c]);
+          printf("%.4lf|\t", mat->data.f[r][c]);
           break;
       }
     }

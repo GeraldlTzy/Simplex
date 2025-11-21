@@ -25,7 +25,6 @@ void canonize(Matrix *mat, double **big_M, int pivot_row, int pivot_col){
         }
         if (r == 0){
             big_k = ((-1*(*big_M)[pivot_col])/mat->data.f[pivot_row][pivot_col]);
-            printf("pivot r %d c %d BIG M %.2lf, BIG K %.2lf\n", pivot_row, pivot_col, (*big_M)[pivot_col], big_k);
         }
         for(int c = 0; c < mat->cols; ++c){
             if(r == pivot_row){
@@ -180,17 +179,22 @@ Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediat
       lg_write(lg, "Another path was found, the program continues its execution using this one to hopefuly find something different. \\\\\n");
     
     } else {                                    // Busca la columna del pivote
-     
       double min_M = MAX_VAL;
       for(int c = 1; c < mat->cols-1; ++c){
         if (min_M > (*big_M)[c]){
           min_M = (*big_M)[c];
+          min = mat->data.f[0][c];
           pivot_col = c;
         // si el M es mas grande no se debe seleccionar, por eso el ==
         } else if(min > mat->data.f[0][c] && fabs(min_M - (*big_M)[c]) < tolerance){
+          min_M = (*big_M)[c];
           min = mat->data.f[0][c];
           pivot_col = c;
         }
+        /*if (min > mat->data.f[0][c]){
+            min = mat->data.f[0][c];
+            pivot_col = c;
+        }*/
       }
       // si la M mas pequena es mayor a 0, significa que ya no hay negativos
       if (min_M > 0) {
@@ -269,7 +273,6 @@ Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediat
           pivot_col = node->pv_c;
         } else {
           //free_matrix(mat);
-          //TODO: esto es una solucion no acotada, no que no tiene solucion
           unbound = 1;
           return mat;
         }
@@ -323,9 +326,11 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
       for(int c = 1; c < mat->cols-1; ++c){
         if (max_M < (*big_M)[c]){
           max_M = (*big_M)[c];
+          min_max = mat->data.f[0][c];
           pivot_col = c;
         // si max era mas grande no se debe seleccionar, por eso el igual
         } else if(min_max < mat->data.f[0][c] && fabs(max_M - (*big_M)[c]) < tolerance){
+          max_M = (*big_M)[c];
           min_max = mat->data.f[0][c];
           pivot_col = c;
         }
@@ -518,12 +523,6 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
 
 int simplex(SimplexData *data, Latex_Generator *lg){
     pivot_counter = 0;
-
-    printf("BIG_M: \n");
-    for (int i = 0; i < data->cols; ++i) printf("%2.lf ", data->big_M[i]);
-    printf("\nPURE TABLE\n");
-    print_matrix(data->table);
-
 
     lg_write(lg, "\\section{The initial simplex table}\n");
     tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);

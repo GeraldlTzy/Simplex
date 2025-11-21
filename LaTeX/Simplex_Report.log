@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  20 NOV 2025 18:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  20 NOV 2025 19:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1041,22 +1041,22 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `Simplex_Report.out' has not changed.
-(rerunfilecheck)             Checksum: 97FAA9C2D6A85812DDC26366B1453A8B;1378.
+(rerunfilecheck)             Checksum: 83F08BCC4BD3D44198CAD08387CDBDD2;1350.
  ) 
 Here is how much of TeX's memory you used:
  34388 strings out of 475109
  782895 string characters out of 5765325
- 1469441 words of memory out of 5000000
+ 1468441 words of memory out of 5000000
  56825 multiletter control sequences out of 15000+600000
  564363 words of font info for 55 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 84i,10n,91p,1563b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,10n,91p,1558b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 r8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on LaTeX/Simplex_Report.pdf (7 pages, 200454 bytes).
+Output written on LaTeX/Simplex_Report.pdf (7 pages, 200157 bytes).
 PDF statistics:
  130 PDF objects out of 1000 (max. 8388607)
  106 compressed objects within 2 object streams
