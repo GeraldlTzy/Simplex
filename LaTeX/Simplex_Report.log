@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  20 NOV 2025 19:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.23)  21 NOV 2025 15:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1012,26 +1012,38 @@ l.86 \chapter
 
 ]
 Chapter 1.
+<DANTZIG.jpeg, id=66, 328.22626pt x 154.5775pt>
+File: DANTZIG.jpeg Graphic file (type jpg)
+<use DANTZIG.jpeg>
+Package pdftex.def Info: DANTZIG.jpeg  used on input line 90.
+(pdftex.def)             Requested size: 338.58632pt x 159.45952pt.
 
 
 [2
 
-]
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.99 ...to solve, just cut it's execution.\section
+                                                  {Big M Algorithm} <LaTeX/DANT
+ZIG.jpeg>]
 
 [3]
+
+[4]
 Chapter 2.
 
-
-[4
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 185--188
+Underfull \hbox (badness 10000) in paragraph at lines 172--175
 
  []
 
 
 
-[5]
+[5
+
+]
 
 [6
 
@@ -1041,25 +1053,25 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `Simplex_Report.out' has not changed.
-(rerunfilecheck)             Checksum: 83F08BCC4BD3D44198CAD08387CDBDD2;1350.
+(rerunfilecheck)             Checksum: 6D18783DE3044A524816D0A0C64CE1F0;1295.
  ) 
 Here is how much of TeX's memory you used:
- 34388 strings out of 475109
- 782895 string characters out of 5765325
- 1468441 words of memory out of 5000000
- 56825 multiletter control sequences out of 15000+600000
+ 34401 strings out of 475109
+ 783094 string characters out of 5765325
+ 1457441 words of memory out of 5000000
+ 56837 multiletter control sequences out of 15000+600000
  564363 words of font info for 55 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 84i,10n,91p,1558b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,10n,91p,1554b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 r8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on LaTeX/Simplex_Report.pdf (7 pages, 200157 bytes).
+Output written on LaTeX/Simplex_Report.pdf (7 pages, 208165 bytes).
 PDF statistics:
- 130 PDF objects out of 1000 (max. 8388607)
- 106 compressed objects within 2 object streams
- 19 named destinations out of 1000 (max. 500000)
- 90 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 132 PDF objects out of 1000 (max. 8388607)
+ 107 compressed objects within 2 object streams
+ 20 named destinations out of 1000 (max. 500000)
+ 95 words of extra memory for PDF output out of 10000 (max. 10000000)
 

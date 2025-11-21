@@ -128,6 +128,14 @@ void lg_write_simplex_info(Latex_Generator *lg) {
             "Then George Dantzig proved the feasible region is a convex shape, and after that he easily proposed a greedy algorithm that find the optimal solution to the problem."
             "The property of being convex, allowed for the algorithm to be greedy and still be able to find the best solution."
     );
+    fprintf(lg->file,   "\\begin{figure}[H]%%[!ht]\n"
+                        "\\begin {center}\n"
+                        "\\includegraphics[width=0.7\\textwidth]{DANTZIG.jpeg}\n"
+                        "\\caption{Image of George Dantzig}\n"
+                        "\\label{fig:dantzig}\n"
+                        "\\end {center}\n"
+                        "\\end{figure}\n"
+    );
     fprintf(lg->file, "\\section{Description}\n");
     fprintf(lg->file,
             "The Simplex algorithm uses matrix operations to find the optimal solution to a linear programming problem, or to find out if it does not have a feasible solution \\cite{torres2025}."
@@ -151,6 +159,24 @@ void lg_write_simplex_info(Latex_Generator *lg) {
             "If at any point of the execution of the algorithm you find a draw between which pivot to choose you have found yourself a degenerate problem, these are (in most cases) harmless, and you might see that the objective value does not upgrade in an iteration, do not worry, just keep pivoting."
             "However, if you are really unlucky, you might find a degenerate problem that makes the algorithm enter an infinite loop, in these cases keep an eye on the tables, if they are repeating, you are indeed in a loop."
             "But managing the extremely rare cases of the program entering a loop can be extremely expensive because you do not know when this will happen so you need to store every table of the execution, in these cases the usual solution is to look the other way and if a problem is taking too long to solve, just cut it's execution."
+    );
+    fprintf(lg->file, "\\section{Big M Algorithm}\n");
+    fprintf(lg->file,   "The description of the simplex algorithm given in the last section seems simple enough, but it has a pretty big problem.\n"
+                        "The explanation given ealier only supports linear programming problems that have restrictions of less or equal, meaning that it cannot solve the ones that use greater or equal and equals.\n"
+                        "This problem arrives because of how you turn the inequations into equations, in less or equal restrictions you add some value as a slack variable, sice it sums to the restriction it is positive and thus produces a 1 in its position and a 0 in all other restrictions, making a canonical column.\n"
+                        "In greater or equal restrictions you use an excess variable, which subtracts from the restriction and thus produces a -1 on it's position, because of this it does not produces a canonical column\n"
+                        "Furthermore, equals restrictions do not have the need of extra variables, and thus they do not give canonical vectors.\n"
+                        "The problem here is that Simplex needs enough canonical vector to find the solution, but these types of restrictions do not produce canonical columns.\\\\\n"
+                        "To deal with this you use the Big M Algorithm, this algorithm simply introduces the canonical vectors needed, but it has a catch, when adding these, you need to add their value in the objective function as a M (-M if you are maximizind and +M if you are minimizing).\n"
+                        "Every restriction of the equals of greater of equal types, add a new artificial variable in order to have enough canonical vectors, when adding these to the table you will see that these vectors are not canonical, because they have M's in the first row, so you need to tackle this before anything.\n"
+                        "Once you build the simplex table, before execution simplex you need to canonize the columns of the artificial variables, you will see that other variables are starting to be filled with M's, but do not panic, this is completely normal.\n"
+                        "Once you have canonized all the columns of the artificial variables, you are free to use the Simplex algorithm, taking into accout that the M's should be interpreted as a very big value, a value so bigger than any other you have in the table.\n"
+                        "During the simplex execution you might see that the M's are starting to move out of the original variables and that they are staying in the artificial ones, which is good news.\n"
+                        "And take into account that once an artificial variable exits the base, it will never enter it again.\n"
+                        "So, what does the M means?\n"
+                        "As said before, the M is a value you can interpret as bigger than any other value in the table, and it adds dimensions to the problem to move around in them and hopefully find a solution that does not need the extra dimensions.\\\\\n"
+                        "When using this algorithm you might see problems that never got the artificial variables out of their solution, or that still have M's but you cannot canonize it any further.\n "
+                        "When this happens, it means the solution is in another dimension, this means that the solution is out of the dimension of the original problem, and thus it means that the original problem has no feasible solution.\n"
     );
 
 }
@@ -199,8 +225,8 @@ fprintf(lg->file, "\\documentclass[12pt,a4paper]{report}\n");
     fprintf(lg->file, "\\def \\unidad{Escuela de Ingeniería en Computación}\n");
     fprintf(lg->file, "\\def \\programa{Ingeniería en Computación}\n");
     fprintf(lg->file, "\\def \\curso{IC-6400 - Investigación de Operaciones}\n");
-    fprintf(lg->file, "\\def \\titulo{Project 04}\n");
-    fprintf(lg->file, "\\def \\subtitulo{Simplex Report}\n");
+    fprintf(lg->file, "\\def \\titulo{Project 05}\n");
+    fprintf(lg->file, "\\def \\subtitulo{Otro SIMPLEX más - Parte 2}\n");
     fprintf(lg->file, "\\def \\autores{\n");
     fprintf(lg->file, "    Gerald Calderón Castro\\\\\n");
     fprintf(lg->file, "    gecalderon@estudiantec.cr\\\\\n");

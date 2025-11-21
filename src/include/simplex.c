@@ -248,7 +248,8 @@ Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediat
                             fraction,
                             mat->data.f[r][pivot_col]
                     );
-            lg_write(lg, "To appreciate this please see the following table:\\\\\n");
+            if (do_intermediates)
+                lg_write(lg, "To appreciate this please see the following table:\\\\\n");
             degenerate = 1;
             Node *node = malloc(sizeof(Node));  // Se guarda la matriz y el pivote para volver en caso
             node->mat = matrix_copy(mat);       // de enciclarse o encontrarse con problema no acotado
@@ -387,7 +388,8 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
                             fraction,
                             mat->data.f[r][pivot_col]
                     );
-            lg_write(lg, "To appreciate this please see the following table:\\\\\n");
+            if (do_intermediates)
+                lg_write(lg, "To appreciate this please see the following table:\\\\\n");
             degenerate = 1;
             Node *node = malloc(sizeof(Node));
             node->mat = matrix_copy(mat);
