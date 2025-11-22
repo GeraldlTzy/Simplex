@@ -9,9 +9,10 @@ char tex_buf[256];
 char tex_buf2[4096];
 static double tolerance = 1e-4;
 
-void tex_table_init(Latex_Generator *lg, int cols){
+void tex_table_init(Latex_Generator *lg, int cols, int *skips){
   tex_buf2[0] = '\0';
   for (int c = 0; c < cols; ++c){
+    if (skips[c]) continue;
     strcat(tex_buf2, "|c");
   }
   strcat(tex_buf2, "|");
@@ -21,10 +22,11 @@ void tex_table_init(Latex_Generator *lg, int cols){
   tex_buf2[0] = '\0';
 }
 
-void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **content, double *big_M){
+void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **content, double *big_M, int *skips){
   tex_buf2[0] = '\0';
   for(int r = 0; r < rows; ++r){
     for(int c = 0; c < cols; ++c){
+      if (skips[c]) continue;
       if (r != 0){ 
           sprintf(tex_buf2, "%.2lf%s", content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
@@ -47,9 +49,10 @@ void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **conten
   tex_buf2[0] = '\0';
 }
 
-void tex_table_headers(Latex_Generator *lg, int cols, char** headers){
+void tex_table_headers(Latex_Generator *lg, int cols, char** headers, int *skips){
   tex_buf2[0] = '\0';
   for(int h = 0; h < cols; ++h){
+    if (skips[h]) continue;
     sprintf(tex_buf2 + strlen(tex_buf2), "$%s$", headers[h]);
     if(h < cols-1)
       strcat(tex_buf2, " & ");
@@ -66,10 +69,10 @@ void tex_table_end(Latex_Generator *lg){
   lg_write(lg, "\\end{center}\n");
 }
 
-void tex_table_draw(Latex_Generator *lg, int rows, int cols, char **headers, double **content, double *big_M){
-  tex_table_init(lg, cols);
-  tex_table_headers(lg, cols, headers);
-  tex_table_content(lg, rows, cols, content, big_M);
+void tex_table_draw(Latex_Generator *lg, int rows, int cols, char **headers, double **content, double *big_M, int *skips){
+  tex_table_init(lg, cols, skips);
+  tex_table_headers(lg, cols, headers, skips);
+  tex_table_content(lg, rows, cols, content, big_M, skips);
   tex_table_end(lg);
 }
 

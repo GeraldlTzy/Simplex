@@ -92,12 +92,19 @@ void  node_list_free(Node *node){
 
 /*###########################################################################*/
 
-void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, char **headers, int pivot_row, int pivot_col){
+void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, char **headers, int pivot_row, int pivot_col, int artificial_start){\
+    print_matrix(mat);
     char buf[1024];
     buf[0] = '\0';
     //Init the table
-    for (int c = 0; c < mat->cols+1; ++c)
+    for (int c = 0; c < mat->cols+1; ++c){
+        // si es artificial pero no es basica, se le hace skip
+        if (c > artificial_start && c < mat->cols-1 && !is_basic_var(mat, c)){  
+            printf("SLATA |c %d\n",c);
+            continue;
+        }
         strcat(buf, "|c");
+    }
     strcat(buf, "|");
     lg_write(lg, "\\begin{center}\n");
     lg_write(lg, "\\begin{adjustbox}{max width=1\\textwidth,keepaspectratio}\n");
@@ -105,6 +112,12 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
     //headers  
     buf[0] = '\0';
     for(int c = 0; c < mat->cols; ++c){
+        // si es artificial pero no es basica, se le hace skip
+
+        if (c > artificial_start && c < mat->cols-1 && !is_basic_var(mat, c)){
+            printf("SLATA header %d\n",c);
+            continue;
+        }
         if (c == pivot_col)
             strcat(buf, "\\cellcolor{PurpleNoMamado}");
         sprintf(buf + strlen(buf), "$%s$", headers[c]);
@@ -120,6 +133,11 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
         double val = mat->data.f[r][pivot_col];
         double b = mat->data.f[r][mat->cols-1];
         for (int c = 0; c < mat->cols; ++c){
+            // si es artificial pero no es basica, se le hace skip
+            if (c > artificial_start && c < mat->cols-1 && !is_basic_var(mat, c)){
+                printf("SLATA mat %d\n",c);
+                continue;
+            }
             if (r == pivot_row || c == pivot_col)
                 strcat(buf, "\\cellcolor{PurpleNoMamado}");
 
@@ -150,7 +168,7 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
     lg_write(lg, "\\end{center}\n");
 }
 
-Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediates, Latex_Generator *lg){
+Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediates, Latex_Generator *lg, int artificial_start){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
   double min, fraction;
@@ -282,14 +300,14 @@ Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediat
     pivot_counter++;
     if (do_intermediates) {
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
-      intermediate_table_draw(lg, mat, big_M, headers, pivot_row, pivot_col);
+      intermediate_table_draw(lg, mat, big_M, headers, pivot_row, pivot_col, artificial_start);
     }
     canonize(mat, big_M, pivot_row, pivot_col);
   }
 }
 
 
-Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediates, Latex_Generator *lg){
+Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediates, Latex_Generator *lg, int artificial_start){
   GList *list = 0;
   Matrix *init = matrix_copy(mat);
   //tex_table_draw(lg, mat->rows, mat->cols, headers, mat->data.f);
@@ -422,7 +440,7 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
     pivot_counter++;
     if (do_intermediates){
       lg_write(lg, "Pivoting(%d)\n", pivot_counter);
-      intermediate_table_draw(lg, mat, big_M, headers, pivot_row, pivot_col);
+      intermediate_table_draw(lg, mat, big_M, headers, pivot_row, pivot_col, artificial_start);
     }
     canonize(mat, big_M, pivot_row, pivot_col);
   }
@@ -443,27 +461,6 @@ void write_solution(double *sol, int size, char** headers, Latex_Generator* lg) 
     }
     lg_write(lg, "$");
     lg_write(lg, "\\\\\n");
-}
-int is_basic_var(Matrix *mat, int col) {
-    int one_ammount = 0;
-    double value, tmp;
-    for (int r = 0; r < mat->rows; ++r) {
-        value = mat->data.f[r][col];
-        tmp = value;
-        if(value < 0) tmp = value * -1;
-        
-        if (tmp <= tolerance) {
-            continue;
-        } else if (fabs(value - 1.0) <= tolerance) {
-            ++one_ammount;
-            if (one_ammount > 1) {
-                return 0;
-            }
-        } else {
-            return 0;
-        }
-    }
-    return 1;
 }
 
 double *find_solution(Matrix *mat) {
@@ -526,8 +523,9 @@ double *generate_solution(double *sol1, double *sol2, int num_variables, double 
 int simplex(SimplexData *data, Latex_Generator *lg){
     pivot_counter = 0;
 
+    int *skip = calloc(data->cols, sizeof(int));
     lg_write(lg, "\\section{The initial simplex table}\n");
-    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);
+    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M, skip);
 
     if (data->show_intermediates){
       lg_write(lg, "\\section{The intermediate simplex tables}\n");
@@ -551,15 +549,21 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         }
     }
 
+    int artificial_start = data->variables + data->slacks + data->excess;
  
     if (data->minimize) {
-      data->table = minimize(data->table, &data->big_M, data->headers, data->show_intermediates, lg);
+      data->table = minimize(data->table, &data->big_M, data->headers, data->show_intermediates, lg, artificial_start);
     } else {
-      data->table = maximize(data->table, &data->big_M, data->headers, data->show_intermediates, lg);
+      data->table = maximize(data->table, &data->big_M, data->headers, data->show_intermediates, lg, artificial_start); 
+    }
+
+    for (int i = 0; i < data->cols; ++i){
+        if (i > artificial_start && i < data->cols-1 && !is_basic_var(data->table, i))
+            skip[i] = 1;
     }
 
     lg_write(lg, "\\section{The final simplex table}\n");
-    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);
+    tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M, skip);
 
     int have_solution = 1;
     for (int c = 0; c < data->cols; ++c){
@@ -631,7 +635,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         
         lg_write(lg, "\\\\You can see the second optimal table found:\\\\\n"); 
 
-        tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M);
+        tex_table_draw(lg, data->rows, data->cols, data->headers, data->table->data.f, data->big_M, skip);
     }
 
     lg_write(lg, "\\section{Solution}\n");
@@ -657,6 +661,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         free(solution4);
         free(solution5);
     }
+    free(skip);
     free(solution1);
     return 0;
 }
@@ -666,5 +671,6 @@ void simplex_data_free(SimplexData *data){
     free(data->headers[i]);
   }
   free(data->headers);
+  free(data->big_M);
   free_matrix(data->table);
 }

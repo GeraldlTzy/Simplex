@@ -49,6 +49,7 @@ typedef struct {
 
 
 
+int is_basic_var(Matrix *mat, int col);
 void copy_option(Option *dest, Option *src);
 KVPair pair_max(KVPair p1, KVPair p2);
 KVPair pair_new(Type t_f, Type t_s);

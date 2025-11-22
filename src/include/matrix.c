@@ -4,12 +4,35 @@
 #include <stdio.h>
 #include "matrix.h"
 #include <math.h>
+
+static double tolerance = 1e-4;
 void copy_option(Option *dest, Option *src) {
     dest->value = src->value;
     dest->is_some = src->is_some;
     dest->value_type = src->value_type;
 }
 
+int is_basic_var(Matrix *mat, int col) {
+    int one_ammount = 0;
+    double value, tmp;
+    for (int r = 0; r < mat->rows; ++r) {
+        value = mat->data.f[r][col];
+        tmp = value;
+        if(value < 0) tmp = value * -1;
+        
+        if (tmp <= tolerance) {
+            continue;
+        } else if (fabs(value - 1.0) <= tolerance) {
+            ++one_ammount;
+            if (one_ammount > 1) {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+    return 1;
+}
 KVPair pair_max(KVPair p1, KVPair p2){
   if (max(p1.first.i, p2.first.i) == p1.first.i)
     return p1;
