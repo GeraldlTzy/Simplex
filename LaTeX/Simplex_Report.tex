@@ -113,160 +113,161 @@ So, what does the M means?
 As said before, the M is a value you can interpret as bigger than any other value in the table, and it adds dimensions to the problem to move around in them and hopefully find a solution that does not need the extra dimensions.\\
 When using this algorithm you might see problems that never got the artificial variables out of their solution, or that still have M's but you cannot canonize it any further.
  When this happens, it means the solution is in another dimension, this means that the solution is out of the dimension of the original problem, and thus it means that the original problem has no feasible solution.
-\chapter{Solving Multiple}
+\chapter{Solving Exercise 1}
 \section{Mathematical representation}
 \textbf{Maximize:}
 \begin{dmath}
-z = 60,00000abeja + 35,00000babuino + 20,00000coyote 
+z = 0x_{1} + 0x_{2} + 0x_{3} + 1x_{4} 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
-8,00000abeja + 6,00000babuino + 1,00000coyote \leq48,00000
+5x_{1} + 1x_{2} + 4x_{3} + -1x_{4} \geq0
 \end{dmath}
 \begin{dmath}
-4,00000abeja + 2,00000babuino + 1,50000coyote \leq20,00000
+0x_{1} + 6x_{2} + 4x_{3} + -1x_{4} \geq0
 \end{dmath}
 \begin{dmath}
-2,00000abeja + 1,50000babuino + 0,50000coyote \leq8,00000
+6x_{1} + 4x_{2} + 8x_{3} + -1x_{4} \geq0
 \end{dmath}
 \begin{dmath}
-0,00000abeja + 1,00000babuino + 0,00000coyote \leq5,00000
+1x_{1} + 1x_{2} + 1x_{3} + 0x_{4} =1
 \end{dmath}
 \begin{dmath}
-abeja,babuino,coyote \geq 0
+x_{1},x_{2},x_{3},x_{4} \geq 0
 \end{dmath}
 \section{The initial simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
+$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{1}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$\\ 
  \hline 
-1,00 & -60,00 & -35,00 & -20,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
+1,00 & -0,00 & -0,00 & -0,00 & -1,00 & 0,00 & 0,00 & 0,00 & 1,00*M & 1,00*M & 1,00*M & 1,00*M & 0,00\\ 
  \hline 
-0,00 & 8,00 & 6,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 48,00\\ 
+0,00 & 5,00 & 1,00 & 4,00 & -1,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 4,00 & 2,00 & 1,50 & 0,00 & 1,00 & 0,00 & 0,00 & 20,00\\ 
+0,00 & 0,00 & 6,00 & 4,00 & -1,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 2,00 & 1,50 & 0,50 & 0,00 & 0,00 & 1,00 & 0,00 & 8,00\\ 
+0,00 & 6,00 & 4,00 & 8,00 & -1,00 & 0,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 5,00\\ 
+0,00 & 1,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
 \section{The intermediate simplex tables}
+\textbf{Degenerate Problem Found:}
+When you are in the execution of the Simplex algorithm you might find some peculiar tables.
+These tables can occur when one of the values on the last column is zero.
+When one of those values is zero an interesting phenomenon happens, and that is that a basic variable has the value of zero.
+You could think that the only variables that have a value of zero are the non basic ones, but this is totally false.
+In some cases you might not see a basic variable whose value is zero, but a basic variable having a value of zero is not an uncommon ocurrence.
+When this happens we call the table a degenerate table, and when a problem has at least one degenerate table, we call it a degenerate problem.\\
+Degenerate problems might seem inocent, and for the most part they are.
+But these problems come with some peculiarity, that is the reason behind the name, because these are hard to classify.
+When a problem is degenerate, you might find that when you pivot the table, the objective function does not increase.
+When this happens, do not panic, just keep pivoting, and in most cases you will solve the problem just like any other.
+Another peculiarity of these problems is that you could find a draw when choosing a pivot, in that case feel free to choose the one you like, and in most cases you will be fine.
+But in some very rare cases you can be very unlucky, and come to a pretty bad realization, and that is that the tables are starting to repeat.
+Turns out, that in some extremely rare cases, Simplex can find a loop in it's execution, and thus never end.
+If this happens you have two solutions, save every table and compare then to find if you are in a loop and choose a different pivot from last time (this is extremely expensive), or you could simply stop the program if it is taking to long to solve.
+Both solutions have their downsides, but this a risk you take when using Simplex, and as far as it is known, this is unavoidable.\\
+In the case of this program, when it realizes it is a degenerate problem, it stars to save the tables to see if it has entered a loop.\\
+\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 4,00000 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 4,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
+To appreciate this please see the following table:\\
+\textbf{Draw:} the rows 1 and 3 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 4,00000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 0,00000) with the 8,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
+To appreciate this please see the following table:\\
 Pivoting(1)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & \cellcolor{PurpleNoMamado}$abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$ & $Fraction$\\ 
+$Z$ & $x_{1}$ & $x_{2}$ & \cellcolor{PurpleNoMamado}$x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{1}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & \cellcolor{PurpleNoMamado}-60,00 & -35,00 & -20,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
+1,00 & -12,00*M & -12,00*M & \cellcolor{PurpleNoMamado}-17,00*M & 3,00*M + -1,00 & 1,00*M & 1,00*M & 1,00*M & 0,00 & 0,00 & 0,00 & 0,00 & -1,00*M & $-$\\ 
  \hline 
-0,00 & \cellcolor{PurpleNoMamado}8,00 & 6,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 48,00 & 6,00\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}5,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}4,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
  \hline 
-0,00 & \cellcolor{PurpleNoMamado}4,00 & 2,00 & 1,50 & 0,00 & 1,00 & 0,00 & 0,00 & 20,00 & 5,00\\ 
+0,00 & 0,00 & 6,00 & \cellcolor{PurpleNoMamado}4,00 & -1,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}2,00 & \cellcolor{PurpleNoMamado}1,50 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}8,00 & \cellcolor{PurpleNoMamado}4,00\\ 
+0,00 & 6,00 & 4,00 & \cellcolor{PurpleNoMamado}8,00 & -1,00 & 0,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & \cellcolor{PurpleNoMamado}0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 5,00 & $-$\\ 
+0,00 & 1,00 & 1,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
+\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,25000 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 5,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
+To appreciate this please see the following table:\\
+\textbf{Draw:} the rows 1 and 3 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,25000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 0,00000) with the 2,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
+To appreciate this please see the following table:\\
 Pivoting(2)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $abeja$ & $babuino$ & \cellcolor{PurpleNoMamado}$coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$ & $Fraction$\\ 
+$Z$ & $x_{1}$ & \cellcolor{PurpleNoMamado}$x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & 0,00 & 10,00 & \cellcolor{PurpleNoMamado}-5,00 & 0,00 & 0,00 & 30,00 & 0,00 & 240,00 & $-$\\ 
+1,00 & 9,25*M & \cellcolor{PurpleNoMamado}-7,75*M & 0,00 & -1,25*M + -1,00 & -3,25*M & 1,00*M & 1,00*M & 0,00 & 0,00 & 0,00 & -1,00*M & $-$\\ 
  \hline 
-0,00 & 0,00 & 0,00 & \cellcolor{PurpleNoMamado}-1,00 & 1,00 & 0,00 & -4,00 & 0,00 & 16,00 & $-$\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,25 & \cellcolor{PurpleNoMamado}0,25 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}-0,25 & \cellcolor{PurpleNoMamado}-0,25 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}-2,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}4,00 & \cellcolor{PurpleNoMamado}8,00\\ 
+0,00 & -5,00 & \cellcolor{PurpleNoMamado}5,00 & 0,00 & 0,00 & 1,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 1,00 & 0,75 & \cellcolor{PurpleNoMamado}0,25 & 0,00 & 0,00 & 0,50 & 0,00 & 4,00 & 16,00\\ 
+0,00 & -4,00 & \cellcolor{PurpleNoMamado}2,00 & 0,00 & 1,00 & 2,00 & 0,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 0,00 & 1,00 & \cellcolor{PurpleNoMamado}0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 5,00 & $-$\\ 
+0,00 & -0,25 & \cellcolor{PurpleNoMamado}0,75 & 0,00 & 0,25 & 0,25 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00 & 1,33\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{The final simplex table}
+\textbf{Draw:} the rows 2 and 3 have a fraction of the same value,\textbf{row 2} (fraction 0,00000) with the 6,00000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 0,00000) with the 4,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
+To appreciate this please see the following table:\\
+Pivoting(3)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
+$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & \cellcolor{PurpleNoMamado}$e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 10,00 & 10,00 & 0,00 & 280,00\\ 
+1,00 & 48,00*M & 0,00 & 31,00*M & -9,00*M + -1,00 & \cellcolor{PurpleNoMamado}-11,00*M & 1,00*M & 1,00*M & 0,00 & 0,00 & 0,00 & -1,00*M & $-$\\ 
  \hline 
-0,00 & 0,00 & -2,00 & 0,00 & 1,00 & 2,00 & -8,00 & 0,00 & 24,00\\ 
+0,00 & 5,00 & 1,00 & 4,00 & -1,00 & \cellcolor{PurpleNoMamado}-1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
  \hline 
-0,00 & 0,00 & -2,00 & 1,00 & 0,00 & 2,00 & -4,00 & 0,00 & 8,00\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-30,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-20,00 & \cellcolor{PurpleNoMamado}5,00 & \cellcolor{PurpleNoMamado}6,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
  \hline 
-0,00 & 1,00 & 1,25 & 0,00 & 0,00 & -0,50 & 1,50 & 0,00 & 2,00\\ 
+0,00 & -14,00 & 0,00 & -8,00 & 3,00 & \cellcolor{PurpleNoMamado}4,00 & 0,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 5,00\\ 
+0,00 & -4,00 & 0,00 & -3,00 & 1,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{Multiple solutions found}
-Once you end the execution of the Simplex algorithm, you might think that everything has ended and that the soulution you found is the only way to get the optimal objective value, but this is untrue.
-Before asuming that you are finished check if you can pivot one of the non-basic variables without a penalty.
-To do this check all of the columns that correspond whith a non-basic variable, if one of them has a zero in the first row, this means that if you pivot it you objective value will not change.
-After you have found the row, canonize it, after doing it you will notice that as said, the objective value has not changed, but more importantly, you will find one of the basic variables is different, and that the values of the variables that stayed in the base have changed.
-This is another optimal solution to the problem, because the value is still optimal and the variables are different than before.\\
-If you thought that this is the end, think again, remember that Simplex is a graphic method that jumps between vertices of the body that cointains all feasible solutions.
-Which means that the second solution you found is another vertex of the body. 
-If you join the vertices that have an optimal solution, you will draw a line (or a plane, or another body in multiple dimensions).
-The body you drew contains other optimal solutions, infinite of them. 
-This means that the problem you found can be optimized in an infinite number of ways.\\
-\\By using the following formula, infinite optimal solutions can be found:\\
-\begin{dmath}
-\alpha*solution1 + (1-\alpha)*solution2\\
-\end{dmath}
-$$
-0 \leq \alpha \leq 1
-$$
-\\You can see the second optimal table found:\\
+Pivoting(4)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $abeja$ & $babuino$ & $coyote$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $s_{4}$ & $B$\\ 
+$Z$ & \cellcolor{PurpleNoMamado}$x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 10,00 & 10,00 & 0,00 & 280,00\\ 
+1,00 & \cellcolor{PurpleNoMamado}-7,00*M & 0,00 & -5,67*M & 0,17*M + -1,00 & 0,00 & -0,83*M & 1,00*M & 0,00 & 0,00 & -1,00*M & $-$\\ 
  \hline 
-0,00 & 1,60 & 0,00 & 0,00 & 1,00 & 1,20 & -5,60 & 0,00 & 27,20\\ 
+0,00 & \cellcolor{PurpleNoMamado}0,00 & 1,00 & 0,67 & -0,17 & 0,00 & -0,17 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
  \hline 
-0,00 & 1,60 & 0,00 & 1,00 & 0,00 & 1,20 & -1,60 & 0,00 & 11,20\\ 
+0,00 & \cellcolor{PurpleNoMamado}-5,00 & 0,00 & -3,33 & 0,83 & 1,00 & -0,17 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
  \hline 
-0,00 & 0,80 & 1,00 & 0,00 & 0,00 & -0,40 & 1,20 & 0,00 & 1,60\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}6,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}5,33 & \cellcolor{PurpleNoMamado}-0,33 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,67 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
  \hline 
-0,00 & -0,80 & 0,00 & 0,00 & 0,00 & 0,40 & -1,20 & 1,00 & 3,40\\ 
+0,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 0,33 & 0,17 & 0,00 & 0,17 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
-\section{Solution}
-z=280,00\\
-\textbf{Solution 1:}\\
-$abeja= 2,00; babuino= 0,00; coyote= 8,00; s_{1}= 24,00; s_{2}= 0,00; s_{3}= 0,00; s_{4}= 5,00$\\
-\textbf{Solution 2:}\\
-$abeja= 0,00; babuino= 1,60; coyote= 11,20; s_{1}= 27,20; s_{2}= 0,00; s_{3}= 0,00; s_{4}= 3,40$\\
-\textbf{Solution 3:}\\
-$abeja= 0,50; babuino= 1,20; coyote= 10,40; s_{1}= 26,40; s_{2}= 0,00; s_{3}= 0,00; s_{4}= 3,80$\\
-\textbf{Solution 4:}\\
-$abeja= 1,00; babuino= 0,80; coyote= 9,60; s_{1}= 25,60; s_{2}= 0,00; s_{3}= 0,00; s_{4}= 4,20$\\
-\textbf{Solution 5:}\\
-$abeja= 1,50; babuino= 0,40; coyote= 8,80; s_{1}= 24,80; s_{2}= 0,00; s_{3}= 0,00; s_{4}= 4,60$\\
-\begin{thebibliography}{9}
-\bibitem{torres2025}
-F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.
-\end{thebibliography}\end{document}
+Pivoting(5)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & \cellcolor{PurpleNoMamado}$x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00 & 0,00 & 0,00 & 0,56*M & \cellcolor{PurpleNoMamado}-0,22*M + -1,00 & 0,00 & -0,06*M & -0,17*M & 0,00 & -1,00
