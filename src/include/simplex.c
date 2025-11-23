@@ -340,7 +340,7 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
       // elegir el mas positivo
       double max_M = -MAX_VAL;
       for(int c = 1; c < mat->cols-1; ++c){
-        if (max_M < (*big_M)[c]){
+        if (max_M-(*big_M)[c] < -tolerance){
           max_M = (*big_M)[c];
           min_max = mat->data.f[0][c];
           pivot_col = c;
@@ -352,7 +352,7 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
         }
       }
       // si la M mas grande no es positiva, ya no hay positivos
-      if (max_M < 0) {
+      if (max_M < tolerance) {
         return mat;
       } else if (min_max <= 0 && fabs(max_M) < tolerance) {
         return mat;                  // termina si no encuentra nuevo valor

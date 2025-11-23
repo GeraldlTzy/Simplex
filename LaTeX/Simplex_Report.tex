@@ -115,42 +115,42 @@ When using this algorithm you might see problems that never got the artificial v
  When this happens, it means the solution is in another dimension, this means that the solution is out of the dimension of the original problem, and thus it means that the original problem has no feasible solution.
 \chapter{Solving Exercise 1}
 \section{Mathematical representation}
-\textbf{Maximize:}
+\textbf{Minimize:}
 \begin{dmath}
-z = 0,00000x_{1} + 0,00000x_{2} + 0,00000x_{3} + 1,00000x_{4} 
+z = 0,00000y_{1} + 0,00000y_{2} + 0,00000y_{3} + 1,00000y_{4} 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
-5,00000x_{1} + 1,00000x_{2} + 4,00000x_{3} + -1,00000x_{4} \geq0,00000
+5,00000y_{1} + 0,00000y_{2} + 6,00000y_{3} + -1,00000y_{4} \leq0,00000
 \end{dmath}
 \begin{dmath}
-0,00000x_{1} + 6,00000x_{2} + 4,00000x_{3} + -1,00000x_{4} \geq0,00000
+1,00000y_{1} + 6,00000y_{2} + 4,00000y_{3} + -1,00000y_{4} \leq0,00000
 \end{dmath}
 \begin{dmath}
-6,00000x_{1} + 4,00000x_{2} + 8,00000x_{3} + -1,00000x_{4} \geq0,00000
+4,00000y_{1} + 4,00000y_{2} + 8,00000y_{3} + -1,00000y_{4} \leq0,00000
 \end{dmath}
 \begin{dmath}
-1,00000x_{1} + 1,00000x_{2} + 1,00000x_{3} + 0,00000x_{4} =1,00000
+1,00000y_{1} + 1,00000y_{2} + 1,00000y_{3} + 0,00000y_{4} =1,00000
 \end{dmath}
 \begin{dmath}
-x_{1},x_{2},x_{3},x_{4} \geq 0
+y_{1},y_{2},y_{3},y_{4} \geq 0
 \end{dmath}
 \section{The initial simplex table}
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{1}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$\\ 
+$Z$ & $y_{1}$ & $y_{2}$ & $y_{3}$ & $y_{4}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $a_{1}$ & $B$\\ 
  \hline 
-1,00 & -0,00 & -0,00 & -0,00 & -1,00 & 0,00 & 0,00 & 0,00 & 1,00*M & 1,00*M & 1,00*M & 1,00*M & 0,00\\ 
+1,00 & -0,00 & -0,00 & -0,00 & -1,00 & 0,00 & 0,00 & 0,00 & -1,00*M & 0,00\\ 
  \hline 
-0,00 & 5,00 & 1,00 & 4,00 & -1,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
+0,00 & 5,00 & 0,00 & 6,00 & -1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 0,00 & 6,00 & 4,00 & -1,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
+0,00 & 1,00 & 6,00 & 4,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 6,00 & 4,00 & 8,00 & -1,00 & 0,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00\\ 
+0,00 & 4,00 & 4,00 & 8,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 1,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00\\ 
+0,00 & 1,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -170,75 +170,71 @@ When this happens, do not panic, just keep pivoting, and in most cases you will 
 Another peculiarity of these problems is that you could find a draw when choosing a pivot, in that case feel free to choose the one you like, and in most cases you will be fine.
 But in some very rare cases you can be very unlucky, and come to a pretty bad realization, and that is that the tables are starting to repeat.
 Turns out, that in some extremely rare cases, Simplex can find a loop in it's execution, and thus never end.
-If this happens you have two solutions, save every table and compare then to find if you are in a loop and choose a different pivot from last time (this is extremely expensive), or you could simply stop the program if it is taking to long to solve.
+If this happens you have two solutions, save every table and compare them to find if you are in a loop and choose a different pivot from last time (this is extremely expensive), or you could simply stop the program if it is taking to long to solve.
 Both solutions have their downsides, but this a risk you take when using Simplex, and as far as it is known, this is unavoidable.\\
 In the case of this program, when it realizes it is a degenerate problem, it stars to save the tables to see if it has entered a loop.\\
-\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 4,00000 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 4,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
+\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 5,00000 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 1,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
 To appreciate this please see the following table:\\
-\textbf{Draw:} the rows 1 and 3 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 4,00000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 0,00000) with the 8,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
+\textbf{Draw:} the rows 1 and 3 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 5,00000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 0,00000) with the 4,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
 To appreciate this please see the following table:\\
 Pivoting(1)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & \cellcolor{PurpleNoMamado}$x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{1}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
+$Z$ & \cellcolor{PurpleNoMamado}$y_{1}$ & $y_{2}$ & $y_{3}$ & $y_{4}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $a_{1}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & -12,00*M & -12,00*M & \cellcolor{PurpleNoMamado}-17,00*M & 3,00*M + -1,00 & 1,00*M & 1,00*M & 1,00*M & 0,00 & 0,00 & 0,00 & 0,00 & -1,00*M & $-$\\ 
+1,00 & \cellcolor{PurpleNoMamado}1,00*M & 1,00*M & 1,00*M & -1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00*M & $-$\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}5,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}4,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}5,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}6,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
  \hline 
-0,00 & 0,00 & 6,00 & \cellcolor{PurpleNoMamado}4,00 & -1,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
+0,00 & \cellcolor{PurpleNoMamado}1,00 & 6,00 & 4,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 6,00 & 4,00 & \cellcolor{PurpleNoMamado}8,00 & -1,00 & 0,00 & 0,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
+0,00 & \cellcolor{PurpleNoMamado}4,00 & 4,00 & 8,00 & -1,00 & 0,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
  \hline 
-0,00 & 1,00 & 1,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Draw:} the rows 1 and 2 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,25000 pivot was \textbf{choosen} and \textbf{row 2} (fraction 0,00000) with the 5,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
-To appreciate this please see the following table:\\
-\textbf{Draw:} the rows 1 and 3 have a fraction of the same value,\textbf{row 1} (fraction 0,00000) with the 0,25000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 0,00000) with the 2,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
-To appreciate this please see the following table:\\
-Pivoting(2)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & \cellcolor{PurpleNoMamado}$x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & 9,25*M & \cellcolor{PurpleNoMamado}-7,75*M & 0,00 & -1,25*M + -1,00 & -3,25*M & 1,00*M & 1,00*M & 0,00 & 0,00 & 0,00 & -1,00*M & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,25 & \cellcolor{PurpleNoMamado}0,25 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}-0,25 & \cellcolor{PurpleNoMamado}-0,25 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
- \hline 
-0,00 & -5,00 & \cellcolor{PurpleNoMamado}5,00 & 0,00 & 0,00 & 1,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00\\ 
- \hline 
-0,00 & -4,00 & \cellcolor{PurpleNoMamado}2,00 & 0,00 & 1,00 & 2,00 & 0,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
- \hline 
-0,00 & -0,25 & \cellcolor{PurpleNoMamado}0,75 & 0,00 & 0,25 & 0,25 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00 & 1,33\\ 
+0,00 & \cellcolor{PurpleNoMamado}1,00 & 1,00 & 1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
 \end{center}
 \textbf{Draw:} the rows 2 and 3 have a fraction of the same value,\textbf{row 2} (fraction 0,00000) with the 6,00000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 0,00000) with the 4,00000 pivot was \textbf{stored} along with the table in case it is needed.\\
 To appreciate this please see the following table:\\
+Pivoting(2)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $y_{1}$ & \cellcolor{PurpleNoMamado}$y_{2}$ & $y_{3}$ & $y_{4}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $a_{1}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00 & 0,00 & \cellcolor{PurpleNoMamado}1,00*M & -0,20*M & 0,20*M + -1,00 & -0,20*M & 0,00 & 0,00 & 0,00 & 1,00*M & $-$\\ 
+ \hline 
+0,00 & 1,00 & \cellcolor{PurpleNoMamado}0,00 & 1,20 & -0,20 & 0,20 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}6,00 & \cellcolor{PurpleNoMamado}2,80 & \cellcolor{PurpleNoMamado}-0,80 & \cellcolor{PurpleNoMamado}-0,20 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
+ \hline 
+0,00 & 0,00 & \cellcolor{PurpleNoMamado}4,00 & 3,20 & -0,20 & -0,80 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
+ \hline 
+0,00 & 0,00 & \cellcolor{PurpleNoMamado}1,00 & -0,20 & 0,20 & -0,20 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
 Pivoting(3)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|} 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & \cellcolor{PurpleNoMamado}$e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{2}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
+$Z$ & $y_{1}$ & $y_{2}$ & $y_{3}$ & \cellcolor{PurpleNoMamado}$y_{4}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $a_{1}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & 48,00*M & 0,00 & 31,00*M & -9,00*M + -1,00 & \cellcolor{PurpleNoMamado}-11,00*M & 1,00*M & 1,00*M & 0,00 & 0,00 & 0,00 & -1,00*M & $-$\\ 
+1,00 & 0,00 & 0,00 & -0,67*M & \cellcolor{PurpleNoMamado}0,33*M + -1,00 & -0,17*M & -0,17*M & 0,00 & 0,00 & 1,00*M & $-$\\ 
  \hline 
-0,00 & 5,00 & 1,00 & 4,00 & -1,00 & \cellcolor{PurpleNoMamado}-1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
+0,00 & 1,00 & 0,00 & 1,20 & \cellcolor{PurpleNoMamado}-0,20 & 0,20 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-30,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-20,00 & \cellcolor{PurpleNoMamado}5,00 & \cellcolor{PurpleNoMamado}6,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
+0,00 & 0,00 & 1,00 & 0,47 & \cellcolor{PurpleNoMamado}-0,13 & -0,03 & 0,17 & 0,00 & 0,00 & 0,00 & $-$\\ 
  \hline 
-0,00 & -14,00 & 0,00 & -8,00 & 3,00 & \cellcolor{PurpleNoMamado}4,00 & 0,00 & -1,00 & 0,00 & 1,00 & 0,00 & 0,00 & 0,00\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,33 & \cellcolor{PurpleNoMamado}0,33 & \cellcolor{PurpleNoMamado}-0,67 & \cellcolor{PurpleNoMamado}-0,67 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
  \hline 
-0,00 & -4,00 & 0,00 & -3,00 & 1,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 0,00 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
+0,00 & 0,00 & 0,00 & -0,67 & \cellcolor{PurpleNoMamado}0,33 & -0,17 & -0,17 & 0,00 & 1,00 & 1,00 & 3,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -246,81 +242,19 @@ $Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & \cellcolor{PurpleNoMamado}$e_{1}$ 
 Pivoting(4)
 \begin{center}
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & \cellcolor{PurpleNoMamado}$x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & \cellcolor{PurpleNoMamado}-7,00*M & 0,00 & -5,67*M & 0,17*M + -1,00 & 0,00 & -0,83*M & 1,00*M & 0,00 & 0,00 & -1,00*M & $-$\\ 
- \hline 
-0,00 & \cellcolor{PurpleNoMamado}0,00 & 1,00 & 0,67 & -0,17 & 0,00 & -0,17 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
- \hline 
-0,00 & \cellcolor{PurpleNoMamado}-5,00 & 0,00 & -3,33 & 0,83 & 1,00 & -0,17 & 0,00 & 0,00 & 0,00 & 0,00 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}6,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}5,33 & \cellcolor{PurpleNoMamado}-0,33 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,67 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
- \hline 
-0,00 & \cellcolor{PurpleNoMamado}1,00 & 0,00 & 0,33 & 0,17 & 0,00 & 0,17 & 0,00 & 0,00 & 1,00 & 1,00 & 1,00\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(5)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & \cellcolor{PurpleNoMamado}$x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
+$Z$ & $y_{1}$ & $y_{2}$ & $y_{3}$ & $y_{4}$ & $s_{1}$ & \cellcolor{PurpleNoMamado}$s_{2}$ & $s_{3}$ & $a_{1}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & 0,00 & 0,00 & 0,56*M & \cellcolor{PurpleNoMamado}-0,22*M + -1,00 & 0,00 & -0,06*M & -0,17*M & 0,00 & -1,00*M & $-$\\ 
+1,00 & 0,00 & 0,00 & -2,00*M + 4,00 & 0,00 & 0,50*M + -2,00 & \cellcolor{PurpleNoMamado}0,50*M + -2,00 & -1,00*M + 3,00 & 0,00 & 1,00*M & $-$\\ 
  \hline 
-0,00 & 0,00 & 1,00 & 0,67 & \cellcolor{PurpleNoMamado}-0,17 & 0,00 & -0,17 & 0,00 & 0,00 & 0,00 & $-$\\ 
+0,00 & 1,00 & 0,00 & 2,00 & 0,00 & -0,20 & \cellcolor{PurpleNoMamado}-0,40 & 0,60 & 0,00 & 0,00 & $-$\\ 
  \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,11 & \cellcolor{PurpleNoMamado}0,56 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,39 & \cellcolor{PurpleNoMamado}-0,83 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
+0,00 & 0,00 & 1,00 & 1,00 & 0,00 & -0,30 & \cellcolor{PurpleNoMamado}-0,10 & 0,40 & 0,00 & 0,00 & $-$\\ 
  \hline 
-0,00 & 1,00 & 0,00 & 0,89 & \cellcolor{PurpleNoMamado}-0,06 & 0,00 & 0,11 & -0,17 & 0,00 & 0,00 & $-$\\ 
+0,00 & 0,00 & 0,00 & 4,00 & 1,00 & -2,00 & \cellcolor{PurpleNoMamado}-2,00 & 3,00 & 0,00 & 0,00 & $-$\\ 
  \hline 
-0,00 & 0,00 & 0,00 & -0,56 & \cellcolor{PurpleNoMamado}0,22 & 0,00 & 0,06 & 0,17 & 1,00 & 1,00 & 4,50\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-Pivoting(6)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & \cellcolor{PurpleNoMamado}$e_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & 0,00 & 0,00 & 1,00*M + 2,00 & 0,00 & 0,40*M + 1,80 & 0,10*M + 0,70 & \cellcolor{PurpleNoMamado}-0,50*M + -1,50 & 0,00 & -1,00*M & $-$\\ 
- \hline 
-0,00 & 0,00 & 1,00 & 1,00 & 0,00 & 0,30 & -0,05 & \cellcolor{PurpleNoMamado}-0,25 & 0,00 & 0,00 & $-$\\ 
- \hline 
-0,00 & 0,00 & 0,00 & 2,00 & 1,00 & 1,80 & 0,70 & \cellcolor{PurpleNoMamado}-1,50 & 0,00 & 0,00 & $-$\\ 
- \hline 
-0,00 & 1,00 & 0,00 & 1,00 & 0,00 & 0,10 & 0,15 & \cellcolor{PurpleNoMamado}-0,25 & 0,00 & 0,00 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,40 & \cellcolor{PurpleNoMamado}-0,10 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}2,00\\ 
- \hline 
-\end{tabular} 
-\end{adjustbox}
-\end{center}
-\textbf{Draw:} the rows 1 and 3 have a fraction of the same value,\textbf{row 1} (fraction 1,00000) with the 0,50000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 1,00000) with the 0,50000 pivot was \textbf{stored} along with the table in case it is needed.\\
-To appreciate this please see the following table:\\
-Pivoting(7)
-\begin{center}
-\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
- \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & \cellcolor{PurpleNoMamado}$x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $B$ & $Fraction$\\ 
- \hline 
-1,00 & 0,00 & 0,00 & \cellcolor{PurpleNoMamado}-1,00 & 0,00 & 0,60 & 0,40 & 0,00 & 3,00 & $-$\\ 
- \hline 
-\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,10 & \cellcolor{PurpleNoMamado}-0,10 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}1,00\\ 
- \hline 
-0,00 & 0,00 & 0,00 & \cellcolor{PurpleNoMamado}-1,00 & 1,00 & 0,60 & 0,40 & 0,00 & 3,00 & $-$\\ 
- \hline 
-0,00 & 1,00 & 0,00 & \cellcolor{PurpleNoMamado}0,50 & 0,00 & -0,10 & 0,10 & 0,00 & 0,50 & 1,00\\ 
- \hline 
-0,00 & 0,00 & 0,00 & \cellcolor{PurpleNoMamado}-2,00 & 0,00 & -0,80 & -0,20 & 1,00 & 2,00 & $-$\\ 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-2,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}2,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -330,17 +264,55 @@ $Z$ & $x_{1}$ & $x_{2}$ & \cellcolor{PurpleNoMamado}$x_{3}$ & $x_{4}$ & $e_{1}$ 
 \begin{adjustbox}{max width=1\textwidth,keepaspectratio}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
  \hline 
-$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $B$\\ 
+$Z$ & $y_{1}$ & $y_{2}$ & $y_{3}$ & $y_{4}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $B$\\ 
  \hline 
-1,00 & 0,00 & 2,00 & 0,00 & 0,00 & 0,80 & 0,20 & 0,00 & 4,00\\ 
+1,00 & 0,00 & 0,00 & -4,00 & 0,00 & -0,00 & 0,00 & -1,00 & 4,00\\ 
  \hline 
-0,00 & 0,00 & 2,00 & 1,00 & 0,00 & 0,20 & -0,20 & 0,00 & 1,00\\ 
+0,00 & 1,00 & 0,00 & 0,40 & 0,00 & 0,20 & 0,00 & -0,20 & 0,80\\ 
  \hline 
-0,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,80 & 0,20 & 0,00 & 4,00\\ 
+0,00 & 0,00 & 1,00 & 0,60 & 0,00 & -0,20 & 0,00 & 0,20 & 0,20\\ 
  \hline 
-0,00 & 1,00 & -1,00 & 0,00 & 0,00 & -0,20 & 0,20 & 0,00 & 0,00\\ 
+0,00 & 0,00 & 0,00 & -4,00 & 1,00 & -0,00 & 0,00 & -1,00 & 4,00\\ 
  \hline 
-0,00 & 0,00 & 4,00 & 0,00 & 0,00 & -0,40 & -0,60 & 1,00 & 4,00\\ 
+0,00 & 0,00 & 0,00 & -4,00 & 0,00 & 1,00 & 1,00 & -2,00 & 2,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{Multiple solutions found}
+Once you end the execution of the Simplex algorithm, you might think that everything has ended and that the soulution you found is the only way to get the optimal objective value, but this is untrue.
+Before asuming that you are finished check if you can pivot one of the non-basic variables without a penalty.
+To do this check all of the columns that correspond whith a non-basic variable, if one of them has a zero in the first row, this means that if you pivot it you objective value will not change.
+After you have found the row, canonize it, after doing it you will notice that as said, the objective value has not changed, but more importantly, you will find one of the basic variables is different, and that the values of the variables that stayed in the base have changed.
+This is another optimal solution to the problem, because the value is still optimal and the variables are different than before.\\
+If you thought that this is the end, think again, remember that Simplex is a graphic method that jumps between vertices of the body that cointains all feasible solutions.
+Which means that the second solution you found is another vertex of the body. 
+If you join the vertices that have an optimal solution, you will draw a line (or a plane, or another body in multiple dimensions).
+The body you drew contains other optimal solutions, infinite of them. 
+This means that the problem you found can be optimized in an infinite number of ways.\\
+\\By using the following formula, infinite optimal solutions can be found:\\
+\begin{dmath}
+\alpha*solution1 + (1-\alpha)*solution2\\
+\end{dmath}
+$$
+0 \leq \alpha \leq 1
+$$
+\\You can see the second optimal table found:\\
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $y_{1}$ & $y_{2}$ & $y_{3}$ & $y_{4}$ & $s_{1}$ & $s_{2}$ & $s_{3}$ & $B$\\ 
+ \hline 
+1,00 & 0,00 & 0,00 & -4,00 & 0,00 & 0,00 & 0,00 & -1,00 & 4,00\\ 
+ \hline 
+0,00 & 1,00 & 0,00 & 1,20 & 0,00 & 0,00 & -0,20 & 0,20 & 0,40\\ 
+ \hline 
+0,00 & 0,00 & 1,00 & -0,20 & 0,00 & 0,00 & 0,20 & -0,20 & 0,60\\ 
+ \hline 
+0,00 & 0,00 & 0,00 & -4,00 & 1,00 & 0,00 & 0,00 & -1,00 & 4,00\\ 
+ \hline 
+0,00 & 0,00 & 0,00 & -4,00 & 0,00 & 1,00 & 1,00 & -2,00 & 2,00\\ 
  \hline 
 \end{tabular} 
 \end{adjustbox}
@@ -348,7 +320,15 @@ $Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $B$\
 \section{Solution}
 z=4,00\\
 \textbf{Solution 1:}\\
-$x_{1}= 0,00; x_{2}= 0,00; x_{3}= 1,00; x_{4}= 4,00; e_{1}= 0,00; e_{2}= 0,00; e_{3}= 4,00; a_{1}= 0,00; a_{2}= 0,00; a_{3}= 0,00; a_{4}= 0,00$\\
+$y_{1}= 0,80; y_{2}= 0,20; y_{3}= 0,00; y_{4}= 4,00; s_{1}= 0,00; s_{2}= 2,00; s_{3}= 0,00; a_{1}= 0,00$\\
+\textbf{Solution 2:}\\
+$y_{1}= 0,40; y_{2}= 0,60; y_{3}= 0,00; y_{4}= 4,00; s_{1}= 2,00; s_{2}= 0,00; s_{3}= 0,00; a_{1}= 0,00$\\
+\textbf{Solution 3:}\\
+$y_{1}= 0,50; y_{2}= 0,50; y_{3}= 0,00; y_{4}= 4,00; s_{1}= 1,50; s_{2}= 0,50; s_{3}= 0,00; a_{1}= 0,00$\\
+\textbf{Solution 4:}\\
+$y_{1}= 0,60; y_{2}= 0,40; y_{3}= 0,00; y_{4}= 4,00; s_{1}= 1,00; s_{2}= 1,00; s_{3}= 0,00; a_{1}= 0,00$\\
+\textbf{Solution 5:}\\
+$y_{1}= 0,70; y_{2}= 0,30; y_{3}= 0,00; y_{4}= 4,00; s_{1}= 0,50; s_{2}= 1,50; s_{3}= 0,00; a_{1}= 0,00$\\
 \begin{thebibliography}{9}
 \bibitem{torres2025}
 F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.
