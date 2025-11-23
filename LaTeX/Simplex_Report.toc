@@ -7,4 +7,4 @@
 \contentsline {section}{\numberline {2.2}The initial simplex table}{5}{section.2.2}%
 \contentsline {section}{\numberline {2.3}The intermediate simplex tables}{6}{section.2.3}%
 \contentsline {section}{\numberline {2.4}The final simplex table}{10}{section.2.4}%
-\contentsline {section}{\numberline {2.5}No solution found}{10}{section.2.5}%
+\contentsline {section}{\numberline {2.5}Solution}{10}{section.2.5}%

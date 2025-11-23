@@ -220,9 +220,9 @@ Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediat
       min =  MAX_VAL;
       
       for(int r = 1; r < mat->rows; ++r){
-        if(mat->data.f[r][pivot_col] > 0){
+        if(mat->data.f[r][pivot_col] > tolerance){
           fraction = mat->data.f[r][mat->cols-1] / mat->data.f[r][pivot_col];
-          if(min > fraction){
+          if(min-fraction > tolerance){
             min = fraction;
             pivot_row = r;
           } else if(fabs(min - fraction) < tolerance){ // Degenerado
