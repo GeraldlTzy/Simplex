@@ -138,11 +138,11 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
                 strcat(buf, "\\cellcolor{PurpleNoMamado}");
 
             if (fabs((*big_M)[c]) > tolerance && fabs(mat->data.f[r][c]) > tolerance && r == 0) {
-                sprintf(buf+strlen(buf), "%.2lf*M + %.2lf", (*big_M)[c], mat->data.f[r][c]);
+                sprintf(buf+strlen(buf), "%.5lf*M + %.2lf", (*big_M)[c], mat->data.f[r][c]);
             } else if (fabs((*big_M)[c]) > tolerance && r == 0){
-                sprintf(buf+strlen(buf), "%.2lf*M", (*big_M)[c]);
+                sprintf(buf+strlen(buf), "%.5lf*M", (*big_M)[c]);
             } else {
-                sprintf(buf+strlen(buf), "%.2lf", mat->data.f[r][c]);
+                sprintf(buf+strlen(buf), "%.5lf", mat->data.f[r][c]);
             }
             strcat(buf, " & ");
         }
@@ -152,7 +152,7 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
         } else {
             if (r == pivot_row)
                 strcat(buf, "\\cellcolor{PurpleNoMamado}");
-            sprintf(buf + strlen(buf), "%.2lf", b/val);
+            sprintf(buf + strlen(buf), "%.5lf", b/val);
         }
         strcat(buf, "\\\\ \n \\hline \n");
         lg_write(lg, buf);
@@ -352,9 +352,11 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
         }
       }
       // si la M mas grande no es positiva, ya no hay positivos
-      if (max_M < tolerance) {
+      if (max_M < -tolerance) {
+        printf("Exit by M\n");
         return mat;
       } else if (min_max <= 0 && fabs(max_M) < tolerance) {
+        printf("Exit by num\n");
         return mat;                  // termina si no encuentra nuevo valor
       }
       // esta vez se usa para elegir la fraccion minima, igual que antes
