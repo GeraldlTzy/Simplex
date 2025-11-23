@@ -481,18 +481,16 @@ double *find_solution(Matrix *mat) {
 Matrix *multiple_solutions(Matrix *mat, double **big_M, double **sol_array){
     int pivot_col = -1;
     int pivot_row = -1;
-    printf("START\n");
     for (int c = 1; c < mat->cols; ++c) {
         if (is_basic_var(mat, c)) continue;
         // si una no basica tiene un 0
-        if (mat->data.f[0][c] == 0) {
+        if (fabs(mat->data.f[0][c]) < tolerance && fabs((*big_M)[c]) < tolerance) {
             pivot_col = c;
             break;
         }
     }
     // si no tiene, no hay nada que hacer
     if (pivot_col == -1) return mat;
-    printf("FOUND MULTIPLE\n");
     // encontrar la fraccion 
     double min =  MAX_VAL;
     double fraction;
@@ -506,7 +504,6 @@ Matrix *multiple_solutions(Matrix *mat, double **big_M, double **sol_array){
         }
     }
 
-    printf("CANONIZING\n");
     canonize(mat, big_M, pivot_row, pivot_col);
     *sol_array = find_solution(mat);
     return mat;
@@ -613,7 +610,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     
     double *solution1 = find_solution(data->table);
     double *solution2 = NULL;
-    /*data->table = multiple_solutions(data->table, &data->big_M, &solution2);
+    data->table = multiple_solutions(data->table, &data->big_M, &solution2);
     if (solution2 != NULL){
         lg_write(lg, "\\section{Multiple solutions found}\n");
         lg_write(lg,    "Once you end the execution of the Simplex algorithm, you might think that everything has ended and that the soulution you found is the only way to get the optimal objective value, but this is untrue.\n"
@@ -664,7 +661,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         free(solution5);
     }
     free(skip);
-    free(solution1);*/
+    free(solution1);
     return 0;
 }
 
