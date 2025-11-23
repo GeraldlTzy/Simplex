@@ -11,8 +11,8 @@ BIN_MAIN     := $(OUT_DIR)/main
 # ==== SANITIZERS ====
 SANITIZE := -fsanitize=address,undefined -fno-omit-frame-pointer
 
-CFLAGS := $(shell pkg-config --cflags gtk+-3.0) -I src/include -MMD -MP -g $(SANITIZE)
-LIBS   := $(shell pkg-config --libs gtk+-3.0) -rdynamic -lfontconfig -lm $(SANITIZE)
+CFLAGS := $(shell pkg-config --cflags gtk+-3.0) -I src/include -MMD -MP -g
+LIBS   := $(shell pkg-config --libs gtk+-3.0) -rdynamic -lfontconfig -lm
 
 .PHONY: all clean run
 

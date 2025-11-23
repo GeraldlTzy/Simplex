@@ -117,20 +117,20 @@ When using this algorithm you might see problems that never got the artificial v
 \section{Mathematical representation}
 \textbf{Maximize:}
 \begin{dmath}
-z = 0x_{1} + 0x_{2} + 0x_{3} + 1x_{4} 
+z = 0,00000x_{1} + 0,00000x_{2} + 0,00000x_{3} + 1,00000x_{4} 
 \end{dmath}
 \textbf{Subject To:}
 \begin{dmath}
-5x_{1} + 1x_{2} + 4x_{3} + -1x_{4} \geq0
+5,00000x_{1} + 1,00000x_{2} + 4,00000x_{3} + -1,00000x_{4} \geq0,00000
 \end{dmath}
 \begin{dmath}
-0x_{1} + 6x_{2} + 4x_{3} + -1x_{4} \geq0
+0,00000x_{1} + 6,00000x_{2} + 4,00000x_{3} + -1,00000x_{4} \geq0,00000
 \end{dmath}
 \begin{dmath}
-6x_{1} + 4x_{2} + 8x_{3} + -1x_{4} \geq0
+6,00000x_{1} + 4,00000x_{2} + 8,00000x_{3} + -1,00000x_{4} \geq0,00000
 \end{dmath}
 \begin{dmath}
-1x_{1} + 1x_{2} + 1x_{3} + 0x_{4} =1
+1,00000x_{1} + 1,00000x_{2} + 1,00000x_{3} + 0,00000x_{4} =1,00000
 \end{dmath}
 \begin{dmath}
 x_{1},x_{2},x_{3},x_{4} \geq 0
@@ -270,4 +270,82 @@ Pivoting(5)
  \hline 
 $Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & \cellcolor{PurpleNoMamado}$x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
  \hline 
-1,00 & 0,00 & 0,00 & 0,56*M & \cellcolor{PurpleNoMamado}-0,22*M + -1,00 & 0,00 & -0,06*M & -0,17*M & 0,00 & -1,00
+1,00 & 0,00 & 0,00 & 0,56*M & \cellcolor{PurpleNoMamado}-0,22*M + -1,00 & 0,00 & -0,06*M & -0,17*M & 0,00 & -1,00*M & $-$\\ 
+ \hline 
+0,00 & 0,00 & 1,00 & 0,67 & \cellcolor{PurpleNoMamado}-0,17 & 0,00 & -0,17 & 0,00 & 0,00 & 0,00 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,11 & \cellcolor{PurpleNoMamado}0,56 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,39 & \cellcolor{PurpleNoMamado}-0,83 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00\\ 
+ \hline 
+0,00 & 1,00 & 0,00 & 0,89 & \cellcolor{PurpleNoMamado}-0,06 & 0,00 & 0,11 & -0,17 & 0,00 & 0,00 & $-$\\ 
+ \hline 
+0,00 & 0,00 & 0,00 & -0,56 & \cellcolor{PurpleNoMamado}0,22 & 0,00 & 0,06 & 0,17 & 1,00 & 1,00 & 4,50\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+Pivoting(6)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & \cellcolor{PurpleNoMamado}$e_{3}$ & $a_{4}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00 & 0,00 & 0,00 & 1,00*M + 2,00 & 0,00 & 0,40*M + 1,80 & 0,10*M + 0,70 & \cellcolor{PurpleNoMamado}-0,50*M + -1,50 & 0,00 & -1,00*M & $-$\\ 
+ \hline 
+0,00 & 0,00 & 1,00 & 1,00 & 0,00 & 0,30 & -0,05 & \cellcolor{PurpleNoMamado}-0,25 & 0,00 & 0,00 & $-$\\ 
+ \hline 
+0,00 & 0,00 & 0,00 & 2,00 & 1,00 & 1,80 & 0,70 & \cellcolor{PurpleNoMamado}-1,50 & 0,00 & 0,00 & $-$\\ 
+ \hline 
+0,00 & 1,00 & 0,00 & 1,00 & 0,00 & 0,10 & 0,15 & \cellcolor{PurpleNoMamado}-0,25 & 0,00 & 0,00 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-1,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}-0,40 & \cellcolor{PurpleNoMamado}-0,10 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}2,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\textbf{Draw:} the rows 1 and 3 have a fraction of the same value,\textbf{row 1} (fraction 1,00000) with the 0,50000 pivot was \textbf{choosen} and \textbf{row 3} (fraction 1,00000) with the 0,50000 pivot was \textbf{stored} along with the table in case it is needed.\\
+To appreciate this please see the following table:\\
+Pivoting(7)
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & $x_{2}$ & \cellcolor{PurpleNoMamado}$x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $B$ & $Fraction$\\ 
+ \hline 
+1,00 & 0,00 & 0,00 & \cellcolor{PurpleNoMamado}-1,00 & 0,00 & 0,60 & 0,40 & 0,00 & 3,00 & $-$\\ 
+ \hline 
+\cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}1,00 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,10 & \cellcolor{PurpleNoMamado}-0,10 & \cellcolor{PurpleNoMamado}0,00 & \cellcolor{PurpleNoMamado}0,50 & \cellcolor{PurpleNoMamado}1,00\\ 
+ \hline 
+0,00 & 0,00 & 0,00 & \cellcolor{PurpleNoMamado}-1,00 & 1,00 & 0,60 & 0,40 & 0,00 & 3,00 & $-$\\ 
+ \hline 
+0,00 & 1,00 & 0,00 & \cellcolor{PurpleNoMamado}0,50 & 0,00 & -0,10 & 0,10 & 0,00 & 0,50 & 1,00\\ 
+ \hline 
+0,00 & 0,00 & 0,00 & \cellcolor{PurpleNoMamado}-2,00 & 0,00 & -0,80 & -0,20 & 1,00 & 2,00 & $-$\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\section{The final simplex table}
+\begin{center}
+\begin{adjustbox}{max width=1\textwidth,keepaspectratio}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|} 
+ \hline 
+$Z$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $e_{1}$ & $e_{2}$ & $e_{3}$ & $B$\\ 
+ \hline 
+1,00 & 0,00 & 2,00 & 0,00 & 0,00 & 0,80 & 0,20 & 0,00 & 4,00\\ 
+ \hline 
+0,00 & 0,00 & 2,00 & 1,00 & 0,00 & 0,20 & -0,20 & 0,00 & 1,00\\ 
+ \hline 
+0,00 & 0,00 & 2,00 & 0,00 & 1,00 & 0,80 & 0,20 & 0,00 & 4,00\\ 
+ \hline 
+0,00 & 1,00 & -1,00 & 0,00 & 0,00 & -0,20 & 0,20 & 0,00 & 0,00\\ 
+ \hline 
+0,00 & 0,00 & 4,00 & 0,00 & 0,00 & -0,40 & -0,60 & 1,00 & 4,00\\ 
+ \hline 
+\end{tabular} 
+\end{adjustbox}
+\end{center}
+\begin{thebibliography}{9}
+\bibitem{torres2025}
+F. Torres-Rojas, 'class about the simplex algorithm', personal communication, Investigación de Operaciones, Instituto Tecnológico de Costa Rica, San José, Costa Rica, Sep. 10, 2025.
+\end{thebibliography}\end{document}

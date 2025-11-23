@@ -93,14 +93,12 @@ void  node_list_free(Node *node){
 /*###########################################################################*/
 
 void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, char **headers, int pivot_row, int pivot_col, int artificial_start){\
-    print_matrix(mat);
     char buf[1024];
     buf[0] = '\0';
     //Init the table
     for (int c = 0; c < mat->cols+1; ++c){
         // si es artificial pero no es basica, se le hace skip
         if (c > artificial_start && c < mat->cols-1 && !is_basic_var(mat, c)){  
-            printf("SLATA |c %d\n",c);
             continue;
         }
         strcat(buf, "|c");
@@ -115,7 +113,6 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
         // si es artificial pero no es basica, se le hace skip
 
         if (c > artificial_start && c < mat->cols-1 && !is_basic_var(mat, c)){
-            printf("SLATA header %d\n",c);
             continue;
         }
         if (c == pivot_col)
@@ -135,7 +132,6 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
         for (int c = 0; c < mat->cols; ++c){
             // si es artificial pero no es basica, se le hace skip
             if (c > artificial_start && c < mat->cols-1 && !is_basic_var(mat, c)){
-                printf("SLATA mat %d\n",c);
                 continue;
             }
             if (r == pivot_row || c == pivot_col)
@@ -199,7 +195,7 @@ Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediat
     } else {                                    // Busca la columna del pivote
       double min_M = MAX_VAL;
       for(int c = 1; c < mat->cols-1; ++c){
-        if (min_M > (*big_M)[c]){
+        if (min_M-(*big_M)[c] > tolerance){
           min_M = (*big_M)[c];
           min = mat->data.f[0][c];
           pivot_col = c;
@@ -215,10 +211,11 @@ Matrix *maximize(Matrix *mat, double **big_M, char **headers, int do_intermediat
         }*/
       }
       // si la M mas pequena es mayor a 0, significa que ya no hay negativos
-      if (min_M > 0) {
+      if (min_M > tolerance) {
         return mat;
       } else if (min >= 0 && fabs(min_M) < tolerance) {
         return mat;                  // termina si no encuentra nuevo valor
+
       }
       min =  MAX_VAL;
       
@@ -484,6 +481,7 @@ double *find_solution(Matrix *mat) {
 Matrix *multiple_solutions(Matrix *mat, double **big_M, double **sol_array){
     int pivot_col = -1;
     int pivot_row = -1;
+    printf("START\n");
     for (int c = 1; c < mat->cols; ++c) {
         if (is_basic_var(mat, c)) continue;
         // si una no basica tiene un 0
@@ -494,6 +492,7 @@ Matrix *multiple_solutions(Matrix *mat, double **big_M, double **sol_array){
     }
     // si no tiene, no hay nada que hacer
     if (pivot_col == -1) return mat;
+    printf("FOUND MULTIPLE\n");
     // encontrar la fraccion 
     double min =  MAX_VAL;
     double fraction;
@@ -506,6 +505,8 @@ Matrix *multiple_solutions(Matrix *mat, double **big_M, double **sol_array){
             }
         }
     }
+
+    printf("CANONIZING\n");
     canonize(mat, big_M, pivot_row, pivot_col);
     *sol_array = find_solution(mat);
     return mat;
@@ -609,9 +610,10 @@ int simplex(SimplexData *data, Latex_Generator *lg){
     }
     
     ///////////////////////////
+    
     double *solution1 = find_solution(data->table);
     double *solution2 = NULL;
-    data->table = multiple_solutions(data->table, &data->big_M, &solution2);
+    /*data->table = multiple_solutions(data->table, &data->big_M, &solution2);
     if (solution2 != NULL){
         lg_write(lg, "\\section{Multiple solutions found}\n");
         lg_write(lg,    "Once you end the execution of the Simplex algorithm, you might think that everything has ended and that the soulution you found is the only way to get the optimal objective value, but this is untrue.\n"
@@ -662,7 +664,7 @@ int simplex(SimplexData *data, Latex_Generator *lg){
         free(solution5);
     }
     free(skip);
-    free(solution1);
+    free(solution1);*/
     return 0;
 }
 
