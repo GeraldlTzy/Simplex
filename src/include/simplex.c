@@ -453,7 +453,7 @@ void print_solution(double *sol, int size) {
 void write_solution(double *sol, int size, char** headers, Latex_Generator* lg) {
     lg_write(lg, "$");
     for (int i = 0; i < size; ++i) {
-        lg_write(lg, "%s= %.2lf", headers[i+1], sol[i]);
+        lg_write(lg, "%s= %.4lf", headers[i+1], sol[i]);
         if (i != size-1) lg_write(lg, "; ");
     }
     lg_write(lg, "$");
