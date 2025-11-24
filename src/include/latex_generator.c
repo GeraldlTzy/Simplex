@@ -28,18 +28,18 @@ void tex_table_content(Latex_Generator *lg, int rows, int cols, double  **conten
     for(int c = 0; c < cols; ++c){
       if (skips[c]) continue;
       if (r != 0){ 
-          sprintf(tex_buf2, "%.2lf%s", content[r][c],
+          sprintf(tex_buf2, "%.4lf%s", content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
       // primera fila contiene las M
       } else {
         if (fabs(big_M[c]) > tolerance && fabs(content[r][c]) > tolerance) {
-          sprintf(tex_buf2, "%.2lf*M + %.2lf%s", big_M[c], content[r][c],
+          sprintf(tex_buf2, "%.4lf*M + %.4lf%s", big_M[c], content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
         } else if (fabs(big_M[c]) > tolerance){
-          sprintf(tex_buf2, "%.2lf*M%s", big_M[c],
+          sprintf(tex_buf2, "%.4lf*M%s", big_M[c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
         } else {
-          sprintf(tex_buf2, "%.2lf%s", content[r][c],
+          sprintf(tex_buf2, "%.4lf%s", content[r][c],
               ((c < cols-1) ? (" & ") : ("\\\\ \n \\hline \n")));
         }
       }

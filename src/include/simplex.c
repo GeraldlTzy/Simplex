@@ -138,11 +138,11 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
                 strcat(buf, "\\cellcolor{PurpleNoMamado}");
 
             if (fabs((*big_M)[c]) > tolerance && fabs(mat->data.f[r][c]) > tolerance && r == 0) {
-                sprintf(buf+strlen(buf), "%.5lf*M + %.2lf", (*big_M)[c], mat->data.f[r][c]);
+                sprintf(buf+strlen(buf), "%.4lf*M + %.4lf", (*big_M)[c], mat->data.f[r][c]);
             } else if (fabs((*big_M)[c]) > tolerance && r == 0){
-                sprintf(buf+strlen(buf), "%.5lf*M", (*big_M)[c]);
+                sprintf(buf+strlen(buf), "%.4lf*M", (*big_M)[c]);
             } else {
-                sprintf(buf+strlen(buf), "%.5lf", mat->data.f[r][c]);
+                sprintf(buf+strlen(buf), "%.4lf", mat->data.f[r][c]);
             }
             strcat(buf, " & ");
         }
@@ -152,7 +152,7 @@ void intermediate_table_draw(Latex_Generator *lg, Matrix *mat, double **big_M, c
         } else {
             if (r == pivot_row)
                 strcat(buf, "\\cellcolor{PurpleNoMamado}");
-            sprintf(buf + strlen(buf), "%.5lf", b/val);
+            sprintf(buf + strlen(buf), "%.4lf", b/val);
         }
         strcat(buf, "\\\\ \n \\hline \n");
         lg_write(lg, buf);
@@ -345,7 +345,7 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
           min_max = mat->data.f[0][c];
           pivot_col = c;
         // si max era mas grande no se debe seleccionar, por eso el igual
-        } else if(min_max < mat->data.f[0][c] && fabs(max_M - (*big_M)[c]) < tolerance){
+        } else if(min_max-mat->data.f[0][c] < -tolerance && fabs(max_M - (*big_M)[c]) < tolerance){
           max_M = (*big_M)[c];
           min_max = mat->data.f[0][c];
           pivot_col = c;
@@ -353,10 +353,8 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
       }
       // si la M mas grande no es positiva, ya no hay positivos
       if (max_M < -tolerance) {
-        printf("Exit by M\n");
         return mat;
       } else if (min_max <= 0 && fabs(max_M) < tolerance) {
-        printf("Exit by num\n");
         return mat;                  // termina si no encuentra nuevo valor
       }
       // esta vez se usa para elegir la fraccion minima, igual que antes
@@ -455,7 +453,7 @@ void print_solution(double *sol, int size) {
 void write_solution(double *sol, int size, char** headers, Latex_Generator* lg) {
     lg_write(lg, "$");
     for (int i = 0; i < size; ++i) {
-        lg_write(lg, "%s= %.2lf", headers[i+1], sol[i]);
+        lg_write(lg, "%s= %.4lf", headers[i+1], sol[i]);
         if (i != size-1) lg_write(lg, "; ");
     }
     lg_write(lg, "$");
