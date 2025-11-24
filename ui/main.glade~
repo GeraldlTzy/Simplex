@@ -126,21 +126,7 @@
             <signal name="clicked" handler="on_btn_finish_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">720</property>
-            <property name="y">25</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="back_button">
-            <property name="label" translatable="yes">Back</property>
-            <property name="width-request">100</property>
-            <property name="height-request">50</property>
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">True</property>
-            <signal name="clicked" handler="on_back_button_clicked" swapped="no"/>
-          </object>
-          <packing>
+            <property name="x">345</property>
             <property name="y">25</property>
           </packing>
         </child>
@@ -163,14 +149,14 @@
           <object class="GtkCheckButton" id="ckbtn_intermediate_tables">
             <property name="label" translatable="yes">Show intermediate tables</property>
             <property name="width-request">100</property>
-            <property name="height-request">80</property>
+            <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">False</property>
             <property name="draw-indicator">True</property>
           </object>
           <packing>
-            <property name="x">720</property>
+            <property name="x">350</property>
             <property name="y">80</property>
           </packing>
         </child>
@@ -259,44 +245,44 @@
             </child>
           </object>
           <packing>
-            <property name="x">800</property>
-            <property name="y">200</property>
+            <property name="x">750</property>
+            <property name="y">100</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="btn_continue">
-            <property name="label" translatable="yes">Continue</property>
+            <property name="label" translatable="yes">Update</property>
             <property name="width-request">100</property>
-            <property name="height-request">80</property>
+            <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <signal name="clicked" handler="update_problem" object="gd_initial1" swapped="no"/>
           </object>
           <packing>
-            <property name="x">800</property>
-            <property name="y">400</property>
+            <property name="x">1000</property>
+            <property name="y">275</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="btn_load">
             <property name="label" translatable="yes">Load</property>
             <property name="width-request">100</property>
-            <property name="height-request">80</property>
+            <property name="height-request">50</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <signal name="clicked" handler="on_btn_load_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="x">400</property>
-            <property name="y">50</property>
+            <property name="x">225</property>
+            <property name="y">25</property>
           </packing>
         </child>
         <child>
           <object class="GtkViewport" id="vp_varnames">
-            <property name="width-request">400</property>
-            <property name="height-request">400</property>
+            <property name="width-request">150</property>
+            <property name="height-request">200</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <child>
@@ -304,8 +290,25 @@
             </child>
           </object>
           <packing>
-            <property name="x">1198</property>
-            <property name="y">514</property>
+            <property name="x">750</property>
+            <property name="y">275</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width-request">100</property>
+            <property name="height-request">50</property>
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Simplex Calculator</property>
+            <attributes>
+              <attribute name="weight" value="ultraheavy"/>
+              <attribute name="size" value="30720"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="x">700</property>
+            <property name="y">25</property>
           </packing>
         </child>
       </object>
