@@ -12,7 +12,6 @@
 
 #define NAME_SIZE 32
 
-GtkWidget* main_window;
 GtkWidget* second_window;
 GtkWidget* varname_window;
 GtkBuilder* builder;
@@ -96,7 +95,6 @@ static void real_numeric_entry(GtkEditable *editable, const gchar *text,
 void initialize(){
 	//////////////////////////////// Define the variables
 	builder = gtk_builder_new_from_file("ui/main.glade");
-	main_window = GTK_WIDGET(gtk_builder_get_object(builder, "main_window"));
   cmb_objective_func = GTK_WIDGET(gtk_builder_get_object(builder, "cmb_objective_func"));
   gtk_combo_box_set_active(GTK_COMBO_BOX(cmb_objective_func), 0);
   varname_window = GTK_WIDGET(gtk_builder_get_object(builder, "varname_window"));
@@ -107,8 +105,8 @@ void initialize(){
   intermediate_toggle = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "ckbtn_intermediate_tables"));
   inequalities = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
   
-  GtkWidget *in_num_const = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_const"));
-  GtkWidget *in_num_var = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_var"));
+  GtkWidget *in_num_const = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_const1"));
+  GtkWidget *in_num_var = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_var1"));
 
   char *pattern = "^[0-9]+$";
 
@@ -124,8 +122,7 @@ void initialize(){
   gtk_list_store_append(inequalities, &iter);
   gtk_list_store_set(inequalities, &iter, 0, ">=", 1, TRUE, -1);
   
-  gtk_window_set_title(GTK_WINDOW(main_window), "Dynamic Programming Algorithms Hub");
-  g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+  gtk_window_set_title(GTK_WINDOW(second_window), "Dynamic Programming Algorithms Hub");
   g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_builder_connect_signals(builder, NULL);
     //////////////////////////////// latex generator 
@@ -140,15 +137,15 @@ int main(int argc, char *argv[]){
 
   initialize();
 	////////////////////////////////// We show the gui
-	gtk_widget_show(main_window);
+	gtk_widget_show(second_window);
 	gtk_main();
 	/////////////////////////////////
 	return 0;
 }
 
 char problem_name[256];
-int num_variables;
-int num_constraints;
+int num_variables = -1;
+int num_constraints = -1;
 
 void on_combo_constraint_changed(GtkComboBox *cmb, gpointer user_data){
   GtkTreeIter iter;
@@ -205,44 +202,108 @@ void on_entry_varname_clicked(GtkEntry *e, gpointer user_data) {
     sprintf(var_names[index], str);
 }
 
-void on_btn_continue_clicked(GtkButton *b, GtkGrid* gd){
-  
-  validate_int(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), 15, 2);
-  validate_int(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), 15, 2);
+int new_num_variables;
+int new_num_constraints;
 
-  strcpy(problem_name, gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0))));
-  num_variables = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1))));
-  num_constraints = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2))));
+//GtkGrid *gd_info;
 
-  
-  if (problem_name[0] == '\0' || num_variables == 0 || num_constraints == 0) return;
-  
-  var_names = malloc(sizeof(char *) * num_variables);
-  for (int i = 0; i < num_variables; ++i)
-    var_names[i] = malloc(sizeof(char)*NAME_SIZE);
-  gd_varnames = GTK_GRID(gtk_grid_new());
-  for(int v = 0; v < num_variables; ++v){
-    GtkWidget *entry = gtk_entry_new();
-    sprintf(var_names[v], "x_{%d}", v+1);
-    GtkWidget *label = gtk_label_new(var_names[v]);
-    gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
-    gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
-    gtk_widget_set_hexpand(entry, TRUE);
-    g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
 
-    gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
-    gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
+void update_grid_variables_and_constraints(int to_update);
+void update_problem(GtkButton *b, GtkGrid *gd_info){
+  validate_int(GTK_ENTRY(gtk_grid_get_child_at(gd_info, 1, 1)), 15, 2);
+  validate_int(GTK_ENTRY(gtk_grid_get_child_at(gd_info, 1, 2)), 15, 2);
+  
+  strcpy(problem_name, gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd_info, 1, 0))));
+  new_num_variables = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd_info, 1, 1))));
+  new_num_constraints = atoi(gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd_info, 1, 2))));
+  
+  if (problem_name[0] == '\0' || new_num_variables == 0 || new_num_constraints == 0) return;
+  
+  // crear el grid de nombres, se hace una sola vez
+  if(num_variables == -1){
+    num_constraints = new_num_constraints;
+    num_variables = new_num_variables;
+
+    var_names = malloc(sizeof(char *) * num_variables);
+    for (int i = 0; i < num_variables; ++i)
+      var_names[i] = malloc(sizeof(char)*NAME_SIZE);
+    gd_varnames = GTK_GRID(gtk_grid_new());
+  
+    for(int v = 0; v < num_variables; ++v){
+      GtkWidget *entry = gtk_entry_new();
+      sprintf(var_names[v], "x_{%d}", v+1);
+      GtkWidget *label = gtk_label_new(var_names[v]);
+      gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
+      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+      gtk_widget_set_hexpand(entry, TRUE);
+      g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
+
+      gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
+      gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
+    }
+    gtk_grid_set_column_spacing(gd_varnames, 5);
+    gtk_container_add(GTK_CONTAINER(vp_varnames), GTK_WIDGET(gd_varnames));
+
+  } else {
+    // actualizar arreglo de nombres
+    // copiar los datos a un arreglo mas grande
+    if(num_variables < new_num_variables){
+      char **tmp = malloc(sizeof(char *)*new_num_variables);
+      for (int i = 0; i < new_num_variables; ++i){
+        tmp[i] = malloc(NAME_SIZE);
+        if (i < num_variables){
+          memcpy(tmp[i], var_names[i], NAME_SIZE);
+          free(var_names[i]);
+        }
+      }
+      free(var_names);
+      var_names = tmp;
+      
+      for(int v = num_variables-1; v < new_num_variables; ++v){
+        GtkWidget *entry = gtk_entry_new();
+        sprintf(var_names[v], "x_{%d}", v+1);
+        GtkWidget *label = gtk_label_new(var_names[v]);
+        gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
+        gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+        gtk_widget_set_hexpand(entry, TRUE);
+        g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
+
+        gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
+        gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
+      }
+
+    // copiar los datos a un arreglo mas pequno
+    // y borrar los que sobran
+    } else if(num_variables > new_num_variables){
+      char **tmp = malloc(sizeof(char *)*new_num_variables);
+      for (int i = 0; i < num_variables; ++i){
+        if (i < new_num_variables){
+          tmp[i] = malloc(NAME_SIZE);
+          memcpy(tmp[i], var_names[i], NAME_SIZE);
+        }
+        free(var_names[i]);
+      }
+      free(var_names);
+      var_names = tmp;
+      for(int v = new_num_variables; v < num_variables; ++v){
+        GtkWidget *label = gtk_grid_get_child_at(gd_varnames, 0, v);
+        GtkWidget *entry = gtk_grid_get_child_at(gd_varnames, 1, v);
+        gtk_container_remove(GTK_CONTAINER(gd_varnames), label);
+        gtk_container_remove(GTK_CONTAINER(gd_varnames), entry);
+      }
+    }
   }
-  gtk_grid_set_column_spacing(gd_varnames, 5);
-  gtk_container_add(GTK_CONTAINER(vp_varnames), GTK_WIDGET(gd_varnames));
- 
-  
-  gtk_widget_hide(main_window);
-  gtk_widget_show_all(varname_window);
+  if((num_variables != new_num_variables || num_constraints != new_num_constraints) && num_variables != -1){
+    update_grid_variables_and_constraints(1);
+  } else {
+    update_grid_variables_and_constraints(0);
+  }
+  num_variables = new_num_variables;
+  num_constraints = new_num_constraints;
 }
 
 void on_btn_var_back_clicked() {
-    GtkGrid* gd = GTK_GRID(gtk_builder_get_object(builder, "gd_initial"));
+    /*GtkGrid* gd = GTK_GRID(gtk_builder_get_object(builder, "gd_initial"));
     gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
     gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
     gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
@@ -250,29 +311,58 @@ void on_btn_var_back_clicked() {
     free(var_names);
     gtk_widget_destroy(GTK_WIDGET(gd_varnames));
     gtk_widget_hide(varname_window);
-    gtk_widget_show_all(main_window);
+    gtk_widget_show_all(main_window);*/
 }
 
-void on_btn_var_continue_clicked(){
-  gd_variables = GTK_GRID(gtk_grid_new());
+void update_grid_variables_and_constraints(int to_update){
   GtkWidget *entry, *label;
   char buff[256];
   int col_i = 0;
-  for(int v = 0; v < num_variables; ++v){
-    entry = gtk_entry_new();
-    sprintf(buff, "%s %s", var_names[v], ((v < num_variables-1) ? "+ " : ""));
-    label = gtk_label_new(buff);
-    gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
-    gtk_widget_set_hexpand(entry, TRUE);
-    gtk_entry_set_text(GTK_ENTRY(entry), "0");
-    g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
-    gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
-    gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
-  }
- 
-  GtkWidget *cmb;
-  gd_constraints = GTK_GRID(gtk_grid_new());
+  
+  if(!to_update){
+    gd_variables = GTK_GRID(gtk_grid_new());
+    for(int v = 0; v < num_variables; ++v){
+      entry = gtk_entry_new();
+      sprintf(buff, "%s %s", var_names[v], ((v < num_variables-1) ? "+ " : ""));
+      label = gtk_label_new(buff);
+      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+      gtk_widget_set_hexpand(entry, TRUE);
+      gtk_entry_set_text(GTK_ENTRY(entry), "0");
+      g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
+      gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
+      gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
+    }
 
+  } else if(num_variables < new_num_variables){//actualizar grid de variables de la funcion objetivo
+    label = gtk_grid_get_child_at(gd_variables, num_variables*2-1, 0);
+    sprintf(buff, "%s %s", var_names[num_variables-1], "+ ");
+    gtk_label_set_text(GTK_LABEL(label), buff);
+
+    col_i = num_variables*2;
+    for(int v = num_variables; v < new_num_variables; ++v){
+      entry = gtk_entry_new();
+      sprintf(buff, "%s %s", var_names[v], ((v < new_num_variables-1) ? "+ " : ""));
+      label = gtk_label_new(buff);
+      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+      gtk_widget_set_hexpand(entry, TRUE);
+      gtk_entry_set_text(GTK_ENTRY(entry), "0");
+      g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
+      gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
+      gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
+    }
+  } else if(num_variables > new_num_variables){
+    for(int v = (num_variables*2-1); v >= (new_num_variables*2-1); --v){
+      GtkWidget *widget = gtk_grid_get_child_at(gd_variables, v, 0);
+      gtk_container_remove(GTK_CONTAINER(gd_variables), widget);
+    }
+    sprintf(buff, "%s %s", var_names[new_num_variables-1], "");
+    label = gtk_label_new(buff);
+    gtk_grid_attach(gd_variables, label, new_num_variables*2-1, 0, 1, 1);
+  }
+
+  GtkWidget *cmb;
+  if (!to_update){
+    gd_constraints = GTK_GRID(gtk_grid_new());
 
   col_i = 0;
   for(int c = 0; c < num_constraints; ++c){
@@ -314,9 +404,86 @@ void on_btn_var_continue_clicked(){
 
   gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
   gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
-  gtk_widget_destroy(GTK_WIDGET(gd_varnames));
+  //gtk_widget_destroy(GTK_WIDGET(gd_varnames));
+  } else {
+    // recolocar lo ultimo
+    if(num_variables != new_num_variables){
+      for (int i = 0; i < num_constraints; ++i){
+        cmb = gtk_grid_get_child_at(gd_constraints, num_variables*2, i);
+        entry = gtk_grid_get_child_at(gd_constraints, num_variables*2+1, i);
+        
+        if (num_variables > new_num_variables){
+          for (int v = (num_variables*2-1); v > (new_num_variables*2-1); --v){
+            GtkWidget *w = gtk_grid_get_child_at(gd_constraints, v, i);
+            gtk_container_remove(GTK_CONTAINER(gd_constraints), w);
+          }
+        }
 
-  gtk_widget_hide(varname_window);
+        if (cmb && entry) {
+          g_object_ref(cmb); g_object_ref(entry);
+
+          gtk_container_remove(GTK_CONTAINER(gd_constraints), cmb);
+          gtk_container_remove(GTK_CONTAINER(gd_constraints), entry);
+
+          gtk_grid_attach(gd_constraints, cmb, new_num_variables*2, i, 1, 1);
+          gtk_grid_attach(gd_constraints, entry, new_num_variables*2+1, i, 1, 1);
+
+          g_object_unref(cmb); g_object_unref(entry);
+        }
+      }
+    }
+    for (int i = num_constraints; i < new_num_constraints; ++i){
+      cmb = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(inequalities));
+      gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(cmb), 0);
+      gtk_combo_box_set_active(GTK_COMBO_BOX(cmb), 0);
+
+      g_signal_connect(cmb, "changed", G_CALLBACK(on_combo_constraint_changed), inequalities);
+
+      entry = gtk_bin_get_child(GTK_BIN(cmb));
+      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+      gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
+      gtk_widget_set_can_focus(entry, FALSE);
+      gtk_grid_attach(gd_constraints, cmb, new_num_variables*2, i, 1, 1);
+      entry = gtk_entry_new();
+      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+      gtk_widget_set_hexpand(entry, TRUE);
+      const char *pattern = "^[0-9]+$";
+      g_signal_connect(entry, "insert-text", G_CALLBACK(numeric_entry), (void *) pattern);
+      gtk_entry_set_text(GTK_ENTRY(entry), "0");
+      gtk_grid_attach(gd_constraints, entry, new_num_variables*2+1, i, 1, 1);
+    }
+
+
+
+    col_i = 0;
+    if (num_constraints < new_num_constraints){
+      for(int c = 0; c < new_num_constraints; ++c){
+        for(int x = 0; x < new_num_variables; ++x){
+          if(c < num_constraints && x < num_variables){
+            col_i+=2;
+            continue;
+          }
+          entry = gtk_entry_new();
+          sprintf(buff, "%s %s", var_names[x], ((x < num_variables-1) ? "+ " : ""));
+          label = gtk_label_new(buff);
+          gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+          gtk_widget_set_hexpand(entry, TRUE);
+          gtk_entry_set_text(GTK_ENTRY(entry), "0");
+          g_signal_connect(entry, "insert-text", G_CALLBACK(real_numeric_entry), NULL);
+          gtk_grid_attach(gd_constraints, entry, col_i++, c, 1, 1);
+          gtk_grid_attach(gd_constraints, label, col_i++, c, 1, 1);
+        }
+        col_i=0;
+      }
+    } else {
+      for (int row = (num_constraints-1); row >= (new_num_constraints); --row){
+        for (int col = 0; col < (new_num_variables*2+2); ++col){
+          GtkWidget *w = gtk_grid_get_child_at(gd_constraints, col, row);
+          gtk_container_remove(GTK_CONTAINER(gd_constraints), w);
+        }
+      }
+    }
+  }
   gtk_widget_show_all(second_window);
 }
 
@@ -691,9 +858,7 @@ void load_data(char *filename){
   gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
   gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
 
-  gtk_widget_hide(main_window);
   gtk_widget_show_all(second_window);
-  
 }
 
 int save_data(char *filename){
@@ -761,8 +926,6 @@ void on_back_button_clicked() {
   gtk_widget_destroy(GTK_WIDGET(gd_variables));
   gtk_widget_destroy(GTK_WIDGET(gd_constraints));
   gtk_widget_hide(second_window);
-  gtk_widget_show_all(main_window);
-
 }
 
 void on_btn_save_clicked(){
@@ -775,7 +938,7 @@ void on_btn_save_clicked(){
 
 void on_btn_load_clicked(){
   char *filename;
-  select_file(&filename, "Open File", main_window);
+  select_file(&filename, "Open File", second_window);
   if (filename){
     load_data(filename);
   }
