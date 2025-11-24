@@ -977,6 +977,7 @@ void on_btn_load_clicked(){
   }
 }
 void on_btn_finish_clicked(){
+  if (!exists_grids) return;
   simplex_data = malloc(sizeof(SimplexData));
   simplex_data->slacks = 0;
   simplex_data->artificials = 0;
