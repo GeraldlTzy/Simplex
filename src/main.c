@@ -105,7 +105,8 @@ void delete_data() {
 
   gtk_widget_destroy(GTK_WIDGET(gd_variables));
   gtk_widget_destroy(GTK_WIDGET(gd_constraints));
-  gtk_widget_hide(second_window);
+  gtk_widget_destroy(GTK_WIDGET(gd_varnames));
+  //gtk_widget_hide(second_window);
 }
 
 
@@ -775,9 +776,9 @@ void select_file(char **filename, char *oper, GtkWidget *parent){
   gtk_widget_destroy(chooser_window);
 }
 void load_data(char *filename){
-  if (num_variables != -1){
+  //if (num_variables != -1){
     delete_data();
-  }
+  //}
   FILE *file;
   file = fopen(filename, "r");
   char objective[9];
