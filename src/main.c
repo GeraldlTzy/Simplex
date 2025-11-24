@@ -233,15 +233,16 @@ int new_num_constraints;
 void update_grid_varnames(int mode){
   if(mode < 2){
     gd_varnames = GTK_GRID(gtk_grid_new());
-  
-    for(int v = 0; v < num_variables; ++v){
-      if(mode == 1){
-        var_names = malloc(sizeof(char *) * num_variables);
-        for (int i = 0; i < num_variables; ++i){
-          var_names[i] = malloc(sizeof(char)*NAME_SIZE);
-        }
-        sprintf(var_names[v], "x_{%d}", v+1);
+    
+    if(mode == 1){
+      var_names = malloc(sizeof(char *) * num_variables);
+      for (int i = 0; i < num_variables; ++i){
+        var_names[i] = malloc(sizeof(char)*NAME_SIZE);
+        sprintf(var_names[i], "x_{%d}", i+1);
       }
+    }
+
+    for(int v = 0; v < num_variables; ++v){
       GtkWidget *entry = gtk_entry_new();
       GtkWidget *label = gtk_label_new(var_names[v]);
       gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
