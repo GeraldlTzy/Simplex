@@ -453,10 +453,8 @@ void update_grid_variables_and_constraints(int to_update){
       gtk_grid_attach(gd_constraints, entry, new_num_variables*2+1, i, 1, 1);
     }
 
-
-
     col_i = 0;
-    if (num_constraints < new_num_constraints){
+    //if (num_constraints < new_num_constraints){
       for(int c = 0; c < new_num_constraints; ++c){
         for(int x = 0; x < new_num_variables; ++x){
           if(c < num_constraints && x < num_variables){
@@ -475,7 +473,8 @@ void update_grid_variables_and_constraints(int to_update){
         }
         col_i=0;
       }
-    } else {
+    //} else {
+    if(num_constraints > new_num_constraints){
       for (int row = (num_constraints-1); row >= (new_num_constraints); --row){
         for (int col = 0; col < (new_num_variables*2+2); ++col){
           GtkWidget *w = gtk_grid_get_child_at(gd_constraints, col, row);
