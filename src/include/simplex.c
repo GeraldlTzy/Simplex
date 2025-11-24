@@ -353,10 +353,8 @@ Matrix *minimize(Matrix *mat, double **big_M, char **headers, int do_intermediat
       }
       // si la M mas grande no es positiva, ya no hay positivos
       if (max_M < -tolerance) {
-        printf("Exit by M\n");
         return mat;
       } else if (min_max <= 0 && fabs(max_M) < tolerance) {
-        printf("Exit by num\n");
         return mat;                  // termina si no encuentra nuevo valor
       }
       // esta vez se usa para elegir la fraccion minima, igual que antes
