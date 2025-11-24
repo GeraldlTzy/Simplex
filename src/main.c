@@ -35,6 +35,7 @@ int do_minimize = 0;
 char **var_names;
 char **headers;
 SimplexData *simplex_data;
+int exists_grids = 0;
 
 Latex_Generator l;
 Latex_Generator *lg = &l;
@@ -44,6 +45,7 @@ int *canon_number;
 #include <regex.h>
 
 
+void update_grid_varnames(int mode);
 /*####################################UTILS##################################*/
 typedef struct {
   int inf_limit;
@@ -98,7 +100,8 @@ static void real_numeric_entry(GtkEditable *editable, const gchar *text,
 void delete_data() {
   for (int i = 0; i < num_variables; ++i) free(var_names[i]);
   free(var_names);
-  
+  var_names = NULL;
+
   problem_name[0] = '\0';
   num_variables = -1;
   num_constraints = -1;
@@ -227,6 +230,80 @@ int new_num_constraints;
 
 //GtkGrid *gd_info;
 
+void update_grid_varnames(int mode){
+  if(mode < 2){
+    gd_varnames = GTK_GRID(gtk_grid_new());
+  
+    for(int v = 0; v < num_variables; ++v){
+      if(mode == 1){
+        var_names = malloc(sizeof(char *) * num_variables);
+        for (int i = 0; i < num_variables; ++i){
+          var_names[i] = malloc(sizeof(char)*NAME_SIZE);
+        }
+        sprintf(var_names[v], "x_{%d}", v+1);
+      }
+      GtkWidget *entry = gtk_entry_new();
+      GtkWidget *label = gtk_label_new(var_names[v]);
+      gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
+      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+      gtk_widget_set_hexpand(entry, TRUE);
+      g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
+      gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
+      gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
+    }
+    gtk_grid_set_column_spacing(gd_varnames, 5);
+    gtk_container_add(GTK_CONTAINER(vp_varnames), GTK_WIDGET(gd_varnames));
+  } else {
+    if(num_variables < new_num_variables){
+      char **tmp = malloc(sizeof(char *) * new_num_variables);
+      for (int i = 0; i < new_num_variables; ++i){
+        tmp[i] = malloc(NAME_SIZE);
+        if (i < num_variables){
+          free(var_names[i]);
+        }
+      }
+      free(var_names);
+      var_names = tmp;
+      
+      for(int v = 0; v < new_num_variables; ++v){
+        if(v < num_variables){
+          strcpy(var_names[v], gtk_entry_get_text(GTK_ENTRY(gtk_grid_get_child_at(gd_varnames, 1, v))));
+        } else{
+          sprintf(var_names[v], "x_{%d}", v+1);
+          GtkWidget *entry = gtk_entry_new();
+          GtkWidget *label = gtk_label_new(var_names[v]);
+          gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
+          gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
+          gtk_widget_set_hexpand(entry, TRUE);
+          g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
+
+          gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
+          gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
+        }
+      }
+    // copiar los datos a un arreglo mas pequno
+    // y borrar los que sobran
+      } else if(num_variables > new_num_variables){
+        char **tmp = malloc(sizeof(char *)*new_num_variables);
+        for (int i = 0; i < num_variables; ++i){
+          if (i < new_num_variables){
+            tmp[i] = malloc(NAME_SIZE);
+            memcpy(tmp[i], var_names[i], NAME_SIZE);
+          }
+          free(var_names[i]);
+        }
+        free(var_names);
+        var_names = tmp;
+        for(int v = new_num_variables; v < num_variables; ++v){
+          GtkWidget *label = gtk_grid_get_child_at(gd_varnames, 0, v);
+          GtkWidget *entry = gtk_grid_get_child_at(gd_varnames, 1, v);
+          gtk_container_remove(GTK_CONTAINER(gd_varnames), label);
+          gtk_container_remove(GTK_CONTAINER(gd_varnames), entry);
+        }
+      }
+    }
+}
+
 
 void update_grid_variables_and_constraints(int to_update);
 void update_problem(GtkButton *b, GtkGrid *gd_info){
@@ -243,95 +320,36 @@ void update_problem(GtkButton *b, GtkGrid *gd_info){
   if(num_variables == -1){
     num_constraints = new_num_constraints;
     num_variables = new_num_variables;
-
-    var_names = malloc(sizeof(char *) * num_variables);
-    for (int i = 0; i < num_variables; ++i)
-      var_names[i] = malloc(sizeof(char)*NAME_SIZE);
-    gd_varnames = GTK_GRID(gtk_grid_new());
-  
-    for(int v = 0; v < num_variables; ++v){
-      GtkWidget *entry = gtk_entry_new();
-      sprintf(var_names[v], "x_{%d}", v+1);
-      GtkWidget *label = gtk_label_new(var_names[v]);
-      gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
-      gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
-      gtk_widget_set_hexpand(entry, TRUE);
-      g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
-
-      gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
-      gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
-    }
-    gtk_grid_set_column_spacing(gd_varnames, 5);
-    gtk_container_add(GTK_CONTAINER(vp_varnames), GTK_WIDGET(gd_varnames));
-
+    update_grid_varnames(1);
   } else {
-    // actualizar arreglo de nombres
-    // copiar los datos a un arreglo mas grande
-    if(num_variables < new_num_variables){
-      char **tmp = malloc(sizeof(char *)*new_num_variables);
-      for (int i = 0; i < new_num_variables; ++i){
-        tmp[i] = malloc(NAME_SIZE);
-        if (i < num_variables){
-          memcpy(tmp[i], var_names[i], NAME_SIZE);
-          free(var_names[i]);
-        }
-      }
-      free(var_names);
-      var_names = tmp;
-      
-      for(int v = num_variables-1; v < new_num_variables; ++v){
-        GtkWidget *entry = gtk_entry_new();
-        sprintf(var_names[v], "x_{%d}", v+1);
-        GtkWidget *label = gtk_label_new(var_names[v]);
-        gtk_entry_set_text(GTK_ENTRY(entry), var_names[v]);
-        gtk_entry_set_width_chars(GTK_ENTRY(entry), 5);
-        gtk_widget_set_hexpand(entry, TRUE);
-        g_signal_connect(entry, "changed", G_CALLBACK(on_entry_varname_clicked), GINT_TO_POINTER(v));
-
-        gtk_grid_attach(gd_varnames, label, 0, v, 1, 1);
-        gtk_grid_attach(gd_varnames, entry, 1, v, 1, 1);
-      }
-
-    // copiar los datos a un arreglo mas pequno
-    // y borrar los que sobran
-    } else if(num_variables > new_num_variables){
-      char **tmp = malloc(sizeof(char *)*new_num_variables);
-      for (int i = 0; i < num_variables; ++i){
-        if (i < new_num_variables){
-          tmp[i] = malloc(NAME_SIZE);
-          memcpy(tmp[i], var_names[i], NAME_SIZE);
-        }
-        free(var_names[i]);
-      }
-      free(var_names);
-      var_names = tmp;
-      for(int v = new_num_variables; v < num_variables; ++v){
-        GtkWidget *label = gtk_grid_get_child_at(gd_varnames, 0, v);
-        GtkWidget *entry = gtk_grid_get_child_at(gd_varnames, 1, v);
-        gtk_container_remove(GTK_CONTAINER(gd_varnames), label);
-        gtk_container_remove(GTK_CONTAINER(gd_varnames), entry);
-      }
-    }
+    update_grid_varnames(2);
   }
-  if((num_variables != new_num_variables || num_constraints != new_num_constraints) && num_variables != -1){
-    update_grid_variables_and_constraints(1);
-  } else {
+  
+  if(!exists_grids){
     update_grid_variables_and_constraints(0);
+  } else if((num_variables != new_num_variables || num_constraints != new_num_constraints) && num_variables != -1){
+    update_grid_variables_and_constraints(1);
   }
   num_variables = new_num_variables;
   num_constraints = new_num_constraints;
-}
+  
+  int col_i = 0;
+  char buff[256];
 
-void on_btn_var_back_clicked() {
-    /*GtkGrid* gd = GTK_GRID(gtk_builder_get_object(builder, "gd_initial"));
-    gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
-    gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
-    gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
-    for (int i = 0; i < num_variables; ++i) free(var_names[i]);
-    free(var_names);
-    gtk_widget_destroy(GTK_WIDGET(gd_varnames));
-    gtk_widget_hide(varname_window);
-    gtk_widget_show_all(main_window);*/
+  for(int v = 0; v < num_variables; ++v){
+    sprintf(buff, "%s %s", var_names[v], ((v < num_variables-1) ? "+ " : ""));
+    col_i++;
+    gtk_label_set_text(GTK_LABEL(gtk_grid_get_child_at(gd_variables, col_i++, 0)), buff);
+  }
+  col_i = 0; 
+  for(int c = 0; c < num_constraints; ++c){
+    for(int v = 0; v < num_variables; ++v){
+      sprintf(buff, "%s %s", var_names[v], ((v < num_variables-1) ? "+ " : ""));
+      col_i++;
+      gtk_label_set_text(GTK_LABEL(gtk_grid_get_child_at(gd_constraints, col_i++, c)), buff);
+    }
+    col_i = 0;
+  }
 }
 
 void update_grid_variables_and_constraints(int to_update){
@@ -352,6 +370,7 @@ void update_grid_variables_and_constraints(int to_update){
       gtk_grid_attach(gd_variables, entry, col_i++, 0, 1, 1);
       gtk_grid_attach(gd_variables, label, col_i++, 0, 1, 1);
     }
+    exists_grids = 1;
 
   } else if(num_variables < new_num_variables){//actualizar grid de variables de la funcion objetivo
     label = gtk_grid_get_child_at(gd_variables, num_variables*2-1, 0);
@@ -421,7 +440,6 @@ void update_grid_variables_and_constraints(int to_update){
 
   gtk_grid_set_column_spacing(gd_variables, 5);
   gtk_grid_set_column_spacing(gd_constraints, 5);
-
   gtk_container_add(GTK_CONTAINER(vp_objective_func), GTK_WIDGET(gd_variables));
   gtk_container_add(GTK_CONTAINER(vp_constraints), GTK_WIDGET(gd_constraints));
   //gtk_widget_destroy(GTK_WIDGET(gd_varnames));
@@ -776,9 +794,10 @@ void select_file(char **filename, char *oper, GtkWidget *parent){
   gtk_widget_destroy(chooser_window);
 }
 void load_data(char *filename){
-  //if (num_variables != -1){
+  if (exists_grids){
     delete_data();
-  //}
+    exists_grids = 0;
+  }
   FILE *file;
   file = fopen(filename, "r");
   char objective[9];
@@ -812,6 +831,9 @@ void load_data(char *filename){
   for(int x = 0; x < num_variables; ++x){
     var_names[x] = read_text(file, '=', '^');
   }
+  update_grid_varnames(0);
+  exists_grids = 1;
+
   int gd_left = 0;
   int gd_top = 0;
 
