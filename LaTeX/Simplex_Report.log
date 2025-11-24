@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.11.16)  23 NOV 2025 20:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.9.18)  23 NOV 2025 22:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -986,7 +986,7 @@ your preamble.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logo_tec.jpg, id=43, 1445.4pt x 336.25626pt>
+<logo_tec.jpg, id=51, 1445.4pt x 336.25626pt>
 File: logo_tec.jpg Graphic file (type jpg)
 <use logo_tec.jpg>
 Package pdftex.def Info: logo_tec.jpg  used on input line 56.
@@ -1012,7 +1012,7 @@ l.86 \chapter
 
 ]
 Chapter 1.
-<DANTZIG.jpeg, id=66, 328.22626pt x 154.5775pt>
+<DANTZIG.jpeg, id=76, 328.22626pt x 154.5775pt>
 File: DANTZIG.jpeg Graphic file (type jpg)
 <use DANTZIG.jpeg>
 Package pdftex.def Info: DANTZIG.jpeg  used on input line 90.
@@ -1035,7 +1035,7 @@ ZIG.jpeg>]
 [4]
 Chapter 2.
 
-Underfull \hbox (badness 10000) in paragraph at lines 179--182
+Underfull \hbox (badness 10000) in paragraph at lines 159--178
 
  []
 
@@ -1044,10 +1044,32 @@ Underfull \hbox (badness 10000) in paragraph at lines 179--182
 [5
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 199--210
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 199--210
+
+ []
+
+
 
 [6]
+Underfull \hbox (badness 10000) in paragraph at lines 215--217
 
-[7
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--248
+
+ []
+
+
+
+[7]
+
+[8
 
 ] (LaTeX/Simplex_Report.aux)
  ***********
@@ -1055,13 +1077,13 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `Simplex_Report.out' has not changed.
-(rerunfilecheck)             Checksum: D34BF3D2A69A4FD808EB588FC1B5FF6D;1237.
+(rerunfilecheck)             Checksum: 70BD8D719563790F46ECF4D119979D97;1637.
  ) 
 Here is how much of TeX's memory you used:
- 34402 strings out of 475171
- 783100 string characters out of 5767094
- 1469301 words of memory out of 5000000
- 56829 multiletter control sequences out of 15000+600000
+ 34408 strings out of 475171
+ 783159 string characters out of 5767095
+ 1459301 words of memory out of 5000000
+ 56832 multiletter control sequences out of 15000+600000
  564363 words of font info for 55 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  84i,10n,91p,1554b,609s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1070,10 +1092,10 @@ texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 r8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on LaTeX/Simplex_Report.pdf (8 pages, 209275 bytes).
+Output written on LaTeX/Simplex_Report.pdf (9 pages, 217447 bytes).
 PDF statistics:
- 136 PDF objects out of 1000 (max. 8388607)
- 110 compressed objects within 2 object streams
- 21 named destinations out of 1000 (max. 500000)
- 95 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 150 PDF objects out of 1000 (max. 8388607)
+ 123 compressed objects within 2 object streams
+ 24 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
 

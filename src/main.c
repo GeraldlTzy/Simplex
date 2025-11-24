@@ -23,7 +23,13 @@ GtkGrid* gd_variables;
 GtkGrid* gd_constraints;
 GtkGrid* gd_varnames;
 GtkToggleButton* intermediate_toggle;
+GtkWidget* entry_problem_name;
+GtkWidget* in_num_var;
+GtkWidget* in_num_const;
 
+char problem_name[256];
+int num_variables = -1;
+int num_constraints = -1;
 int loaded = 0;
 int do_minimize = 0;
 char **var_names;
@@ -89,6 +95,18 @@ static void real_numeric_entry(GtkEditable *editable, const gchar *text,
   }
 }
 /*###########################################################################*/
+void delete_data() {
+  for (int i = 0; i < num_variables; ++i) free(var_names[i]);
+  free(var_names);
+  
+  problem_name[0] = '\0';
+  num_variables = -1;
+  num_constraints = -1;
+
+  gtk_widget_destroy(GTK_WIDGET(gd_variables));
+  gtk_widget_destroy(GTK_WIDGET(gd_constraints));
+  gtk_widget_hide(second_window);
+}
 
 
 
@@ -105,8 +123,8 @@ void initialize(){
   intermediate_toggle = GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder, "ckbtn_intermediate_tables"));
   inequalities = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_BOOLEAN);
   
-  GtkWidget *in_num_const = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_const1"));
-  GtkWidget *in_num_var = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_var1"));
+  in_num_const = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_const1"));
+  in_num_var = GTK_WIDGET(gtk_builder_get_object(builder, "in_num_var1"));
 
   char *pattern = "^[0-9]+$";
 
@@ -122,6 +140,10 @@ void initialize(){
   gtk_list_store_append(inequalities, &iter);
   gtk_list_store_set(inequalities, &iter, 0, ">=", 1, TRUE, -1);
   
+  // valores generales
+  entry_problem_name = GTK_WIDGET(gtk_builder_get_object(builder, "entry_problem_name"));
+
+
   gtk_window_set_title(GTK_WINDOW(second_window), "Dynamic Programming Algorithms Hub");
   g_signal_connect(second_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_builder_connect_signals(builder, NULL);
@@ -143,9 +165,6 @@ int main(int argc, char *argv[]){
 	return 0;
 }
 
-char problem_name[256];
-int num_variables = -1;
-int num_constraints = -1;
 
 void on_combo_constraint_changed(GtkComboBox *cmb, gpointer user_data){
   GtkTreeIter iter;
@@ -756,10 +775,15 @@ void select_file(char **filename, char *oper, GtkWidget *parent){
   gtk_widget_destroy(chooser_window);
 }
 void load_data(char *filename){
+  if (num_variables != -1){
+    delete_data();
+  }
   FILE *file;
   file = fopen(filename, "r");
   char objective[9];
   strcpy(problem_name, read_text(file, '=', '\n'));
+  gtk_entry_set_text(GTK_ENTRY(entry_problem_name), problem_name);
+
   strcpy(objective, read_text(file, '=', '\n'));
   if(strcmp(objective, "Maximize") == 0){
     do_minimize = 0;
@@ -768,8 +792,14 @@ void load_data(char *filename){
     do_minimize = 1;
     gtk_combo_box_set_active(GTK_COMBO_BOX(cmb_objective_func), 1);
   }
-  num_variables = atoi(read_text(file, '=', '\n'));
-  num_constraints = atoi(read_text(file, '=', '\n'));
+  char *num_var_str = read_text(file, '=', '\n');
+  num_variables = atoi(num_var_str);
+  gtk_entry_set_text(GTK_ENTRY(in_num_var), num_var_str);
+
+  char *num_const_str = read_text(file, '=', '\n');
+  num_constraints = atoi(num_const_str);
+  gtk_entry_set_text(GTK_ENTRY(in_num_const), num_const_str);
+
   var_names = malloc(sizeof(char*) * num_variables);
 
   gd_variables = GTK_GRID(gtk_grid_new());
@@ -907,25 +937,6 @@ void on_cmb_objective_func_changed(GtkComboBox *cmb, GtkEntry* e){
   else do_minimize = 1;
 }
 
-void on_back_button_clicked() {
-  GtkGrid* gd = GTK_GRID(gtk_builder_get_object(builder, "gd_initial"));
-  gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 0)), "");
-  gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 1)), "");
-  gtk_entry_set_text(GTK_ENTRY(gtk_grid_get_child_at(gd, 1, 2)), "");
-  gtk_toggle_button_set_active(intermediate_toggle, 0);
- 
-  for (int i = 0; i < num_variables; ++i) free(var_names[i]);
-  free(var_names);
-  
-  
-  problem_name[0] = '\0';
-  num_variables = 0;
-  num_constraints = 0;
-
-  gtk_widget_destroy(GTK_WIDGET(gd_variables));
-  gtk_widget_destroy(GTK_WIDGET(gd_constraints));
-  gtk_widget_hide(second_window);
-}
 
 void on_btn_save_clicked(){
   char *filename;
